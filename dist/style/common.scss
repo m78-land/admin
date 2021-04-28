@@ -1,0 +1,30 @@
+//noinspection CssUnknownTarget
+@import '@m78/style/sass-vars';
+
+@font-face {
+  font-family: Segoe UI Emoji;
+  src: url('../assets/seguiemj.ttf');
+}
+
+.m78-admin {
+  &_desktop-decorate {
+    position: absolute;
+    z-index: -1;
+    right: 0;
+    bottom: 0;
+    width: 50%;
+    top: 50%;
+    background-image: url('../assets/m1.png');
+    background-position: center;
+    background-size: 60%;
+    background-repeat: no-repeat;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  &_desktop-node {
+    position: absolute;
+
+    @include full;
+  }
+}

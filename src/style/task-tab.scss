@@ -1,0 +1,20 @@
+//noinspection CssUnknownTarget
+@import '@m78/style/sass-vars';
+
+.m78-admin {
+  &_task-tab {
+    display: inline-flex;
+    align-items: center;
+    height: 38px;
+    padding: var(--m78-space-1) var(--m78-space-2);
+    user-select: none;
+    border-radius: var(--m78-border-radius);
+    background-color: var(--m78-color-bg);
+
+    & + & {
+      margin-left: var(--m78-space-2);
+    }
+
+    @include effect-bg;
+  }
+}

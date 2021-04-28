@@ -1,0 +1,17 @@
+.func-list {
+  width: 420px;
+
+  .m78-tree_toolbar-left {
+    display: none;
+  }
+
+  .m78-tree_toolbar-right {
+    margin-left: 0 !important;
+    flex: 1 !important;
+  }
+
+  .m78-input_wrap {
+    height: 32px !important;
+    width: 100%;
+  }
+}

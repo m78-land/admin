@@ -1,0 +1,9 @@
+.m78-admin {
+  &_media-query_calc-node {
+    position: absolute;
+    visibility: hidden;
+    z-index: -1;
+
+    @include full;
+  }
+}

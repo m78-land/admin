@@ -1,0 +1,39 @@
+.m78-wine {
+  &_decorate {
+    border: 1px solid var(--m78-color-border);
+    box-shadow: var(--m78-shadow-1-b);
+    border-radius: 0;
+    background-color: var(--m78-component-bg);
+  }
+
+  .m78-page-header {
+    border: none;
+    border-bottom: 1px solid var(--m78-color-border);
+  }
+
+  &_hide-btn {
+    background-color: var(--m78-color-title);
+  }
+
+  &_max-btn,
+  &_resize-btn::before {
+    border: 1px solid var(--m78-color-title);
+  }
+
+  &_resize-btn::after {
+    border: 1px solid var(--m78-color-second);
+  }
+
+  &_dispose-btn::before,
+  &_dispose-btn::after {
+    background-color: var(--m78-color-title);
+  }
+
+  &_dispose-btn::before {
+    left: 0;
+  }
+
+  &_tip-node {
+    background-color: var(--m78-color-border);
+  }
+}

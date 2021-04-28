@@ -1,0 +1,88 @@
+//noinspection CssUnknownTarget
+@import '@m78/style/sass-vars';
+
+.m78-admin_func-bar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  padding: var(--m78-space-2);
+
+  &_logo {
+    display: block;
+    margin: var(--m78-space-2) auto 0;
+    width: 70%;
+    font-size: var(--m78-fs-sm);
+    text-align: center;
+  }
+
+  &_logo-img {
+    width: 100%;
+  }
+
+  &_main {
+    flex: 1;
+    //overflow: auto;
+  }
+
+  &_side {
+    flex: 0 0 auto;
+  }
+
+  &_func {
+    position: relative;
+    border-radius: var(--m78-border-radius);
+    padding: var(--m78-space-2) var(--m78-space-1);
+    text-align: center;
+    font-size: 12px;
+    user-select: none;
+    cursor: pointer;
+    line-height: 1.2;
+    margin-bottom: var(--m78-space-1);
+
+    &.__circle {
+      width: 50px;
+      height: 50px;
+      line-height: 50px;
+      border-radius: 50%;
+      margin: var(--m78-space-3) auto var(--m78-space-2);
+      border: 1px solid var(--m78-color-border);
+      background-color: var(--m78-color-bg);
+      padding: 0;
+      font-weight: bold;
+    }
+
+    &.__small {
+      .m78-admin_func-bar_icon {
+        font-size: 14px;
+        margin-bottom: var(--m78-space-1);
+      }
+    }
+
+    @include effect-bg;
+  }
+
+  &_icon {
+    font-size: 20px;
+    margin-bottom: var(--m78-space-2);
+  }
+
+  &_text {
+  }
+
+  &_left-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: 4px;
+    width: 5px;
+    line-height: 1;
+
+    .m78-dot {
+      margin: 0;
+    }
+  }
+}

@@ -1,0 +1,36 @@
+.m78-admin_layout {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  overflow: hidden;
+  box-shadow: var(--m78-shadow-1);
+
+  &_side {
+    width: 90px;
+    background-color: var(--m78-component-bg);
+    z-index: var(--m78-z-index);
+    border-right: 1px solid var(--m78-color-border);
+  }
+
+  &_main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  &_window {
+    position: relative;
+    flex: 1;
+    background-color: var(--m78-color-bg);
+  }
+
+  &_desc {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    font-size: 12px;
+    color: var(--m78-color-disable);
+    transform: translateX(-50%);
+  }
+}

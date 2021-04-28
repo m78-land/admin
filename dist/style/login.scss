@@ -1,0 +1,36 @@
+.m78-admin {
+  &_login {
+    position: fixed;
+    overflow: hidden;
+    @include full;
+
+    &-title {
+      font-size: var(--m78-fs-lg);
+    }
+
+    &-content {
+      position: absolute;
+      left: 50%;
+      top: 36%;
+      transform: translate(-50%, -50%);
+
+      .m78-list {
+        background-color: transparent;
+      }
+    }
+
+    &-bg {
+      position: absolute;
+      // 去除filter: blur 的毛边
+      left: -50px;
+      top: -50px;
+      right: -50px;
+      bottom: -50px;
+
+      background: url('/src/assets/m2.jpg') center/cover;
+      //background: linear-gradient(to right, #fc354c, #0abfbc);
+      filter: blur(24px);
+      opacity: 0.2;
+    }
+  }
+}

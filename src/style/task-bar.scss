@@ -1,0 +1,25 @@
+.m78-admin {
+  &_task-bar {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    background-color: var(--m78-component-bg);
+    border-bottom: 1px solid var(--m78-color-border);
+    padding: 0 var(--m78-space-3);
+
+    &_before {
+    }
+
+    &_main {
+      flex: 1;
+      white-space: nowrap;
+
+      .m78-scroller_wrap {
+        padding-top: 6px;
+      }
+    }
+
+    &_action {
+    }
+  }
+}
