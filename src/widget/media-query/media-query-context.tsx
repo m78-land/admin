@@ -31,6 +31,9 @@ const MediaQueryContext: React.FC = ({ children }) => {
       isLG: () => type === MediaQueryTypeKey.LG,
       isXL: () => type === MediaQueryTypeKey.XL,
       isXXL: () => type === MediaQueryTypeKey.XXL,
+      isSmall: () => is.isXS() || is.isSM(),
+      isMedium: () => is.isMD() || is.isLG(),
+      isLarge: () => !is.isSmall() && !is.isMedium(),
     };
 
     if (isArray(changeListeners)) {

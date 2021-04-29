@@ -3,6 +3,9 @@ import { M78Admin, Auth, Badge, FuncBtn } from '../index';
 import { M78AdminConfig, TaskOpt } from '../types';
 
 const TestLazy = React.lazy(() => import('./Test'));
+const TestLazy2 = React.lazy(() => import('./Test2'));
+const TestLazy3 = React.lazy(() => import('./Test3'));
+const TestLazy4 = React.lazy(() => import('./Test4'));
 
 const opt: TaskOpt = [
   {
@@ -10,14 +13,14 @@ const opt: TaskOpt = [
     name: '无名功能1',
     icon: '😍',
     component: TestLazy,
-    hide: true,
+    // hide: true,
     // auth: ['user:cr', 'setting:ud'],
   },
   {
     id: 'xxx2',
     name: '无名功能2',
     icon: '😛',
-    component: TestLazy,
+    component: TestLazy2,
     // auth: ['user:cr'],
   },
   {
@@ -27,7 +30,7 @@ const opt: TaskOpt = [
         id: 'role1',
         name: '角色管理',
         icon: '✂',
-        component: TestLazy,
+        component: TestLazy3,
         taskName: ctx => ctx.param.name || '呵呵哒',
         // auth: ['user:crud', 'setting:cud'],
       },
@@ -35,8 +38,8 @@ const opt: TaskOpt = [
         id: 'role2',
         name: '权限管理',
         icon: '🦄',
-        component: TestLazy,
-        auth: ['user:cud', 'setting:cud'],
+        component: TestLazy4,
+        // auth: ['user:cud', 'setting:cud'],
       },
       {
         id: 'role3',
@@ -94,11 +97,11 @@ const opt: TaskOpt = [
   },
 ];
 
-Auth.setAuth(['user:cr', 'setting:ud']);
+// Auth.setAuth(['user:cr', 'setting:ud']);
 
 const App = () => {
   const [config, setConfig] = useState<M78AdminConfig>({
-    collectFunc: ['role1', 'menu1', 'auth1'],
+    collectFunc: ['xxx1', 'xxx2', 'role1', 'role2'],
     darkMode: false,
   });
 

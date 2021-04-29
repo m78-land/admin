@@ -18,17 +18,17 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    padding: var(--m78-space-2) var(--m78-space-3);
     overflow: hidden;
   }
 
   &_content {
     flex: 1;
     overflow: auto;
+    padding: var(--m78-space-4) var(--m78-space-5);
   }
 
   &_footer {
-    padding-top: var(--m78-space-2);
+    padding: var(--m78-space-2) var(--m78-space-3);
     margin-top: var(--m78-space-1);
     border-top: 1px dashed var(--m78-color-border);
   }

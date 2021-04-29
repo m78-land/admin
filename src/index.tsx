@@ -6,6 +6,7 @@ import Login from './widget/login/login';
 import WindowLayout from './widget/window-layout/window-layout';
 import WindowLayoutSection from './widget/window-layout/window-layout-section';
 import MediaQuery, { MediaQueryType, MediaQuerySize } from './widget/media-query/media-query';
+import { useMediaQuery, useMediaQueryType, useMediaQuerySize } from './widget/media-query/hooks';
 import { Auth } from './auth/auth';
 import Link from './task/link';
 
@@ -18,6 +19,9 @@ export {
   MediaQuery,
   MediaQueryType,
   MediaQuerySize,
+  useMediaQuery,
+  useMediaQueryType,
+  useMediaQuerySize,
   Auth,
   Link,
   M78Admin,

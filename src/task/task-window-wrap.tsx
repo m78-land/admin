@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { TaskCtx } from '../types';
 import { useListenerKeyToUpdate } from './methods';
 import linkContext from './link-context';
+import Spin from 'm78/spin';
 
 interface Props {
   /** 待渲染的任务组件 */
@@ -13,6 +14,8 @@ interface Props {
 }
 
 const LinkProvider = linkContext.Provider;
+
+const loadingNode = <Spin text="正在加载资源" className="m78-admin_fixed-center-text" />;
 
 /**
  * 每个任务窗口页面的包裹组件，用于控制入参、更新参数、嵌套窗口等
@@ -27,7 +30,9 @@ const TaskWindowWrap = ({ ctx, Component }: Props) => {
   return (
     <LinkProvider value={{ parent: ctx }}>
       <div className={clsx({ hide: hasIndex })}>
-        <Component {...ctx} />
+        <React.Suspense fallback={loadingNode}>
+          <Component {...ctx} />
+        </React.Suspense>
       </div>
       {hasChild &&
         ctx.children.map((subTask, ind) => {
@@ -35,7 +40,9 @@ const TaskWindowWrap = ({ ctx, Component }: Props) => {
 
           return (
             <div key={subTask.taskKey} className={clsx({ hide: ctx.currentChildIndex !== ind })}>
-              <SubComponent {...subTask} />
+              <React.Suspense fallback={loadingNode}>
+                <SubComponent {...subTask} />
+              </React.Suspense>
             </div>
           );
         })}

@@ -1,40 +1,19 @@
-import React, { useContext, useEffect } from 'react';
-import { useFn, useSetState } from '@lxjx/hooks';
-import { mediaQueryCtx } from './context';
-import { MediaQueryMete, MediaQuerySizeMete, MediaQueryTypeMete } from '../../types';
-
-interface MediaQueryProps {
-  onChange: (meta: MediaQueryMete) => void;
-}
-
-interface MediaQuerySizeProps {
-  children: (sizeMeta: MediaQuerySizeMete) => React.ReactNode;
-}
-
-interface MediaQueryTypeProps {
-  children: (sizeMeta: MediaQueryTypeMete) => React.ReactNode;
-}
+import React from 'react';
+import { useSetState } from '@lxjx/hooks';
+import {
+  MediaQueryProps,
+  MediaQuerySizeMete,
+  MediaQuerySizeProps,
+  MediaQueryTypeMete,
+  MediaQueryTypeProps,
+} from '../../types';
+import { useMediaQuery, useMediaQuerySize, useMediaQueryType } from './hooks';
 
 /**
  * 窗口尺寸改变时通过回调通知
  * */
 function MediaQuery({ onChange }: MediaQueryProps) {
-  const mqCtx = useContext(mediaQueryCtx);
-
-  const oc = useFn(onChange);
-
-  useEffect(() => {
-    mqCtx.changeListeners.push(oc);
-
-    return () => {
-      const ind = mqCtx.changeListeners.indexOf(oc);
-
-      if (ind !== -1) {
-        mqCtx.changeListeners.splice(ind, 1);
-      }
-    };
-  }, []);
-
+  useMediaQuery(onChange);
   return null;
 }
 
@@ -42,55 +21,18 @@ function MediaQuery({ onChange }: MediaQueryProps) {
  * 窗口尺寸改变时通过回调通知传入子项帮助渲染
  * */
 function MediaQuerySize({ children }: MediaQuerySizeProps) {
-  const [state, setState] = useSetState<{
-    size: MediaQuerySizeMete | null;
-  }>({
-    size: null,
-  });
+  const size = useMediaQuerySize();
 
-  return (
-    <>
-      <MediaQuery
-        onChange={meta => {
-          if (meta.width !== state.size?.width || meta.height !== state.size?.height) {
-            setState({
-              size: {
-                width: meta.width,
-                height: meta.height,
-              },
-            });
-          }
-        }}
-      />
-      {state.size && children(state.size)}
-    </>
-  );
+  return size ? children(size) : null;
 }
 
 /**
  * 窗口尺寸类型改变时通过回调通知传入子项帮助渲染
  * */
 function MediaQueryType({ children }: MediaQueryTypeProps) {
-  const [state, setState] = useSetState<{
-    type: MediaQueryTypeMete | null;
-  }>({
-    type: null,
-  });
+  const type = useMediaQueryType();
 
-  return (
-    <>
-      <MediaQuery
-        onChange={({ width, height, ...type }) => {
-          if (type.type !== state.type?.type) {
-            setState({
-              type,
-            });
-          }
-        }}
-      />
-      {state.type && children(state.type)}
-    </>
-  );
+  return type ? children(type) : null;
 }
 
 MediaQuery.Size = MediaQuerySize;

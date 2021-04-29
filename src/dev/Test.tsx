@@ -4,7 +4,7 @@ import WindowLayout from '../widget/window-layout/window-layout';
 import WindowLayoutSection from '../widget/window-layout/window-layout-section';
 import { TaskCtx } from '../types';
 import task from '../task/task';
-import { Link } from '../index';
+import { Link, MediaQuery } from '../index';
 
 export default function Test(props: TaskCtx<{ name: string }>) {
   useEffect(() => {
@@ -17,8 +17,20 @@ export default function Test(props: TaskCtx<{ name: string }>) {
   console.log('1111 render');
 
   return (
-    <WindowLayout>
+    <WindowLayout footer={<Button size="large">按钮</Button>}>
       <WindowLayoutSection label="角色管理操作1" desc="角色管理操作对应的一段描述">
+        <MediaQuery.Type>
+          {meta => (
+            <div>
+              {meta.type}
+              <br />
+              {meta.isSmall() && 'small'}
+              {meta.isMedium() && 'medium'}
+              {meta.isLarge() && 'large'}
+            </div>
+          )}
+        </MediaQuery.Type>
+        <MediaQuery.Size>{meta => <div>{JSON.stringify(meta)}</div>}</MediaQuery.Size>
         <div>
           <div>{JSON.stringify(props.param)}</div>
           <div>

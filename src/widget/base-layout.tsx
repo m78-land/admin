@@ -27,11 +27,7 @@ const BaseLayout = () => {
         <TaskBar />
 
         <div className="m78-admin_layout_window">
-          <React.Suspense
-            fallback={<div className="m78-admin_fixed-center-text">正在加载资源...</div>}
-          >
-            <Wine.RenderBoxTarget />
-          </React.Suspense>
+          <Wine.RenderBoxTarget />
 
           <DesktopItems />
         </div>

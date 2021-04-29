@@ -8,6 +8,8 @@ import { isLayoutSection, SECTION_SELECTOR_PREFIX } from './common';
 import { TaskWindowLayoutProps, WindowLayoutSectionProps } from '../../types';
 import MediaQueryContext from '../media-query/media-query-context';
 import MediaQueryCalc from '../media-query/media-query-calc';
+import { MediaQueryType } from '../media-query/media-query';
+import { useMediaQueryType } from '../media-query/hooks';
 
 interface Self {
   /** 存放所有sections节点的html节点 */
@@ -25,7 +27,15 @@ interface Self {
  * - 子项包含多个WindowLayoutSection时，会在侧栏生成帮助快速跳转的tab
  * - 使用MediaQuery系列组件进行媒体查询时，此组件是必选的父组件
  * */
-function WindowLayout({ children, side, footer, className, style }: TaskWindowLayoutProps) {
+function WindowLayout({
+  children,
+  side,
+  footer,
+  className,
+  style,
+  scrollRef,
+  ...ppp
+}: TaskWindowLayoutProps) {
   /** 当前选中节点的tab */
   const [cLabel, setCLabel] = useState('角色管理操作1');
 
@@ -128,15 +138,12 @@ function WindowLayout({ children, side, footer, className, style }: TaskWindowLa
 
   return (
     <MediaQueryContext>
-      <div className={clsx('m78-admin_window-layout', className)} style={style}>
+      <div className={clsx('m78-admin_window-layout', className)} style={style} {...ppp}>
         {renderSide()}
 
         <div className="m78-admin_window-layout_main">
           <div ref={scrollNodeRef} className="m78-admin_window-layout_content m78-scrollbar">
             {children}
-
-            {/* 留白 */}
-            {/* <Spacer height={100} />*/}
           </div>
           {footer && <div className="m78-admin_window-layout_footer tr">{footer}</div>}
           <div ref={calcNodeRef} className="m78-admin_window-layout_calc-node" />

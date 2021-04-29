@@ -1,7 +1,8 @@
 import { AnyFunction, TupleNumber } from '@lxjx/utils';
 import { WineInstance } from '@m78/wine';
-import React from 'react';
-import { ComponentBasePropsWithAny } from 'm78/types';
+import React, { ReactElement } from 'react';
+import { ComponentBasePropsWithAny, Size, SizeEnum } from 'm78/types';
+import { useScroll } from '@lxjx/hooks';
 
 /*
  * #####################################################
@@ -279,6 +280,8 @@ export interface TaskWindowLayoutProps extends ComponentBasePropsWithAny {
   footer?: React.ReactNode;
   /** 左侧栏目内容，通过WindowLayoutSessionProps生成tab时，此项会被忽略 */
   side?: React.ReactNode;
+  /** 控制滚动区域的scroller */
+  scrollRef?: React.RefObject<ReturnType<typeof useScroll>>;
 }
 
 /** 布局块props */
@@ -333,13 +336,21 @@ export enum MediaQueryTypeKey {
 
 /** MediaQuery type元信息 */
 export interface MediaQueryTypeMete {
+  /** 当前类型 */
   type: MediaQueryTypeKey;
+  /** 检测是否为指定类型 */
   isXS: () => boolean;
   isSM: () => boolean;
   isMD: () => boolean;
   isLG: () => boolean;
   isXL: () => boolean;
   isXXL: () => boolean;
+  /** 当前尺寸是 xs或sm */
+  isSmall: () => boolean;
+  /** 当前尺寸是 md或lg */
+  isMedium: () => boolean;
+  /** 当前尺寸大于 lg */
+  isLarge: () => boolean;
 }
 
 /** MediaQuery size元信息 */
@@ -350,6 +361,18 @@ export interface MediaQuerySizeMete {
 
 /** MediaQuery 完整元信息 */
 export interface MediaQueryMete extends MediaQueryTypeMete, MediaQuerySizeMete {}
+
+export interface MediaQueryProps {
+  onChange: (meta: MediaQueryMete) => void;
+}
+
+export interface MediaQuerySizeProps {
+  children: (sizeMeta: MediaQuerySizeMete) => ReactElement<any, any> | null;
+}
+
+export interface MediaQueryTypeProps {
+  children: (sizeMeta: MediaQueryTypeMete) => ReactElement<any, any> | null;
+}
 
 /*
  * #####################################################
