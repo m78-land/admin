@@ -6,6 +6,10 @@
   src: url('../assets/seguiemj.ttf');
 }
 
+html, body {
+  overflow: hidden;
+}
+
 .m78-admin {
   &_desktop-decorate {
     position: absolute;

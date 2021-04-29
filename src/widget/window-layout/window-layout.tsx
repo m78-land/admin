@@ -136,7 +136,7 @@ function WindowLayout({ children, side, footer, className, style }: TaskWindowLa
             {children}
 
             {/* 留白 */}
-            <Spacer height={100} />
+            {/* <Spacer height={100} />*/}
           </div>
           {footer && <div className="m78-admin_window-layout_footer tr">{footer}</div>}
           <div ref={calcNodeRef} className="m78-admin_window-layout_calc-node" />

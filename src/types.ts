@@ -184,7 +184,7 @@ export interface M78AdminConfig {
   desktopImage?: string;
 
   // ####### 性能优化 ####### //
-  /** 8 | 最大窗口数量 */
+  /** 12 | 最大窗口数量 */
   maxWindow?: number;
 }
 
@@ -195,7 +195,7 @@ export interface M78AdminProps {
   /** 配置 */
   config?: M78AdminConfig;
   /** 配置被组件内部改变的回调, 如果忽略此项，则内部改变不会生效 */
-  onConfigChange?: (config: Partial<M78AdminProps['config']>) => void;
+  onConfigChange?: (config: Partial<NonNullable<M78AdminProps['config']>>) => void;
 
   // ####### 状态 ####### //
   /** 加载状态 */

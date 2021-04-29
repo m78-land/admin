@@ -661,7 +661,7 @@ function closeConfirm(ctx2) {
   return confirm(`\u60A8\u5728 \u201C${ctx2.option.name}\u201D \u7A97\u53E3\u8FDB\u884C\u7684\u64CD\u4F5C\u53EF\u80FD\u4E0D\u4F1A\u4FDD\u5B58\uFF0C\u786E\u8BA4\u8981\u5C06\u5176\u5173\u95ED\u5417?`);
 }
 function isPassNode(item) {
-  return "id" in item && !item.hide && checkTaskAuth(item);
+  return item && "id" in item && !item.hide && checkTaskAuth(item);
 }
 const get = (id) => {
   const list = taskSeed.getState().taskList;
@@ -852,13 +852,17 @@ const FuncList = () => {
     const _tasks = [];
     tasks.forEach((item) => {
       if (isPassNode(item)) {
-        _tasks.push(item);
+        const {height} = item, i = __rest(item, ["height"]);
+        _tasks.push(i);
       }
       if ("children" in item && item.children.length) {
         const _child = item.children.filter(isPassNode);
         if (_child.length) {
           _tasks.push(__assign(__assign({}, item), {
-            children: _child
+            children: _child.map((_a) => {
+              var {height} = _a, i = __rest(_a, ["height"]);
+              return i;
+            })
           }));
         }
       }

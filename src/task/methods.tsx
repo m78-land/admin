@@ -488,6 +488,6 @@ export function closeConfirm(ctx: TaskCtx) {
 }
 
 /** 检测是否是非隐藏且有权限的task选项 */
-export function isPassNode(item: TaskItemCategory | TaskOptItem) {
-  return 'id' in item && !item.hide && checkTaskAuth(item);
+export function isPassNode(item: TaskItemCategory | TaskOptItem): item is TaskOptItem {
+  return item && 'id' in item && !item.hide && checkTaskAuth(item);
 }

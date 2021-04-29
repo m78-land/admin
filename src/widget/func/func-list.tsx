@@ -31,7 +31,9 @@ const FuncList = () => {
 
     tasks.forEach(item => {
       if (isPassNode(item)) {
-        _tasks.push(item);
+        // 过滤掉height属性，和Tree的option配置冲突
+        const { height, ...i } = item;
+        _tasks.push(i);
       }
 
       if ('children' in item && item.children.length) {
@@ -40,7 +42,7 @@ const FuncList = () => {
         if (_child.length) {
           _tasks.push({
             ...item,
-            children: _child,
+            children: _child.map(({ height, ...i }) => i),
           });
         }
       }

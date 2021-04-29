@@ -145,7 +145,7 @@ export interface M78AdminConfig {
     name?: string;
     /** 桌面右下角的装饰图片(请使用带透明通道的图片/PNG) */
     desktopImage?: string;
-    /** 8 | 最大窗口数量 */
+    /** 12 | 最大窗口数量 */
     maxWindow?: number;
 }
 export interface M78AdminProps {
@@ -154,7 +154,7 @@ export interface M78AdminProps {
     /** 配置 */
     config?: M78AdminConfig;
     /** 配置被组件内部改变的回调, 如果忽略此项，则内部改变不会生效 */
-    onConfigChange?: (config: Partial<M78AdminProps['config']>) => void;
+    onConfigChange?: (config: Partial<NonNullable<M78AdminProps['config']>>) => void;
     /** 加载状态 */
     loading?: boolean;
     /** 任务打开时触发，返回false可以阻止任务挂载 */

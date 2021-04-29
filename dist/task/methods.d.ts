@@ -102,5 +102,5 @@ export declare function checkPopCloseable(ctx: TaskCtx): boolean;
 /** 关闭提示并返回结果 */
 export declare function closeConfirm(ctx: TaskCtx): boolean;
 /** 检测是否是非隐藏且有权限的task选项 */
-export declare function isPassNode(item: TaskItemCategory | TaskOptItem): boolean;
+export declare function isPassNode(item: TaskItemCategory | TaskOptItem): item is TaskOptItem;
 export {};
