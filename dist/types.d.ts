@@ -1,7 +1,8 @@
 import { AnyFunction, TupleNumber } from '@lxjx/utils';
 import { WineInstance } from '@m78/wine';
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { ComponentBasePropsWithAny } from 'm78/types';
+import { useScroll } from '@lxjx/hooks';
 /** 描述一项任务配置选项 */
 export interface TaskOptItem {
     /** 标识此任务的唯一id */
@@ -215,13 +216,14 @@ export interface TaskLoginProps {
 export interface TaskWindowLayoutProps extends ComponentBasePropsWithAny {
     /** 内容区域, 传入特定类似的子项数组时，会产生不同的行为:
      * - 子项是多个WindowLayoutSection时, 会自动生成侧栏tab, 并根据滚动位置自动同步左侧tab选中状态
-     * - 子项时多个WindowLayoutTabItem时, 会自动生成侧栏tab，并在使用正常的tab行为进行控制
      * */
     children: React.ReactNode;
     /** 底部浮动内容，一般用来放置分页器、操作按钮等 */
     footer?: React.ReactNode;
     /** 左侧栏目内容，通过WindowLayoutSessionProps生成tab时，此项会被忽略 */
     side?: React.ReactNode;
+    /** 控制滚动区域的scroller */
+    scrollRef?: React.RefObject<ReturnType<typeof useScroll>>;
 }
 /** 布局块props */
 export interface WindowLayoutSectionProps extends ComponentBasePropsWithAny {
@@ -265,13 +267,21 @@ export declare enum MediaQueryTypeKey {
 }
 /** MediaQuery type元信息 */
 export interface MediaQueryTypeMete {
+    /** 当前类型 */
     type: MediaQueryTypeKey;
+    /** 检测是否为指定类型 */
     isXS: () => boolean;
     isSM: () => boolean;
     isMD: () => boolean;
     isLG: () => boolean;
     isXL: () => boolean;
     isXXL: () => boolean;
+    /** 当前尺寸是 xs或sm */
+    isSmall: () => boolean;
+    /** 当前尺寸是 md或lg */
+    isMedium: () => boolean;
+    /** 当前尺寸大于 lg */
+    isLarge: () => boolean;
 }
 /** MediaQuery size元信息 */
 export interface MediaQuerySizeMete {
@@ -280,6 +290,15 @@ export interface MediaQuerySizeMete {
 }
 /** MediaQuery 完整元信息 */
 export interface MediaQueryMete extends MediaQueryTypeMete, MediaQuerySizeMete {
+}
+export interface MediaQueryProps {
+    onChange: (meta: MediaQueryMete) => void;
+}
+export interface MediaQuerySizeProps {
+    children: (sizeMeta: MediaQuerySizeMete) => ReactElement<any, any> | null;
+}
+export interface MediaQueryTypeProps {
+    children: (sizeMeta: MediaQueryTypeMete) => ReactElement<any, any> | null;
 }
 /**
  * 包含格式如 `authName:keys` 的权限数组

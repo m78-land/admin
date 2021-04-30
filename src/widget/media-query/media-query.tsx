@@ -1,12 +1,4 @@
-import React from 'react';
-import { useSetState } from '@lxjx/hooks';
-import {
-  MediaQueryProps,
-  MediaQuerySizeMete,
-  MediaQuerySizeProps,
-  MediaQueryTypeMete,
-  MediaQueryTypeProps,
-} from '../../types';
+import { MediaQueryProps, MediaQuerySizeProps, MediaQueryTypeProps } from '../../types';
 import { useMediaQuery, useMediaQuerySize, useMediaQueryType } from './hooks';
 
 /**

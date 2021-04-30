@@ -32,7 +32,7 @@ import Spin from "m78/spin";
 import create from "m78/seed";
 import Wine, {keypressAndClick} from "@m78/wine";
 import m78Config from "m78/config";
-import {Divider, Spacer} from "m78/layout";
+import {Divider} from "m78/layout";
 import Scroller from "m78/scroller";
 import ContextMenu, {ContextMenuItem} from "m78/context-menu";
 import DND, {DNDContext} from "m78/dnd";
@@ -208,6 +208,10 @@ const OFFSET_LEFT = 90;
 const WILL_POP_MAP = {};
 const ctx = createContext({});
 const LinkProvider = ctx.Provider;
+const loadingNode = /* @__PURE__ */ React.createElement(Spin, {
+  text: "\u6B63\u5728\u52A0\u8F7D\u8D44\u6E90",
+  className: "m78-admin_fixed-center-text"
+});
 const TaskWindowWrap = ({ctx: ctx2, Component}) => {
   useListenerKeyToUpdate(ctx2);
   const hasChild = !!ctx2.children.length;
@@ -216,12 +220,16 @@ const TaskWindowWrap = ({ctx: ctx2, Component}) => {
     value: {parent: ctx2}
   }, /* @__PURE__ */ React.createElement("div", {
     className: clsx({hide: hasIndex})
-  }, /* @__PURE__ */ React.createElement(Component, __assign({}, ctx2))), hasChild && ctx2.children.map((subTask, ind) => {
+  }, /* @__PURE__ */ React.createElement(React.Suspense, {
+    fallback: loadingNode
+  }, /* @__PURE__ */ React.createElement(Component, __assign({}, ctx2)))), hasChild && ctx2.children.map((subTask, ind) => {
     const SubComponent = subTask.option.component;
     return /* @__PURE__ */ React.createElement("div", {
       key: subTask.taskKey,
       className: clsx({hide: ctx2.currentChildIndex !== ind})
-    }, /* @__PURE__ */ React.createElement(SubComponent, __assign({}, subTask)));
+    }, /* @__PURE__ */ React.createElement(React.Suspense, {
+      fallback: loadingNode
+    }, /* @__PURE__ */ React.createElement(SubComponent, __assign({}, subTask))));
   }));
 };
 const ADMIN_AUTH_NAME = "ADMIN_AUTH";
@@ -1082,11 +1090,7 @@ const BaseLayout = () => {
     className: "m78-admin_layout_main"
   }, /* @__PURE__ */ React.createElement(TaskBar, null), /* @__PURE__ */ React.createElement("div", {
     className: "m78-admin_layout_window"
-  }, /* @__PURE__ */ React.createElement(React.Suspense, {
-    fallback: /* @__PURE__ */ React.createElement("div", {
-      className: "m78-admin_fixed-center-text"
-    }, "\u6B63\u5728\u52A0\u8F7D\u8D44\u6E90...")
-  }, /* @__PURE__ */ React.createElement(Wine.RenderBoxTarget, null)), /* @__PURE__ */ React.createElement(DesktopItems, null))));
+  }, /* @__PURE__ */ React.createElement(Wine.RenderBoxTarget, null), /* @__PURE__ */ React.createElement(DesktopItems, null))));
 };
 const M78AdminCore = (props) => {
   const {tasks} = props;
@@ -1155,7 +1159,23 @@ const Login = ({logo, title, desc, content}) => {
     className: "color-second"
   }, desc)), content));
 };
-function WindowLayoutSection({children, label, desc}) {
+const windowLayoutCtx = createContext({
+  sectionList: [],
+  update: () => {
+  }
+});
+function WindowLayoutSection(props) {
+  const {children, label, desc} = props;
+  const wlCtx = useContext(windowLayoutCtx);
+  useEffect(() => {
+    wlCtx.sectionList.push(props);
+    wlCtx.update();
+    return () => {
+      const ind = wlCtx.sectionList.findIndex((item) => item.label === label);
+      wlCtx.sectionList.splice(ind, 1);
+      wlCtx.update();
+    };
+  }, []);
   return /* @__PURE__ */ React.createElement("div", {
     id: `${SECTION_SELECTOR_PREFIX}${label}`,
     className: "m78-admin_window-layout_section"
@@ -1170,9 +1190,6 @@ function WindowLayoutSection({children, label, desc}) {
   }, children));
 }
 const SECTION_SELECTOR_PREFIX = "M78_WINDOW_LAYOUT_SECTION_";
-function isLayoutSection(el) {
-  return React.isValidElement(el) && el.type === WindowLayoutSection;
-}
 var MediaQueryTypeValues;
 (function(MediaQueryTypeValues2) {
   MediaQueryTypeValues2[MediaQueryTypeValues2["XS"] = 0] = "XS";
@@ -1233,7 +1250,10 @@ const MediaQueryContext = ({children}) => {
       isMD: () => type === MediaQueryTypeKey.MD,
       isLG: () => type === MediaQueryTypeKey.LG,
       isXL: () => type === MediaQueryTypeKey.XL,
-      isXXL: () => type === MediaQueryTypeKey.XXL
+      isXXL: () => type === MediaQueryTypeKey.XXL,
+      isSmall: () => is.isXS() || is.isSM(),
+      isMedium: () => is.isMD() || is.isLG(),
+      isLarge: () => !is.isSmall() && !is.isMedium()
     };
     if (isArray(changeListeners)) {
       changeListeners.forEach((fn) => fn(__assign(__assign(__assign({}, size), {type}), is)));
@@ -1256,34 +1276,58 @@ const MediaQueryCalc = () => {
     className: "m78-admin_media-query_calc-node"
   });
 };
-function WindowLayout({children, side, footer, className, style}) {
-  const [cLabel, setCLabel] = useState("\u89D2\u8272\u7BA1\u7406\u64CD\u4F5C1");
+const WindowLayoutProvider = windowLayoutCtx.Provider;
+function WindowLayout(_c) {
+  var {
+    children,
+    side,
+    anchors,
+    footer,
+    className,
+    style,
+    scrollRef
+  } = _c, ppp = __rest(_c, [
+    "children",
+    "side",
+    "anchors",
+    "footer",
+    "className",
+    "style",
+    "scrollRef"
+  ]);
+  const [cLabel, setCLabel] = useState("");
+  const [tabs, setTabs] = useState([]);
   const self = useSelf();
   const calcNodeRef = useRef(null);
   const scrollNodeRef = useRef(null);
-  const tabOpt = useMemo(() => {
-    if (!children)
-      return null;
-    if (isArray(children)) {
-      const sessionOpt = children.filter(isLayoutSection).map((session) => session.props);
-      if (sessionOpt.length)
-        return sessionOpt;
-    }
-    if (isLayoutSection(children)) {
-      return [children.props];
-    }
-    return null;
-  }, [children]);
-  useEffect(() => {
-    if (!tabOpt || !tabOpt.length) {
+  const wlContextValue = useSelf({
+    sectionList: [],
+    update: null
+  });
+  wlContextValue.update = useFn(() => {
+    const wList = wlContextValue.sectionList;
+    if (!wList.length) {
       self.sections = null;
       return;
     }
-    self.sections = tabOpt.map((item) => ({
+    if (!cLabel)
+      setCLabel(wList[0].label);
+    if (tabs.length !== wList.length) {
+      setTabs([...wList]);
+    } else {
+      const mut = wList.every((item, ind) => {
+        var _a;
+        return item.label === ((_a = tabs[ind]) == null ? void 0 : _a.label);
+      });
+      if (mut) {
+        setTabs([...wList]);
+      }
+    }
+    self.sections = wList.map((item) => ({
       el: scrollNodeRef.current.querySelector(`#${SECTION_SELECTOR_PREFIX}${item.label}`),
       opt: item
     })).filter((item) => !!item.el);
-  }, [tabOpt]);
+  }, _debounce);
   const scrollHandle = useFn(() => {
     var _a;
     if ((_a = self.sections) == null ? void 0 : _a.length) {
@@ -1306,18 +1350,18 @@ function WindowLayout({children, side, footer, className, style}) {
     sc.scrollToElement(`#${SECTION_SELECTOR_PREFIX}${label}`, true);
   });
   function renderSide() {
-    if (!side && !tabOpt)
+    if (!side && !tabs.length)
       return null;
-    if (tabOpt) {
+    if (tabs.length) {
       return /* @__PURE__ */ React.createElement("div", {
         className: "m78-admin_window-layout_side"
       }, /* @__PURE__ */ React.createElement(Scroller, {
         className: "m78-admin_window-layout_tab",
         scrollFlag: true,
         hideScrollbar: true
-      }, tabOpt.map((item) => /* @__PURE__ */ React.createElement("div", {
-        key: item.label,
-        title: item.desc || item.label,
+      }, tabs.map((item, ind) => /* @__PURE__ */ React.createElement("div", {
+        key: ind,
+        title: item.label,
         className: clsx("m78-admin_window-layout_tab-item", {
           __active: cLabel === item.label
         }),
@@ -1328,24 +1372,24 @@ function WindowLayout({children, side, footer, className, style}) {
       className: "m78-admin_window-layout_side"
     }, side);
   }
-  return /* @__PURE__ */ React.createElement(MediaQueryContext, null, /* @__PURE__ */ React.createElement("div", {
+  return /* @__PURE__ */ React.createElement(WindowLayoutProvider, {
+    value: wlContextValue
+  }, /* @__PURE__ */ React.createElement(MediaQueryContext, null, /* @__PURE__ */ React.createElement("div", __assign({
     className: clsx("m78-admin_window-layout", className),
     style
-  }, renderSide(), /* @__PURE__ */ React.createElement("div", {
+  }, ppp), renderSide(), /* @__PURE__ */ React.createElement("div", {
     className: "m78-admin_window-layout_main"
   }, /* @__PURE__ */ React.createElement("div", {
     ref: scrollNodeRef,
     className: "m78-admin_window-layout_content m78-scrollbar"
-  }, children, /* @__PURE__ */ React.createElement(Spacer, {
-    height: 100
-  })), footer && /* @__PURE__ */ React.createElement("div", {
+  }, children), footer && /* @__PURE__ */ React.createElement("div", {
     className: "m78-admin_window-layout_footer tr"
   }, footer), /* @__PURE__ */ React.createElement("div", {
     ref: calcNodeRef,
     className: "m78-admin_window-layout_calc-node"
-  })), /* @__PURE__ */ React.createElement(MediaQueryCalc, null)));
+  })), /* @__PURE__ */ React.createElement(MediaQueryCalc, null))));
 }
-function MediaQuery({onChange}) {
+function useMediaQuery(onChange) {
   const mqCtx = useContext(mediaQueryCtx);
   const oc = useFn(onChange);
   useEffect(() => {
@@ -1357,46 +1401,55 @@ function MediaQuery({onChange}) {
       }
     };
   }, []);
-  return null;
 }
-function MediaQuerySize({children}) {
+function useMediaQuerySize() {
   const [state, setState] = useSetState({
     size: null
   });
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(MediaQuery, {
-    onChange: (meta) => {
-      var _a, _b;
-      if (meta.width !== ((_a = state.size) == null ? void 0 : _a.width) || meta.height !== ((_b = state.size) == null ? void 0 : _b.height)) {
-        setState({
-          size: {
-            width: meta.width,
-            height: meta.height
-          }
-        });
-      }
+  useMediaQuery((meta) => {
+    var _a, _b;
+    if (meta.width !== ((_a = state.size) == null ? void 0 : _a.width) || meta.height !== ((_b = state.size) == null ? void 0 : _b.height)) {
+      setState({
+        size: {
+          width: meta.width,
+          height: meta.height
+        }
+      });
     }
-  }), state.size && children(state.size));
+  });
+  return state.size;
 }
-function MediaQueryType({children}) {
+function useMediaQueryType() {
   const [state, setState] = useSetState({
     type: null
   });
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(MediaQuery, {
-    onChange: (_a) => {
-      var {width, height} = _a, type = __rest(_a, ["width", "height"]);
-      var _a2;
-      if (type.type !== ((_a2 = state.type) == null ? void 0 : _a2.type)) {
-        setState({
-          type
-        });
-      }
+  useMediaQuery((_a) => {
+    var {width, height} = _a, type = __rest(_a, ["width", "height"]);
+    var _a2;
+    if (type.type !== ((_a2 = state.type) == null ? void 0 : _a2.type)) {
+      setState({
+        type
+      });
     }
-  }), state.type && children(state.type));
+  });
+  return state.type;
+}
+function MediaQuery({onChange}) {
+  useMediaQuery(onChange);
+  return null;
+}
+function MediaQuerySize({children}) {
+  const size = useMediaQuerySize();
+  return size ? children(size) : null;
+}
+function MediaQueryType({children}) {
+  const type = useMediaQueryType();
+  return type ? children(type) : null;
 }
 MediaQuery.Size = MediaQuerySize;
 MediaQuery.Type = MediaQueryType;
-const Link = (_c) => {
-  var {children, replace: replace2, id, param, blank, className, style} = _c, ppp = __rest(_c, ["children", "replace", "id", "param", "blank", "className", "style"]);
+const Link = (_d) => {
+  var {children, replace: replace2, id, param, blank, className, style} = _d, ppp = __rest(_d, ["children", "replace", "id", "param", "blank", "className", "style"]);
   const ctx$1 = useContext(ctx);
   const openHandle = useFn(() => {
     if (blank) {
@@ -1420,4 +1473,4 @@ const Link = (_c) => {
     onClick: openHandle
   });
 };
-export {Auth, Badge, FuncBtn, Link, Login, M78AdminImpl as M78Admin, MediaQuery, MediaQuerySize, MediaQueryType, MediaQueryTypeKey, MediaQueryTypeValues, WindowLayout, WindowLayoutSection};
+export {Auth, Badge, FuncBtn, Link, Login, M78AdminImpl as M78Admin, MediaQuery, MediaQuerySize, MediaQueryType, MediaQueryTypeKey, MediaQueryTypeValues, WindowLayout, WindowLayoutSection, useMediaQuery, useMediaQuerySize, useMediaQueryType};

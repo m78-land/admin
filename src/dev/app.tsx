@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { M78Admin, Auth, Badge, FuncBtn } from '../index';
+import { M78Admin, Badge, FuncBtn } from '../index';
 import { M78AdminConfig, TaskOpt } from '../types';
 
 const TestLazy = React.lazy(() => import('./Test'));

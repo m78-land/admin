@@ -1,7 +1,7 @@
 import { AnyFunction, TupleNumber } from '@lxjx/utils';
 import { WineInstance } from '@m78/wine';
 import React, { ReactElement } from 'react';
-import { ComponentBasePropsWithAny, Size, SizeEnum } from 'm78/types';
+import { ComponentBasePropsWithAny } from 'm78/types';
 import { useScroll } from '@lxjx/hooks';
 
 /*
@@ -273,7 +273,6 @@ export interface TaskLoginProps {
 export interface TaskWindowLayoutProps extends ComponentBasePropsWithAny {
   /** 内容区域, 传入特定类似的子项数组时，会产生不同的行为:
    * - 子项是多个WindowLayoutSection时, 会自动生成侧栏tab, 并根据滚动位置自动同步左侧tab选中状态
-   * - 子项时多个WindowLayoutTabItem时, 会自动生成侧栏tab，并在使用正常的tab行为进行控制
    * */
   children: React.ReactNode;
   /** 底部浮动内容，一般用来放置分页器、操作按钮等 */

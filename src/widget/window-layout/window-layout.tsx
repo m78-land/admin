@@ -1,15 +1,16 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Scroller from 'm78/scroller';
-import { checkElementVisible, isArray } from '@lxjx/utils';
+import { checkElementVisible } from '@lxjx/utils';
 import clsx from 'clsx';
 import { useFn, useScroll, useSelf } from '@lxjx/hooks';
-import { Spacer } from 'm78/layout';
-import { isLayoutSection, SECTION_SELECTOR_PREFIX } from './common';
+import debounce from 'lodash/debounce';
+import { SECTION_SELECTOR_PREFIX } from './common';
 import { TaskWindowLayoutProps, WindowLayoutSectionProps } from '../../types';
 import MediaQueryContext from '../media-query/media-query-context';
 import MediaQueryCalc from '../media-query/media-query-calc';
-import { MediaQueryType } from '../media-query/media-query';
-import { useMediaQueryType } from '../media-query/hooks';
+import { WindowLayoutContext, windowLayoutCtx } from './context';
+
+const WindowLayoutProvider = windowLayoutCtx.Provider;
 
 interface Self {
   /** 存放所有sections节点的html节点 */
@@ -30,6 +31,7 @@ interface Self {
 function WindowLayout({
   children,
   side,
+  anchors,
   footer,
   className,
   style,
@@ -37,7 +39,10 @@ function WindowLayout({
   ...ppp
 }: TaskWindowLayoutProps) {
   /** 当前选中节点的tab */
-  const [cLabel, setCLabel] = useState('角色管理操作1');
+  const [cLabel, setCLabel] = useState('');
+
+  /** 根据WindowLayoutSection生成的子项 */
+  const [tabs, setTabs] = useState<Array<WindowLayoutSectionProps>>([]);
 
   const self = useSelf<Self>();
 
@@ -47,36 +52,40 @@ function WindowLayout({
   /** 滚动容器节点 */
   const scrollNodeRef = useRef<HTMLDivElement>(null!);
 
-  /** 处理子项并从中生成tab选项数据 */
-  const tabOpt = useMemo(() => {
-    if (!children) return null;
+  const wlContextValue = useSelf<WindowLayoutContext>({
+    sectionList: [],
+    update: null as any,
+  });
 
-    if (isArray(children)) {
-      const sessionOpt = children.filter(isLayoutSection).map(session => session.props);
-      if (sessionOpt.length) return sessionOpt;
-    }
+  wlContextValue.update = useFn(() => {
+    const wList = wlContextValue.sectionList;
 
-    if (isLayoutSection(children)) {
-      return [children.props];
-    }
-
-    return null;
-  }, [children]);
-
-  // 根据tabOpt获取所有section渲染节点并设置到self.sections
-  useEffect(() => {
-    if (!tabOpt || !tabOpt.length) {
+    if (!wList.length) {
       self.sections = null;
       return;
     }
 
-    self.sections = tabOpt
+    if (!cLabel) setCLabel(wList[0].label);
+
+    // 比较是否相等，减少更新次数
+    if (tabs.length !== wList.length) {
+      setTabs([...wList]);
+    } else {
+      // 是否相等
+      const mut = wList.every((item, ind) => item.label === tabs[ind]?.label);
+
+      if (mut) {
+        setTabs([...wList]);
+      }
+    }
+
+    self.sections = wList
       .map(item => ({
         el: scrollNodeRef.current.querySelector(`#${SECTION_SELECTOR_PREFIX}${item.label}`),
         opt: item,
       }))
       .filter(item => !!item.el) as any;
-  }, [tabOpt]);
+  }, debounce);
 
   const scrollHandle = useFn(() => {
     if (self.sections?.length) {
@@ -110,16 +119,16 @@ function WindowLayout({
 
   /** 渲染侧栏区域 */
   function renderSide() {
-    if (!side && !tabOpt) return null;
+    if (!side && !tabs.length) return null;
 
-    if (tabOpt) {
+    if (tabs.length) {
       return (
         <div className="m78-admin_window-layout_side">
           <Scroller className="m78-admin_window-layout_tab" scrollFlag hideScrollbar>
-            {tabOpt.map(item => (
+            {tabs.map((item, ind) => (
               <div
-                key={item.label}
-                title={item.desc || item.label}
+                key={ind}
+                title={item.label}
                 className={clsx('m78-admin_window-layout_tab-item', {
                   __active: cLabel === item.label,
                 })}
@@ -137,21 +146,23 @@ function WindowLayout({
   }
 
   return (
-    <MediaQueryContext>
-      <div className={clsx('m78-admin_window-layout', className)} style={style} {...ppp}>
-        {renderSide()}
+    <WindowLayoutProvider value={wlContextValue}>
+      <MediaQueryContext>
+        <div className={clsx('m78-admin_window-layout', className)} style={style} {...ppp}>
+          {renderSide()}
 
-        <div className="m78-admin_window-layout_main">
-          <div ref={scrollNodeRef} className="m78-admin_window-layout_content m78-scrollbar">
-            {children}
+          <div className="m78-admin_window-layout_main">
+            <div ref={scrollNodeRef} className="m78-admin_window-layout_content m78-scrollbar">
+              {children}
+            </div>
+            {footer && <div className="m78-admin_window-layout_footer tr">{footer}</div>}
+            <div ref={calcNodeRef} className="m78-admin_window-layout_calc-node" />
           </div>
-          {footer && <div className="m78-admin_window-layout_footer tr">{footer}</div>}
-          <div ref={calcNodeRef} className="m78-admin_window-layout_calc-node" />
-        </div>
 
-        <MediaQueryCalc />
-      </div>
-    </MediaQueryContext>
+          <MediaQueryCalc />
+        </div>
+      </MediaQueryContext>
+    </WindowLayoutProvider>
   );
 }
 

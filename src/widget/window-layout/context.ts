@@ -1,7 +1,14 @@
 import { createContext } from 'react';
-import { _MediaQueryTypeContext } from '../../types';
+import { WindowLayoutSectionProps } from '../../types';
 
-export const mediaQueryCtx = createContext<_MediaQueryTypeContext>({
-  onChange: () => {},
-  changeListeners: [],
+export interface WindowLayoutContext {
+  /** 当前存在的所有sectionList */
+  sectionList: WindowLayoutSectionProps[];
+  /** 通知父组件sectionList更新 */
+  update: () => void;
+}
+
+export const windowLayoutCtx = createContext<WindowLayoutContext>({
+  sectionList: [],
+  update: () => {},
 });
