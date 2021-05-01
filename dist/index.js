@@ -28,28 +28,28 @@ var __rest = (source, exclude) => {
 };
 import "@m78/admin/style/index.scss";
 import React, {useEffect, createContext, useState, useMemo, useRef, useContext} from "react";
-import Spin from "m78/spin";
-import create from "m78/seed";
+import {Spin} from "m78/spin";
+import {createSeed} from "m78/seed";
 import Wine, {keypressAndClick} from "@m78/wine";
-import m78Config from "m78/config";
+import {m78Config} from "m78/config";
 import {Divider} from "m78/layout";
-import Scroller from "m78/scroller";
-import ContextMenu, {ContextMenuItem} from "m78/context-menu";
-import DND, {DNDContext} from "m78/dnd";
+import {Scroller} from "m78/scroller";
+import {ContextMenu, ContextMenuItem} from "m78/context-menu";
+import {DNDContext, DND} from "m78/dnd";
 import clsx from "clsx";
 import {createEvent, useFn, useMeasure, useSelf, useScroll, useSetState} from "@lxjx/hooks";
 import {isNumber, isArray, createRandString, isObject, isFunction, isBoolean, checkElementVisible} from "@lxjx/utils";
 import _debounce from "lodash/debounce";
-import Message from "m78/message";
-import PageHeader from "m78/page-header";
+import {message} from "m78/message";
+import {PageHeader} from "m78/page-header";
 import {CloseOutlined, MenuOutlined, StarFilled, StarOutlined} from "m78/icon";
 import {DirectionEnum, SizeEnum} from "m78/types";
 import assetLogo from "@m78/admin/assets/logo.png";
-import Button from "m78/button";
-import Popper, {PopperDirectionEnum} from "m78/popper";
-import Tree from "m78/tree";
-import Check from "m78/check";
-const taskSeed = create({
+import {Button} from "m78/button";
+import {Popper, PopperDirectionEnum} from "m78/popper";
+import {Tree} from "m78/tree";
+import {Check} from "m78/check";
+const taskSeed = createSeed({
   state: {
     taskOptions: [],
     taskOptionsFlat: [],
@@ -288,7 +288,7 @@ function parseAuthString(strArr) {
   });
   return map;
 }
-const authSeed = create({
+const authSeed = createSeed({
   state: {
     auth: [],
     authDetailMap: null
@@ -407,7 +407,7 @@ function checkTaskAuth(opt) {
 function checkTaskAuthAndTips(opt) {
   const check = checkTaskAuth(opt);
   if (!check) {
-    Message.tips({
+    message.tips({
       type: "warning",
       content: /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("span", {
         className: "bold"

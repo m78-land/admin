@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import Scroller from 'm78/scroller';
+import { Scroller } from 'm78/scroller';
 import { checkElementVisible } from '@lxjx/utils';
 import clsx from 'clsx';
 import { useFn, useScroll, useSelf } from '@lxjx/hooks';

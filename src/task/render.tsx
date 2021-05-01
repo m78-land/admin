@@ -1,6 +1,6 @@
 import { WineProps } from '@m78/wine/types';
-import PageHeader from 'm78/page-header';
-import ContextMenu, { ContextMenuItem } from 'm78/context-menu';
+import { PageHeader } from 'm78/page-header';
+import { ContextMenu, ContextMenuItem } from 'm78/context-menu';
 import { keypressAndClick } from '@m78/wine';
 import React from 'react';
 import { Divider } from 'm78/layout';

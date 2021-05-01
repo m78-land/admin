@@ -1,6 +1,6 @@
 import React from 'react';
 import { CloseOutlined } from 'm78/icon';
-import ContextMenu, { ContextMenuItem } from 'm78/context-menu';
+import { ContextMenu, ContextMenuItem } from 'm78/context-menu';
 import { TaskCtx } from '../../types';
 import {
   closeLeftTaskByKey,

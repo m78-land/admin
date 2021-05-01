@@ -2,7 +2,7 @@ import React from 'react';
 import { CloseOutlined } from 'm78/icon';
 import clsx from 'clsx';
 import { isNumber } from '@lxjx/utils';
-import Scroller from 'm78/scroller';
+import { Scroller } from 'm78/scroller';
 import { DirectionEnum } from 'm78/types';
 import { TaskCtx } from '../../types';
 import { updateByKeyEvent } from '../../task/event';

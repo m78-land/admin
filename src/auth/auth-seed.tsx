@@ -1,4 +1,4 @@
-import create from 'm78/seed';
+import { createSeed } from 'm78/seed';
 import { isArray } from '@lxjx/utils';
 import React from 'react';
 import { AuthSeedState, AuthStrings } from '../types';
@@ -8,7 +8,7 @@ import taskSeed from '../task/task-seed';
 /**
  * 管理权限相关状态，实现核心验证器
  * */
-const authSeed = create<AuthSeedState>({
+const authSeed = createSeed<AuthSeedState>({
   state: {
     auth: [],
     authDetailMap: null,

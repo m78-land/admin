@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Wine from '@m78/wine';
 import { createRandString, isArray, isBoolean, isFunction, isObject } from '@lxjx/utils';
 import _debounce from 'lodash/debounce';
-import Message from 'm78/message';
+import { message } from 'm78/message';
 import { TaskCtx, TaskItemCategory, TaskOpt, TaskOptItem, TaskState } from '../types';
 import { renderBuiltInHeader } from './render';
 import { OFFSET_LEFT, OFFSET_TOP, WILL_POP_MAP } from '../common/const';
@@ -91,7 +91,7 @@ export function checkTaskAuthAndTips(opt: TaskOptItem) {
   const check = checkTaskAuth(opt);
 
   if (!check) {
-    Message.tips({
+    message.tips({
       type: 'warning',
       content: (
         <span>

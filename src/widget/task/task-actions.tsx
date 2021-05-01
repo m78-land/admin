@@ -1,8 +1,8 @@
 import React from 'react';
-import Popper from 'm78/popper';
-import Button from 'm78/button';
+import { Popper } from 'm78/popper';
+import { Button } from 'm78/button';
 import Wine from '@m78/wine';
-import Check from 'm78/check';
+import { Check } from 'm78/check';
 import taskSeed from '../../task/task-seed';
 import { emitConfig } from '../../common/common';
 import task from '../../task/task';

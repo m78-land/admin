@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import Spin from 'm78/spin';
+import { Spin } from 'm78/spin';
 import { M78AdminProps } from './types';
 import taskSeed from './task/task-seed';
 import M78AdminCore from './widget/m78-admin-core';

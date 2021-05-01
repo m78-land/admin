@@ -1,4 +1,4 @@
-import Button from 'm78/button';
+import { Button } from 'm78/button';
 import React, { useEffect } from 'react';
 import WindowLayout from '../widget/window-layout/window-layout';
 import WindowLayoutSection from '../widget/window-layout/window-layout-section';

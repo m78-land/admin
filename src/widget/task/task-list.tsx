@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { DirectionEnum } from 'm78/types';
-import Scroller, { ScrollerRef } from 'm78/scroller';
+import { Scroller, ScrollerRef } from 'm78/scroller';
 import TaskTab from './task-tab';
 import taskSeed from '../../task/task-seed';
 

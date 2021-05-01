@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Form, { Item } from 'm78/form';
-import Input from 'm78/input';
-import Button from 'm78/button';
+import { Form, Item } from 'm78/form';
+import { Input } from 'm78/input';
+import { Button } from 'm78/button';
 
 const Test2 = () => {
   const [pass, setPass] = useState(false);

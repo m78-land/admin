@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import Wine from '@m78/wine';
-import m78Config from 'm78/config';
+import { m78Config } from 'm78/config';
 import taskSeed from '../task/task-seed';
 import { configGetter } from '../common/common';
 

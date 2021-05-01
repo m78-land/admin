@@ -1,7 +1,7 @@
 import React from 'react';
 import { AnyFunction, isNumber } from '@lxjx/utils';
 import clsx from 'clsx';
-import Spin from 'm78/spin';
+import { Spin } from 'm78/spin';
 import { TaskCtx } from '../types';
 import { useListenerKeyToUpdate } from './methods';
 import linkContext from './link-context';
