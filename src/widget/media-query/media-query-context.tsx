@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useFn } from '@lxjx/hooks';
 import { isArray } from '@lxjx/utils';
-import { _MediaQueryTypeContext, MediaQueryTypeKey } from '../../types';
+import { _MediaQueryTypeContext, MediaQueryMete, MediaQueryTypeKey } from '../../types';
 import { mediaQueryCtx } from './context';
 import { calcType } from './common';
 
@@ -12,6 +12,7 @@ const MediaQueryContext: React.FC = ({ children }) => {
   const value = useRef<_MediaQueryTypeContext>({
     onChange: () => {},
     changeListeners: [],
+    meta: null,
   });
 
   value.current.onChange = useFn<_MediaQueryTypeContext['onChange']>(({ width, height }) => {
@@ -36,8 +37,11 @@ const MediaQueryContext: React.FC = ({ children }) => {
       isLarge: () => !is.isSmall() && !is.isMedium(),
     };
 
+    const full: MediaQueryMete = { ...size, type, ...is };
+    value.current.meta = full;
+
     if (isArray(changeListeners)) {
-      changeListeners.forEach(fn => fn({ ...size, type, ...is }));
+      changeListeners.forEach(fn => fn(full));
     }
   });
 

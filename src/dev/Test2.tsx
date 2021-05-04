@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Item } from 'm78/form';
+import { Form } from 'm78/form';
 import { Input } from 'm78/input';
 import { Button } from 'm78/button';
 
@@ -16,16 +16,16 @@ const Test2 = () => {
     <div>
       <Form>
         {pass && (
-          <Item name="name1" required>
+          <Form.Item name="name1" required>
             <Input placeholder="111" />
-          </Item>
+          </Form.Item>
         )}
-        <Item name="name2" required>
+        <Form.Item name="name2" required>
           <Input placeholder="222" value="123" />
-        </Item>
-        <Item name="name3" required>
+        </Form.Item>
+        <Form.Item name="name3" required>
           <Input placeholder="333" />
-        </Item>
+        </Form.Item>
         <Button type="submit">submit</Button>
       </Form>
     </div>

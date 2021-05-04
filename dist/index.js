@@ -27,7 +27,7 @@ var __rest = (source, exclude) => {
   return target;
 };
 import "@m78/admin/style/index.scss";
-import React, {useEffect, createContext, useState, useMemo, useRef, useContext} from "react";
+import React, {useEffect, createContext, useRef, useContext, useState, useMemo} from "react";
 import {Spin} from "m78/spin";
 import {createSeed} from "m78/seed";
 import Wine, {keypressAndClick} from "@m78/wine";
@@ -207,6 +207,96 @@ const OFFSET_TOP = 50;
 const OFFSET_LEFT = 90;
 const WILL_POP_MAP = {};
 const ctx = createContext({});
+var MediaQueryTypeValues;
+(function(MediaQueryTypeValues2) {
+  MediaQueryTypeValues2[MediaQueryTypeValues2["XS"] = 0] = "XS";
+  MediaQueryTypeValues2[MediaQueryTypeValues2["SM"] = 576] = "SM";
+  MediaQueryTypeValues2[MediaQueryTypeValues2["MD"] = 768] = "MD";
+  MediaQueryTypeValues2[MediaQueryTypeValues2["LG"] = 992] = "LG";
+  MediaQueryTypeValues2[MediaQueryTypeValues2["XL"] = 1200] = "XL";
+  MediaQueryTypeValues2[MediaQueryTypeValues2["XXL"] = 1600] = "XXL";
+})(MediaQueryTypeValues || (MediaQueryTypeValues = {}));
+var MediaQueryTypeKey;
+(function(MediaQueryTypeKey2) {
+  MediaQueryTypeKey2["XS"] = "xs";
+  MediaQueryTypeKey2["SM"] = "sm";
+  MediaQueryTypeKey2["MD"] = "md";
+  MediaQueryTypeKey2["LG"] = "lg";
+  MediaQueryTypeKey2["XL"] = "xl";
+  MediaQueryTypeKey2["XXL"] = "xxl";
+})(MediaQueryTypeKey || (MediaQueryTypeKey = {}));
+const mediaQueryCtx = createContext({
+  onChange: () => {
+  },
+  changeListeners: [],
+  meta: null
+});
+function calcType(size) {
+  if (size >= MediaQueryTypeValues.XXL) {
+    return MediaQueryTypeKey.XXL;
+  }
+  if (size >= MediaQueryTypeValues.XL && size < MediaQueryTypeValues.XXL) {
+    return MediaQueryTypeKey.XL;
+  }
+  if (size >= MediaQueryTypeValues.LG && size < MediaQueryTypeValues.XL) {
+    return MediaQueryTypeKey.LG;
+  }
+  if (size >= MediaQueryTypeValues.MD && size < MediaQueryTypeValues.LG) {
+    return MediaQueryTypeKey.MD;
+  }
+  if (size >= MediaQueryTypeValues.SM && size < MediaQueryTypeValues.MD) {
+    return MediaQueryTypeKey.SM;
+  }
+  return MediaQueryTypeKey.XS;
+}
+const MediaQueryContext = ({children}) => {
+  const value = useRef({
+    onChange: () => {
+    },
+    changeListeners: [],
+    meta: null
+  });
+  value.current.onChange = useFn(({width, height}) => {
+    const type = calcType(width);
+    const changeListeners = value.current.changeListeners;
+    const size = {
+      width,
+      height
+    };
+    const is = {
+      isXS: () => type === MediaQueryTypeKey.XS,
+      isSM: () => type === MediaQueryTypeKey.SM,
+      isMD: () => type === MediaQueryTypeKey.MD,
+      isLG: () => type === MediaQueryTypeKey.LG,
+      isXL: () => type === MediaQueryTypeKey.XL,
+      isXXL: () => type === MediaQueryTypeKey.XXL,
+      isSmall: () => is.isXS() || is.isSM(),
+      isMedium: () => is.isMD() || is.isLG(),
+      isLarge: () => !is.isSmall() && !is.isMedium()
+    };
+    const full = __assign(__assign(__assign({}, size), {type}), is);
+    value.current.meta = full;
+    if (isArray(changeListeners)) {
+      changeListeners.forEach((fn) => fn(full));
+    }
+  });
+  return /* @__PURE__ */ React.createElement(mediaQueryCtx.Provider, {
+    value: value.current
+  }, children);
+};
+const MediaQueryCalc = () => {
+  const [ref, bound] = useMeasure();
+  const mqCtx = useContext(mediaQueryCtx);
+  useEffect(() => {
+    if (bound.width === 0 && bound.height === 0)
+      return;
+    mqCtx.onChange(bound);
+  }, [bound]);
+  return /* @__PURE__ */ React.createElement("div", {
+    ref,
+    className: "m78-admin_media-query_calc-node"
+  });
+};
 const LinkProvider = ctx.Provider;
 const loadingNode = /* @__PURE__ */ React.createElement(Spin, {
   text: "\u6B63\u5728\u52A0\u8F7D\u8D44\u6E90",
@@ -216,9 +306,9 @@ const TaskWindowWrap = ({ctx: ctx2, Component}) => {
   useListenerKeyToUpdate(ctx2);
   const hasChild = !!ctx2.children.length;
   const hasIndex = isNumber(ctx2.currentChildIndex);
-  return /* @__PURE__ */ React.createElement(LinkProvider, {
+  return /* @__PURE__ */ React.createElement(MediaQueryContext, null, /* @__PURE__ */ React.createElement(LinkProvider, {
     value: {parent: ctx2}
-  }, /* @__PURE__ */ React.createElement("div", {
+  }, /* @__PURE__ */ React.createElement(MediaQueryCalc, null), /* @__PURE__ */ React.createElement("div", {
     className: clsx({hide: hasIndex})
   }, /* @__PURE__ */ React.createElement(React.Suspense, {
     fallback: loadingNode
@@ -230,7 +320,7 @@ const TaskWindowWrap = ({ctx: ctx2, Component}) => {
     }, /* @__PURE__ */ React.createElement(React.Suspense, {
       fallback: loadingNode
     }, /* @__PURE__ */ React.createElement(SubComponent, __assign({}, subTask))));
-  }));
+  })));
 };
 const ADMIN_AUTH_NAME = "ADMIN_AUTH";
 const builtInAuthKeysMap = {
@@ -1159,124 +1249,6 @@ const Login = ({logo, title, desc, content}) => {
     className: "color-second"
   }, desc)), content));
 };
-const windowLayoutCtx = createContext({
-  sectionList: [],
-  update: () => {
-  }
-});
-function WindowLayoutSection(props) {
-  const {children, label, desc} = props;
-  const wlCtx = useContext(windowLayoutCtx);
-  useEffect(() => {
-    wlCtx.sectionList.push(props);
-    wlCtx.update();
-    return () => {
-      const ind = wlCtx.sectionList.findIndex((item) => item.label === label);
-      wlCtx.sectionList.splice(ind, 1);
-      wlCtx.update();
-    };
-  }, []);
-  return /* @__PURE__ */ React.createElement("div", {
-    id: `${SECTION_SELECTOR_PREFIX}${label}`,
-    className: "m78-admin_window-layout_section"
-  }, (label || desc) && /* @__PURE__ */ React.createElement("div", {
-    className: "m78-admin_window-layout_section-main"
-  }, label && /* @__PURE__ */ React.createElement("span", {
-    className: "m78-admin_window-layout_section-title"
-  }, label), desc && /* @__PURE__ */ React.createElement("span", {
-    className: "color-second fs ml-8"
-  }, desc)), /* @__PURE__ */ React.createElement("div", {
-    className: "m78-admin_window-layout_section-content"
-  }, children));
-}
-const SECTION_SELECTOR_PREFIX = "M78_WINDOW_LAYOUT_SECTION_";
-var MediaQueryTypeValues;
-(function(MediaQueryTypeValues2) {
-  MediaQueryTypeValues2[MediaQueryTypeValues2["XS"] = 0] = "XS";
-  MediaQueryTypeValues2[MediaQueryTypeValues2["SM"] = 576] = "SM";
-  MediaQueryTypeValues2[MediaQueryTypeValues2["MD"] = 768] = "MD";
-  MediaQueryTypeValues2[MediaQueryTypeValues2["LG"] = 992] = "LG";
-  MediaQueryTypeValues2[MediaQueryTypeValues2["XL"] = 1200] = "XL";
-  MediaQueryTypeValues2[MediaQueryTypeValues2["XXL"] = 1600] = "XXL";
-})(MediaQueryTypeValues || (MediaQueryTypeValues = {}));
-var MediaQueryTypeKey;
-(function(MediaQueryTypeKey2) {
-  MediaQueryTypeKey2["XS"] = "xs";
-  MediaQueryTypeKey2["SM"] = "sm";
-  MediaQueryTypeKey2["MD"] = "md";
-  MediaQueryTypeKey2["LG"] = "lg";
-  MediaQueryTypeKey2["XL"] = "xl";
-  MediaQueryTypeKey2["XXL"] = "xxl";
-})(MediaQueryTypeKey || (MediaQueryTypeKey = {}));
-const mediaQueryCtx = createContext({
-  onChange: () => {
-  },
-  changeListeners: []
-});
-function calcType(size) {
-  if (size >= MediaQueryTypeValues.XXL) {
-    return MediaQueryTypeKey.XXL;
-  }
-  if (size >= MediaQueryTypeValues.XL && size < MediaQueryTypeValues.XXL) {
-    return MediaQueryTypeKey.XL;
-  }
-  if (size >= MediaQueryTypeValues.LG && size < MediaQueryTypeValues.XL) {
-    return MediaQueryTypeKey.LG;
-  }
-  if (size >= MediaQueryTypeValues.MD && size < MediaQueryTypeValues.LG) {
-    return MediaQueryTypeKey.MD;
-  }
-  if (size >= MediaQueryTypeValues.SM && size < MediaQueryTypeValues.MD) {
-    return MediaQueryTypeKey.SM;
-  }
-  return MediaQueryTypeKey.XS;
-}
-const MediaQueryContext = ({children}) => {
-  const value = useRef({
-    onChange: () => {
-    },
-    changeListeners: []
-  });
-  value.current.onChange = useFn(({width, height}) => {
-    const type = calcType(width);
-    const changeListeners = value.current.changeListeners;
-    const size = {
-      width,
-      height
-    };
-    const is = {
-      isXS: () => type === MediaQueryTypeKey.XS,
-      isSM: () => type === MediaQueryTypeKey.SM,
-      isMD: () => type === MediaQueryTypeKey.MD,
-      isLG: () => type === MediaQueryTypeKey.LG,
-      isXL: () => type === MediaQueryTypeKey.XL,
-      isXXL: () => type === MediaQueryTypeKey.XXL,
-      isSmall: () => is.isXS() || is.isSM(),
-      isMedium: () => is.isMD() || is.isLG(),
-      isLarge: () => !is.isSmall() && !is.isMedium()
-    };
-    if (isArray(changeListeners)) {
-      changeListeners.forEach((fn) => fn(__assign(__assign(__assign({}, size), {type}), is)));
-    }
-  });
-  return /* @__PURE__ */ React.createElement(mediaQueryCtx.Provider, {
-    value: value.current
-  }, children);
-};
-const MediaQueryCalc = () => {
-  const [ref, bound] = useMeasure();
-  const mqCtx = useContext(mediaQueryCtx);
-  useEffect(() => {
-    if (bound.width === 0 && bound.height === 0)
-      return;
-    mqCtx.onChange(bound);
-  }, [bound]);
-  return /* @__PURE__ */ React.createElement("div", {
-    ref,
-    className: "m78-admin_media-query_calc-node"
-  });
-};
-const WindowLayoutProvider = windowLayoutCtx.Provider;
 function WindowLayout(_c) {
   var {
     children,
@@ -1285,7 +1257,11 @@ function WindowLayout(_c) {
     footer,
     className,
     style,
-    scrollRef
+    scrollRef,
+    sideTabs,
+    topBar,
+    topBarAlwaysShow = false,
+    topBarIcon
   } = _c, ppp = __rest(_c, [
     "children",
     "side",
@@ -1293,41 +1269,29 @@ function WindowLayout(_c) {
     "footer",
     "className",
     "style",
-    "scrollRef"
+    "scrollRef",
+    "sideTabs",
+    "topBar",
+    "topBarAlwaysShow",
+    "topBarIcon"
   ]);
   const [cLabel, setCLabel] = useState("");
-  const [tabs, setTabs] = useState([]);
   const self = useSelf();
   const calcNodeRef = useRef(null);
   const scrollNodeRef = useRef(null);
-  const wlContextValue = useSelf({
-    sectionList: [],
-    update: null
-  });
-  wlContextValue.update = useFn(() => {
-    const wList = wlContextValue.sectionList;
-    if (!wList.length) {
+  const [topBarVisible, setBotBarVisible] = useState(topBarAlwaysShow);
+  useEffect(() => {
+    if (!(sideTabs == null ? void 0 : sideTabs.length)) {
       self.sections = null;
       return;
     }
     if (!cLabel)
-      setCLabel(wList[0].label);
-    if (tabs.length !== wList.length) {
-      setTabs([...wList]);
-    } else {
-      const mut = wList.every((item, ind) => {
-        var _a;
-        return item.label === ((_a = tabs[ind]) == null ? void 0 : _a.label);
-      });
-      if (mut) {
-        setTabs([...wList]);
-      }
-    }
-    self.sections = wList.map((item) => ({
-      el: scrollNodeRef.current.querySelector(`#${SECTION_SELECTOR_PREFIX}${item.label}`),
+      setCLabel(sideTabs[0].label);
+    self.sections = sideTabs.map((item) => ({
+      el: scrollNodeRef.current.querySelector(item.selector),
       opt: item
     })).filter((item) => !!item.el);
-  }, _debounce);
+  }, [sideTabs]);
   const scrollHandle = useFn(() => {
     var _a;
     if ((_a = self.sections) == null ? void 0 : _a.length) {
@@ -1345,41 +1309,47 @@ function WindowLayout(_c) {
     el: scrollNodeRef,
     onScroll: scrollHandle
   });
-  const scrollToNode = useFn((label) => {
+  const scrollToNode = useFn((label, selector) => {
     setCLabel(label);
-    sc.scrollToElement(`#${SECTION_SELECTOR_PREFIX}${label}`, true);
+    sc.scrollToElement(selector, true);
   });
   function renderSide() {
-    if (!side && !tabs.length)
+    if (!side && !(sideTabs == null ? void 0 : sideTabs.length))
       return null;
-    if (tabs.length) {
+    if (sideTabs == null ? void 0 : sideTabs.length) {
       return /* @__PURE__ */ React.createElement("div", {
         className: "m78-admin_window-layout_side"
       }, /* @__PURE__ */ React.createElement(Scroller, {
         className: "m78-admin_window-layout_tab",
         scrollFlag: true,
         hideScrollbar: true
-      }, tabs.map((item, ind) => /* @__PURE__ */ React.createElement("div", {
-        key: ind,
+      }, sideTabs.map((item) => /* @__PURE__ */ React.createElement("div", {
+        key: item.label,
         title: item.label,
         className: clsx("m78-admin_window-layout_tab-item", {
           __active: cLabel === item.label
         }),
-        onClick: () => scrollToNode(item.label)
+        onClick: () => scrollToNode(item.label, item.selector)
       }, item.label))));
     }
     return /* @__PURE__ */ React.createElement("div", {
       className: "m78-admin_window-layout_side"
     }, side);
   }
-  return /* @__PURE__ */ React.createElement(WindowLayoutProvider, {
-    value: wlContextValue
-  }, /* @__PURE__ */ React.createElement(MediaQueryContext, null, /* @__PURE__ */ React.createElement("div", __assign({
+  return /* @__PURE__ */ React.createElement("div", __assign({
     className: clsx("m78-admin_window-layout", className),
     style
   }, ppp), renderSide(), /* @__PURE__ */ React.createElement("div", {
     className: "m78-admin_window-layout_main"
-  }, /* @__PURE__ */ React.createElement("div", {
+  }, topBar && /* @__PURE__ */ React.createElement("div", {
+    className: clsx("m78-admin_window-layout_top-bar", !topBarVisible && "__hide")
+  }, topBar, !topBarAlwaysShow && /* @__PURE__ */ React.createElement("span", {
+    title: topBarVisible ? "\u6536\u8D77\u9876\u680F" : "\u5C55\u5F00\u9876\u680F",
+    className: "m78-admin_window-layout_top-bar-toggle",
+    onClick: () => setBotBarVisible((p) => !p)
+  }, /* @__PURE__ */ React.createElement("span", {
+    className: "m78-admin_window-layout_top-bar-icon"
+  }, topBarIcon || "\u2699"))), /* @__PURE__ */ React.createElement("div", {
     ref: scrollNodeRef,
     className: "m78-admin_window-layout_content m78-scrollbar"
   }, children), footer && /* @__PURE__ */ React.createElement("div", {
@@ -1387,13 +1357,14 @@ function WindowLayout(_c) {
   }, footer), /* @__PURE__ */ React.createElement("div", {
     ref: calcNodeRef,
     className: "m78-admin_window-layout_calc-node"
-  })), /* @__PURE__ */ React.createElement(MediaQueryCalc, null))));
+  })));
 }
 function useMediaQuery(onChange) {
   const mqCtx = useContext(mediaQueryCtx);
   const oc = useFn(onChange);
   useEffect(() => {
     mqCtx.changeListeners.push(oc);
+    oc(mqCtx.meta);
     return () => {
       const ind = mqCtx.changeListeners.indexOf(oc);
       if (ind !== -1) {
@@ -1473,4 +1444,4 @@ const Link = (_d) => {
     onClick: openHandle
   });
 };
-export {Auth, Badge, FuncBtn, Link, Login, M78AdminImpl as M78Admin, MediaQuery, MediaQuerySize, MediaQueryType, MediaQueryTypeKey, MediaQueryTypeValues, WindowLayout, WindowLayoutSection, useMediaQuery, useMediaQuerySize, useMediaQueryType};
+export {Auth, Badge, FuncBtn, Link, Login, M78AdminImpl as M78Admin, MediaQuery, MediaQuerySize, MediaQueryType, MediaQueryTypeKey, MediaQueryTypeValues, WindowLayout, useMediaQuery, useMediaQuerySize, useMediaQueryType};

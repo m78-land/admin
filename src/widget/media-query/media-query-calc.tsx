@@ -13,6 +13,7 @@ const MediaQueryCalc = () => {
   useEffect(() => {
     // 过滤掉无效回调
     if (bound.width === 0 && bound.height === 0) return;
+
     mqCtx.onChange(bound);
   }, [bound]);
 

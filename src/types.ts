@@ -271,14 +271,25 @@ export interface TaskLoginProps {
 
 /** 布局组件props */
 export interface TaskWindowLayoutProps extends ComponentBasePropsWithAny {
-  /** 内容区域, 传入特定类似的子项数组时，会产生不同的行为:
-   * - 子项是多个WindowLayoutSection时, 会自动生成侧栏tab, 并根据滚动位置自动同步左侧tab选中状态
-   * */
+  /** 内容区域, 传入特定类似的子项数组时，会产生不同的行为 */
   children: React.ReactNode;
   /** 底部浮动内容，一般用来放置分页器、操作按钮等 */
   footer?: React.ReactNode;
-  /** 左侧栏目内容，通过WindowLayoutSessionProps生成tab时，此项会被忽略 */
+  /** 顶栏内容 */
+  topBar?: React.ReactNode;
+  /** 一直显示topBar，不需要点击展开按钮 */
+  topBarAlwaysShow?: boolean;
+  /** 自定义topBar展开按钮的图标 */
+  topBarIcon?: React.ReactNode;
+  /** 左侧栏目内容，传入sideTabs时，此项被忽略 */
   side?: React.ReactNode;
+  /** 生成侧栏tab，点击tab时会跳转到对应选择器的内容，滚动到对应区域时会同步到对应tab */
+  sideTabs?: Array<{
+    /** tab项的名称 */
+    label: string;
+    /** 点击时跳转到对应选择器的元素 */
+    selector: string;
+  }>;
   /** 控制滚动区域的scroller */
   scrollRef?: React.RefObject<ReturnType<typeof useScroll>>;
 }
@@ -303,8 +314,12 @@ export interface WindowLayoutSectionProps extends ComponentBasePropsWithAny {
  * MediaQuery context结构
  * */
 export interface _MediaQueryTypeContext {
+  /** 派发通知到useMediaQuery.onChange的方法 */
   onChange: (sizeMeta: MediaQuerySizeMete) => void;
+  /** useMediaQuery挂载的所有监听函数 */
   changeListeners: Array<(meta: MediaQueryMete) => void>;
+  /** 当前meta信息 */
+  meta: MediaQueryMete | null;
 }
 
 /**

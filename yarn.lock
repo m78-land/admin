@@ -1372,10 +1372,10 @@
     "@lxjx/utils" "^1.11.1"
     tslib "^2.1.0"
 
-"@m78/style@^1.0.22":
-  version "1.0.22"
-  resolved "https://registry.npmjs.org/@m78/style/-/style-1.0.22.tgz#0e99a3c82c1fad9050b7ef2fafcbc1d21df64254"
-  integrity sha512-Zh2yfTegNryzlwQ5zCL8BMDaCXtqH5KSEw4zpysKeAuN5iqIqIQGgVjaspq5Yc3q4UPxIbimbBwrwzpJYin9QA==
+"@m78/style@^1.0.23":
+  version "1.0.23"
+  resolved "https://registry.yarnpkg.com/@m78/style/-/style-1.0.23.tgz#635e706e6985e3dd7b54cd4c809ee0afeede550d"
+  integrity sha512-A93WtyQKYKCECD78gTnLP4KqvEKOdaBmnzT7lwi9N3kNCl+3wtVLDb/hN0Igdu5N3YLp5B9l17fLMBgwEARFdw==
   dependencies:
     "@ant-design/colors" "^3.2.2"
 
@@ -1871,7 +1871,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*":
+"@types/react@*", "@types/react@17.0.3", "@types/react@^16", "@types/react@^16.9.23", "@types/react@^17.0.4":
   version "17.0.3"
   resolved "https://registry.npmjs.org/@types/react/-/react-17.0.3.tgz#ba6e215368501ac3826951eef2904574c262cc79"
   integrity sha512-wYOUxIgs2HZZ0ACNiIayItyluADNbONl7kt8lkLjVK8IitMH5QMyAh75Fwhmo37r1m7L2JaFj03sIfxBVDvRAg==
@@ -1880,18 +1880,9 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/react@^16", "@types/react@^16.9.23":
-  version "16.14.5"
-  resolved "https://registry.npmjs.org/@types/react/-/react-16.14.5.tgz#2c39b5cadefaf4829818f9219e5e093325979f4d"
-  integrity sha512-YRRv9DNZhaVTVRh9Wmmit7Y0UFhEVqXqCSw3uazRWMxa2x85hWQZ5BN24i7GXZbaclaLXEcodEeIHsjBA8eAMw==
-  dependencies:
-    "@types/prop-types" "*"
-    "@types/scheduler" "*"
-    csstype "^3.0.2"
-
-"@types/react@^17.0.3", "@types/react@^17.0.4":
+"@types/react@^17.0.3":
   version "17.0.4"
-  resolved "https://registry.npmjs.org/@types/react/-/react-17.0.4.tgz#a67c6f7a460d2660e950d9ccc1c2f18525c28220"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.4.tgz#a67c6f7a460d2660e950d9ccc1c2f18525c28220"
   integrity sha512-onz2BqScSFMoTRdJUZUDD/7xrusM8hBA2Fktk2qgaTYPCgPvWnDEgkrOs8hhPUf2jfcIXkJ5yK6VfYormJS3Jw==
   dependencies:
     "@types/prop-types" "*"
@@ -5972,10 +5963,10 @@ lz-string@^1.4.4:
   resolved "https://registry.npm.taobao.org/lz-string/download/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"
   integrity sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=
 
-m78@^1.0.0-beta.61:
-  version "1.0.0-beta.61"
-  resolved "https://registry.npmjs.org/m78/-/m78-1.0.0-beta.61.tgz#0100fcc0ba75dc1649084ef4d85d170aecc80dcd"
-  integrity sha512-ii+nTBh/IShAIY8cMv9fpj4rDbZFDUl22EZfYPFpi1h0FaQ8bU0Mtnw6b0GRUrwujYfW5TM7DCem5ryhyQTsFg==
+m78@^1.0.0-beta.64:
+  version "1.0.0-beta.64"
+  resolved "https://registry.yarnpkg.com/m78/-/m78-1.0.0-beta.64.tgz#ef8851d6815bb346aed8df4159932bfa4d6fac04"
+  integrity sha512-1A2mDVI8IaAdNI0Ph+93fGz6aY5s4r0HOagmkGeq5KfliICR8Xd1AfsHB9Z6aM57Qo9cHVIbSll2rqGIzW/sYA==
   dependencies:
     "@ant-design/icons" "^4.1.0"
     "@babel/runtime" "^7.7.2"
@@ -5987,7 +5978,7 @@ m78@^1.0.0-beta.61:
     "@lxjx/utils" "^1.13.0"
     "@lxjx/validate-tools" "^1.1.0"
     "@m78/seed" "^1.1.3"
-    "@m78/style" "^1.0.22"
+    "@m78/style" "^1.0.23"
     "@types/lodash" "^4.14.141"
     "@types/node" "^12.7.5"
     "@types/react" "^17.0.4"

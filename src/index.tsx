@@ -4,7 +4,6 @@ import FuncBtn from './widget/unit/func-btn';
 import Badge from './widget/unit/badge';
 import Login from './widget/login/login';
 import WindowLayout from './widget/window-layout/window-layout';
-import WindowLayoutSection from './widget/window-layout/window-layout-section';
 import MediaQuery, { MediaQueryType, MediaQuerySize } from './widget/media-query/media-query';
 import { useMediaQuery, useMediaQueryType, useMediaQuerySize } from './widget/media-query/hooks';
 import { Auth } from './auth/auth';
@@ -15,7 +14,6 @@ export {
   Badge,
   Login,
   WindowLayout,
-  WindowLayoutSection,
   MediaQuery,
   MediaQueryType,
   MediaQuerySize,

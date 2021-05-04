@@ -1,7 +1,8 @@
 import { Button } from 'm78/button';
 import React, { useEffect } from 'react';
+import { Input } from 'm78/input';
+import { Row } from 'm78/layout';
 import WindowLayout from '../widget/window-layout/window-layout';
-import WindowLayoutSection from '../widget/window-layout/window-layout-section';
 import { TaskCtx } from '../types';
 import task from '../task/task';
 import { Link, MediaQuery } from '../index';
@@ -17,9 +18,32 @@ export default function Test(props: TaskCtx<{ name: string }>) {
   console.log('1111 render');
 
   return (
-    <WindowLayout footer={<Button size="large">按钮</Button>}>
+    <WindowLayout
+      sideTabs={[
+        {
+          label: '角色管理操作1',
+          selector: '#s1',
+        },
+        {
+          label: '角色管理操作2',
+          selector: '#s2',
+        },
+        {
+          label: '角色管理操作3',
+          selector: '#s3',
+        },
+      ]}
+      topBar={
+        <Row mainAlign="between">
+          <span>内容</span>
+          <Input placeholder="输入内容进行搜索" style={{ width: 200 }} />
+        </Row>
+      }
+      footer={<Button size="large">按钮</Button>}
+    >
       <div>
-        <WindowLayoutSection label="角色管理操作1" id="#id1" desc="角色管理操作对应的一段描述">
+        <div id="s1">
+          <h3>角色管理操作1</h3>
           <MediaQuery.Type>
             {meta => (
               <div>
@@ -65,11 +89,12 @@ export default function Test(props: TaskCtx<{ name: string }>) {
               <div key={ind}>{ind}</div>
             ))}
           </div>
-        </WindowLayoutSection>
+        </div>
 
         <div>21废弃物服务器废弃物服务器</div>
 
-        <WindowLayoutSection label="角色管理操作2" desc="角色管理操作对应的一段描述">
+        <div id="s2">
+          <h3>角色管理操作2</h3>
           <div>
             <div>{JSON.stringify(props.param)}</div>
             <div>
@@ -90,9 +115,10 @@ export default function Test(props: TaskCtx<{ name: string }>) {
               <div key={ind}>{ind}</div>
             ))}
           </div>
-        </WindowLayoutSection>
+        </div>
 
-        <WindowLayoutSection label="角色管理操作3" desc="角色管理操作对应的一段描述">
+        <div id="s3">
+          <h3>角色管理操作3</h3>
           <div>
             <div>{JSON.stringify(props.param)}</div>
             <div>
@@ -113,7 +139,7 @@ export default function Test(props: TaskCtx<{ name: string }>) {
               <div key={ind}>{ind}</div>
             ))}
           </div>
-        </WindowLayoutSection>
+        </div>
       </div>
     </WindowLayout>
   );

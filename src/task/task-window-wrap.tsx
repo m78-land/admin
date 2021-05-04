@@ -5,6 +5,8 @@ import { Spin } from 'm78/spin';
 import { TaskCtx } from '../types';
 import { useListenerKeyToUpdate } from './methods';
 import linkContext from './link-context';
+import MediaQueryContext from '../widget/media-query/media-query-context';
+import MediaQueryCalc from '../widget/media-query/media-query-calc';
 
 interface Props {
   /** 待渲染的任务组件 */
@@ -28,25 +30,28 @@ const TaskWindowWrap = ({ ctx, Component }: Props) => {
   const hasIndex = isNumber(ctx.currentChildIndex);
 
   return (
-    <LinkProvider value={{ parent: ctx }}>
-      <div className={clsx({ hide: hasIndex })}>
-        <React.Suspense fallback={loadingNode}>
-          <Component {...ctx} />
-        </React.Suspense>
-      </div>
-      {hasChild &&
-        ctx.children.map((subTask, ind) => {
-          const SubComponent = subTask.option.component;
+    <MediaQueryContext>
+      <LinkProvider value={{ parent: ctx }}>
+        <MediaQueryCalc />
+        <div className={clsx({ hide: hasIndex })}>
+          <React.Suspense fallback={loadingNode}>
+            <Component {...ctx} />
+          </React.Suspense>
+        </div>
+        {hasChild &&
+          ctx.children.map((subTask, ind) => {
+            const SubComponent = subTask.option.component;
 
-          return (
-            <div key={subTask.taskKey} className={clsx({ hide: ctx.currentChildIndex !== ind })}>
-              <React.Suspense fallback={loadingNode}>
-                <SubComponent {...subTask} />
-              </React.Suspense>
-            </div>
-          );
-        })}
-    </LinkProvider>
+            return (
+              <div key={subTask.taskKey} className={clsx({ hide: ctx.currentChildIndex !== ind })}>
+                <React.Suspense fallback={loadingNode}>
+                  <SubComponent {...subTask} />
+                </React.Suspense>
+              </div>
+            );
+          })}
+      </LinkProvider>
+    </MediaQueryContext>
   );
 };
 

@@ -8,9 +8,10 @@
   &_side {
     position: relative;
     padding: var(--m78-space-2) var(--m78-space-3);
-    border-right: 1px solid var(--m78-color-border);
     min-width: 180px;
     max-width: 240px;
+    margin-right: 4px;
+    border-right: 1px solid var(--m78-color-border);
   }
 
   &_main {
@@ -27,10 +28,49 @@
     //padding: var(--m78-space-4) var(--m78-space-5);
   }
 
+  &_top-bar {
+    position: relative;
+    width: 100%;
+    padding: var(--m78-space-2) var(--m78-space-3);
+    border-bottom: 1px solid var(--m78-color-divider);
+    margin-bottom: var(--m78-space-1);
+
+    &.__hide {
+      position: absolute;
+      transform: translateY(-96%);
+    }
+
+    &:hover .m78-admin_window-layout_top-bar-icon {
+      transform: scale(1.1);
+    }
+
+    &:active .m78-admin_window-layout_top-bar-icon {
+      transform: scale(1);
+    }
+  }
+
+  &_top-bar-toggle {
+    position: absolute;
+    font-size: 18px;
+    right: 16px;
+    bottom: -36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    width: 36px;
+    cursor: pointer;
+    border-radius: 0 0 var(--m78-border-radius) var(--m78-border-radius);
+    border: 1px solid var(--m78-color-border);
+    border-top: none;
+    z-index: 100;
+    background-color: var(--m78-body-bg);
+  }
+
   &_footer {
     padding: var(--m78-space-2) var(--m78-space-3);
     margin-top: var(--m78-space-1);
-    border-top: 1px dashed var(--m78-color-border);
+    border-top: 1px solid var(--m78-color-divider);
   }
 
   &_tab {
@@ -67,6 +107,8 @@
   }
 
   &_section {
+    width: 100%;
+
     * + & {
       margin-top: var(--m78-space-10);
     }
