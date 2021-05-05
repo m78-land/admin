@@ -8,7 +8,6 @@ const DesktopItems = () => {
   // const taskList = taskSeed.useState(state => state.taskList);
 
   const aProps = taskSeed.useState(state => state.adminProps);
-  const config = aProps.config;
 
   return (
     <>
@@ -29,14 +28,6 @@ const DesktopItems = () => {
           </>
         )}
       </div>
-
-      <div
-        className="m78-admin_desktop-decorate"
-        data-i={config?.desktopImage}
-        style={{
-          backgroundImage: config?.desktopImage ? `url(${config?.desktopImage})` : undefined,
-        }}
-      />
     </>
   );
 };

@@ -4,6 +4,12 @@
     box-shadow: var(--m78-shadow-1-b);
     border-radius: 0;
     background-color: var(--m78-body-bg);
+    backface-visibility: hidden; /* 防止内容抖动 */
+  }
+
+  &_content {
+    border: 1px solid var(--m78-color-divider);
+    border-radius: var(--m78-border-radius);
   }
 
   .m78-page-header {

@@ -144,8 +144,6 @@ export interface M78AdminConfig {
     logo?: string;
     /** 显示在logo下方的名称 */
     name?: string;
-    /** 桌面右下角的装饰图片(请使用带透明通道的图片/PNG) */
-    desktopImage?: string;
     /** 12 | 最大窗口数量 */
     maxWindow?: number;
 }

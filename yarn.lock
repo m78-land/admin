@@ -1871,7 +1871,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@17.0.3", "@types/react@^16", "@types/react@^16.9.23", "@types/react@^17.0.4":
+"@types/react@*":
   version "17.0.3"
   resolved "https://registry.npmjs.org/@types/react/-/react-17.0.3.tgz#ba6e215368501ac3826951eef2904574c262cc79"
   integrity sha512-wYOUxIgs2HZZ0ACNiIayItyluADNbONl7kt8lkLjVK8IitMH5QMyAh75Fwhmo37r1m7L2JaFj03sIfxBVDvRAg==
@@ -1880,10 +1880,19 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
-"@types/react@^17.0.3":
-  version "17.0.4"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.4.tgz#a67c6f7a460d2660e950d9ccc1c2f18525c28220"
-  integrity sha512-onz2BqScSFMoTRdJUZUDD/7xrusM8hBA2Fktk2qgaTYPCgPvWnDEgkrOs8hhPUf2jfcIXkJ5yK6VfYormJS3Jw==
+"@types/react@^16", "@types/react@^16.9.23":
+  version "16.14.6"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.14.6.tgz#d933a2a6bc1bfe320a5eea480e8f45ba8126d6ee"
+  integrity sha512-Ol/aFKune+P0FSFKIgf+XbhGzYGyz0p7g5befSt4rmbzfGLaZR0q7jPew9k7d3bvrcuaL8dPy9Oz3XGZmf9n+w==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
+"@types/react@^17.0.3", "@types/react@^17.0.4":
+  version "17.0.5"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-17.0.5.tgz#3d887570c4489011f75a3fc8f965bf87d09a1bea"
+  integrity sha512-bj4biDB9ZJmGAYTWSKJly6bMr4BLUiBrx9ujiJEoP9XIDY9CTaPGxE5QWN/1WjpPLzYF7/jRNnV2nNxNe970sw==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -5963,10 +5972,10 @@ lz-string@^1.4.4:
   resolved "https://registry.npm.taobao.org/lz-string/download/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"
   integrity sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=
 
-m78@^1.0.0-beta.64:
-  version "1.0.0-beta.64"
-  resolved "https://registry.yarnpkg.com/m78/-/m78-1.0.0-beta.64.tgz#ef8851d6815bb346aed8df4159932bfa4d6fac04"
-  integrity sha512-1A2mDVI8IaAdNI0Ph+93fGz6aY5s4r0HOagmkGeq5KfliICR8Xd1AfsHB9Z6aM57Qo9cHVIbSll2rqGIzW/sYA==
+m78@^1.0.0-beta.65:
+  version "1.0.0-beta.65"
+  resolved "https://registry.yarnpkg.com/m78/-/m78-1.0.0-beta.65.tgz#725eef960241a57dde61c76dd65845b5233fbed6"
+  integrity sha512-4Lp51+HkZHFf03eakRLDzEpsOBvf296l3CR6yQG6cQggbOzWAtUXZObHD7vY3EXgYFAAx9Re0GIMv0XPFXOvKQ==
   dependencies:
     "@ant-design/icons" "^4.1.0"
     "@babel/runtime" "^7.7.2"

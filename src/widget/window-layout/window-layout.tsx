@@ -4,6 +4,7 @@ import { checkElementVisible } from '@lxjx/utils';
 import clsx from 'clsx';
 import { useFn, useScroll, useSelf } from '@lxjx/hooks';
 import { TaskWindowLayoutProps, WindowLayoutSectionProps } from '../../types';
+import { MediaQueryType } from '../../index';
 
 interface Self {
   /** 存放所有sections节点的html节点 */
@@ -45,7 +46,10 @@ function WindowLayout({
   /** 滚动容器节点 */
   const scrollNodeRef = useRef<HTMLDivElement>(null!);
 
+  /** 控制顶栏可见 */
   const [topBarVisible, setBotBarVisible] = useState(topBarAlwaysShow);
+  /** 控制小屏下的side栏的可见状态 */
+  const [sideVisible, setSideVisible] = useState(false);
 
   useEffect(() => {
     if (!sideTabs?.length) {
@@ -97,28 +101,54 @@ function WindowLayout({
   function renderSide() {
     if (!side && !sideTabs?.length) return null;
 
+    let sideNode: React.ReactNode = side;
+
     if (sideTabs?.length) {
-      return (
-        <div className="m78-admin_window-layout_side">
-          <Scroller className="m78-admin_window-layout_tab" scrollFlag hideScrollbar>
-            {sideTabs.map(item => (
-              <div
-                key={item.label}
-                title={item.label}
-                className={clsx('m78-admin_window-layout_tab-item', {
-                  __active: cLabel === item.label,
-                })}
-                onClick={() => scrollToNode(item.label, item.selector)}
-              >
-                {item.label}
-              </div>
-            ))}
-          </Scroller>
-        </div>
+      sideNode = (
+        <Scroller className="m78-admin_window-layout_tab" scrollFlag hideScrollbar>
+          {sideTabs.map(item => (
+            <div
+              key={item.label}
+              title={item.label}
+              className={clsx('m78-admin_window-layout_tab-item', {
+                __active: cLabel === item.label,
+              })}
+              onClick={() => scrollToNode(item.label, item.selector)}
+            >
+              {item.label}
+            </div>
+          ))}
+        </Scroller>
       );
     }
 
-    return <div className="m78-admin_window-layout_side">{side}</div>;
+    return (
+      <MediaQueryType>
+        {meta => {
+          const isSmall = meta.isSmall();
+
+          return (
+            <div
+              className={clsx('m78-admin_window-layout_side', {
+                __responsive: isSmall,
+                __hide: isSmall && !sideVisible,
+              })}
+            >
+              {sideNode}
+              {isSmall && (
+                <span
+                  title={topBarVisible ? '收起侧栏' : '展开侧栏'}
+                  className="m78-admin_window-layout_side-toggle"
+                  onClick={() => setSideVisible(p => !p)}
+                >
+                  📑
+                </span>
+              )}
+            </div>
+          );
+        }}
+      </MediaQueryType>
+    );
   }
 
   return (
@@ -132,7 +162,7 @@ function WindowLayout({
             {!topBarAlwaysShow && (
               <span
                 title={topBarVisible ? '收起顶栏' : '展开顶栏'}
-                className="m78-admin_window-layout_top-bar-toggle"
+                className="m78-admin_window-layout_top-bar-toggler"
                 onClick={() => setBotBarVisible(p => !p)}
               >
                 <span className="m78-admin_window-layout_top-bar-icon">{topBarIcon || '⚙'}</span>

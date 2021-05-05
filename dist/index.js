@@ -203,8 +203,11 @@ const renderBuiltInHeader = (props, instance, isFull) => {
     })))
   })));
 };
-const OFFSET_TOP = 50;
-const OFFSET_LEFT = 90;
+const WINE_OFFSET_LEFT = 90;
+const WINE_OFFSET = {
+  left: WINE_OFFSET_LEFT,
+  top: 50
+};
 const WILL_POP_MAP = {};
 const ctx = createContext({});
 var MediaQueryTypeValues;
@@ -541,10 +544,7 @@ function createMainTaskCtx(taskOpt, ctx2) {
       ctx: ctx2
     }),
     headerCustomer: renderBuiltInHeader,
-    limitBound: {
-      left: OFFSET_LEFT,
-      top: OFFSET_TOP
-    },
+    limitBound: WINE_OFFSET,
     taskOption: taskOpt,
     ctx: ctx2
   }));
@@ -1145,7 +1145,6 @@ const TaskBar = () => {
 };
 const DesktopItems = () => {
   const aProps = taskSeed.useState((state) => state.adminProps);
-  const config = aProps.config;
   return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", {
     className: "m78-admin_desktop-node"
   }, aProps.desktopNode), /* @__PURE__ */ React.createElement("div", {
@@ -1157,13 +1156,7 @@ const DesktopItems = () => {
   }, "M78"), "-| |-", /* @__PURE__ */ React.createElement("a", {
     href: " https://github.com/xianjie-li",
     target: "_blank"
-  }, "Github"), "-|")), /* @__PURE__ */ React.createElement("div", {
-    className: "m78-admin_desktop-decorate",
-    "data-i": config == null ? void 0 : config.desktopImage,
-    style: {
-      backgroundImage: (config == null ? void 0 : config.desktopImage) ? `url(${config == null ? void 0 : config.desktopImage})` : void 0
-    }
-  }));
+  }, "Github"), "-|")));
 };
 const BaseLayout = () => {
   const width = taskSeed.useState((state) => state.adminProps.width);
@@ -1182,6 +1175,20 @@ const BaseLayout = () => {
     className: "m78-admin_layout_window"
   }, /* @__PURE__ */ React.createElement(Wine.RenderBoxTarget, null), /* @__PURE__ */ React.createElement(DesktopItems, null))));
 };
+const Handles = () => {
+  useEffect(() => {
+    const resize = () => {
+      if (window.innerWidth < 680) {
+        WINE_OFFSET.left = 0;
+      } else {
+        WINE_OFFSET.left = WINE_OFFSET_LEFT;
+      }
+    };
+    window.addEventListener("resize", resize);
+    return () => window.removeEventListener("resize", resize);
+  }, []);
+  return null;
+};
 const M78AdminCore = (props) => {
   const {tasks} = props;
   const [pass, setPass] = useState(false);
@@ -1193,7 +1200,7 @@ const M78AdminCore = (props) => {
   useSyncWineTask();
   if (!pass)
     return null;
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(ConfigSync, null), /* @__PURE__ */ React.createElement(BaseLayout, null));
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(ConfigSync, null), /* @__PURE__ */ React.createElement(Handles, null), /* @__PURE__ */ React.createElement(BaseLayout, null));
 };
 function M78AdminImpl(props) {
   useEffect(() => {
@@ -1280,6 +1287,7 @@ function WindowLayout(_c) {
   const calcNodeRef = useRef(null);
   const scrollNodeRef = useRef(null);
   const [topBarVisible, setBotBarVisible] = useState(topBarAlwaysShow);
+  const [sideVisible, setSideVisible] = useState(false);
   useEffect(() => {
     if (!(sideTabs == null ? void 0 : sideTabs.length)) {
       self.sections = null;
@@ -1316,10 +1324,9 @@ function WindowLayout(_c) {
   function renderSide() {
     if (!side && !(sideTabs == null ? void 0 : sideTabs.length))
       return null;
+    let sideNode = side;
     if (sideTabs == null ? void 0 : sideTabs.length) {
-      return /* @__PURE__ */ React.createElement("div", {
-        className: "m78-admin_window-layout_side"
-      }, /* @__PURE__ */ React.createElement(Scroller, {
+      sideNode = /* @__PURE__ */ React.createElement(Scroller, {
         className: "m78-admin_window-layout_tab",
         scrollFlag: true,
         hideScrollbar: true
@@ -1330,11 +1337,21 @@ function WindowLayout(_c) {
           __active: cLabel === item.label
         }),
         onClick: () => scrollToNode(item.label, item.selector)
-      }, item.label))));
+      }, item.label)));
     }
-    return /* @__PURE__ */ React.createElement("div", {
-      className: "m78-admin_window-layout_side"
-    }, side);
+    return /* @__PURE__ */ React.createElement(MediaQueryType, null, (meta) => {
+      const isSmall = meta.isSmall();
+      return /* @__PURE__ */ React.createElement("div", {
+        className: clsx("m78-admin_window-layout_side", {
+          __responsive: isSmall,
+          __hide: isSmall && !sideVisible
+        })
+      }, sideNode, isSmall && /* @__PURE__ */ React.createElement("span", {
+        title: topBarVisible ? "\u6536\u8D77\u4FA7\u680F" : "\u5C55\u5F00\u4FA7\u680F",
+        className: "m78-admin_window-layout_side-toggle",
+        onClick: () => setSideVisible((p) => !p)
+      }, "\u{1F4D1}"));
+    });
   }
   return /* @__PURE__ */ React.createElement("div", __assign({
     className: clsx("m78-admin_window-layout", className),
@@ -1345,7 +1362,7 @@ function WindowLayout(_c) {
     className: clsx("m78-admin_window-layout_top-bar", !topBarVisible && "__hide")
   }, topBar, !topBarAlwaysShow && /* @__PURE__ */ React.createElement("span", {
     title: topBarVisible ? "\u6536\u8D77\u9876\u680F" : "\u5C55\u5F00\u9876\u680F",
-    className: "m78-admin_window-layout_top-bar-toggle",
+    className: "m78-admin_window-layout_top-bar-toggler",
     onClick: () => setBotBarVisible((p) => !p)
   }, /* @__PURE__ */ React.createElement("span", {
     className: "m78-admin_window-layout_top-bar-icon"
@@ -1364,7 +1381,7 @@ function useMediaQuery(onChange) {
   const oc = useFn(onChange);
   useEffect(() => {
     mqCtx.changeListeners.push(oc);
-    oc(mqCtx.meta);
+    mqCtx.meta && oc(mqCtx.meta);
     return () => {
       const ind = mqCtx.changeListeners.indexOf(oc);
       if (ind !== -1) {

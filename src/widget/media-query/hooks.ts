@@ -13,7 +13,7 @@ export function useMediaQuery(onChange: MediaQueryProps['onChange']) {
 
   useEffect(() => {
     mqCtx.changeListeners.push(oc);
-    oc(mqCtx.meta!);
+    mqCtx.meta && oc(mqCtx.meta);
 
     return () => {
       const ind = mqCtx.changeListeners.indexOf(oc);

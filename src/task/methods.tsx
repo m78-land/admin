@@ -5,7 +5,7 @@ import _debounce from 'lodash/debounce';
 import { message } from 'm78/message';
 import { TaskCtx, TaskItemCategory, TaskOpt, TaskOptItem, TaskState } from '../types';
 import { renderBuiltInHeader } from './render';
-import { OFFSET_LEFT, OFFSET_TOP, WILL_POP_MAP } from '../common/const';
+import { WILL_POP_MAP, WINE_OFFSET } from '../common/const';
 import taskSeed from './task-seed';
 import TaskWindowWrap from './task-window-wrap';
 import { updateByKeyEvent } from './event';
@@ -156,10 +156,7 @@ export function createMainTaskCtx(taskOpt: TaskOptItem, ctx: TaskCtx) {
     className: `J_task_${ctx.taskKey}`,
     content: <TaskWindowWrap Component={React.memo(component)} ctx={ctx} />,
     headerCustomer: renderBuiltInHeader,
-    limitBound: {
-      left: OFFSET_LEFT,
-      top: OFFSET_TOP,
-    },
+    limitBound: WINE_OFFSET,
     // @ts-ignore - 额外状态，交由renderBuiltInHeader使用
     taskOption: taskOpt,
     // 额外状态，交由renderBuiltInHeader使用
