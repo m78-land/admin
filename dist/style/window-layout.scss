@@ -16,8 +16,8 @@
     &.__responsive {
       position: absolute;
       left: 0;
-      top: -1px;
-      bottom: -1px;
+      top: 0;
+      bottom: 1px;
       z-index: 1000;
       background-color: var(--m78-body-bg);
       border: 1px solid var(--m78-color-divider);
@@ -25,7 +25,7 @@
     }
 
     &.__hide {
-      transform: translateX(-100%);
+      transform: translateX(-99%);
     }
   }
 

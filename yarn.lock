@@ -1379,10 +1379,10 @@
   dependencies:
     "@ant-design/colors" "^3.2.2"
 
-"@m78/wine@^1.1.5":
-  version "1.1.5"
-  resolved "https://registry.npmjs.org/@m78/wine/-/wine-1.1.5.tgz#11bf8b65ace99f13dfe7aa31a638f9e13ab7d6a0"
-  integrity sha512-wIc2ESWjWyreM87aWH4sL7Q6cQ9dv3UFCI7gNUkIbGL2nl6L8NgikizXKZf39Xw0MLxGcWMA9kwO25JRi4ESgw==
+"@m78/wine@^1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@m78/wine/-/wine-1.1.6.tgz#81a09024ea4cdda08988c963293ee2e1b3a127bb"
+  integrity sha512-XGnrsGwqbOnkezIcd3iBCtFMX4YCGHWUzSH10bBQqZgSxJmFp+xktgLkUSy9qrUSzrcEv0cXjvOQ365zNCp5lw==
   dependencies:
     "@lxjx/hooks" "^1.16.4"
     "@lxjx/utils" "^1.11.1"
