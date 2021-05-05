@@ -1379,10 +1379,10 @@
   dependencies:
     "@ant-design/colors" "^3.2.2"
 
-"@m78/wine@^1.1.6":
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/@m78/wine/-/wine-1.1.6.tgz#81a09024ea4cdda08988c963293ee2e1b3a127bb"
-  integrity sha512-XGnrsGwqbOnkezIcd3iBCtFMX4YCGHWUzSH10bBQqZgSxJmFp+xktgLkUSy9qrUSzrcEv0cXjvOQ365zNCp5lw==
+"@m78/wine@^1.1.7":
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/@m78/wine/-/wine-1.1.7.tgz#32809e1ac8647dc207722c250c9507cd480b638c"
+  integrity sha512-XoKIrsi/bPXLHEoXdxpCCX0FyU2U/8xtnS1TXMJfxyvdiAX81zqE928cStj8rXm2MUkUeCFnvw8g4jxF8uYhdQ==
   dependencies:
     "@lxjx/hooks" "^1.16.4"
     "@lxjx/utils" "^1.11.1"

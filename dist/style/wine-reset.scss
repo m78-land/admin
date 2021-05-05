@@ -7,6 +7,12 @@
     //backface-visibility: hidden; /* 防止内容抖动 */
   }
 
+  .m78-wine_content {
+    //box-shadow: var(--m78-shadow-1-focus);
+    border-radius: var(--m78-border-radius);
+    border: 1px solid var(--m78-color-divider);
+  }
+
   .m78-page-header {
     border: none;
     border-bottom: 1px solid var(--m78-color-border);
