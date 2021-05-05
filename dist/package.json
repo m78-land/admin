@@ -1,6 +1,6 @@
 {
   "name": "@m78/admin",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Admin for windows&tasks, base on M78",
   "keywords": [
     "admin",
@@ -40,7 +40,7 @@
     "@lxjx/hooks": "^1.16.4",
     "@lxjx/utils": "^1.13.0",
     "@m78/style": "^1.0.23",
-    "@m78/wine": "^1.1.5",
+    "@m78/wine": "^1.1.6",
     "@types/lodash": "^4.14.168",
     "clsx": "^1.1.1",
     "lodash": "^4.17.21",
