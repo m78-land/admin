@@ -12,6 +12,7 @@
     max-width: 240px;
     margin-right: 4px;
     border-right: 1px solid var(--m78-color-divider);
+    z-index: 100;
 
     &.__responsive {
       position: absolute;
@@ -68,10 +69,11 @@
     padding: var(--m78-space-2) var(--m78-space-3);
     border-bottom: 1px solid var(--m78-color-divider);
     margin-bottom: var(--m78-space-1);
+    z-index: 100;
 
     &.__hide {
       position: absolute;
-      transform: translateY(-100%);
+      transform: translateY(-99%);
     }
   }
 
