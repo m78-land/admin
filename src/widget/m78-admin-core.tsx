@@ -4,7 +4,7 @@ import BaseLayout from './base-layout';
 import taskSeed from '../task/task-seed';
 import { useSyncWineTask, taskOptFormat } from '../task/methods';
 import { M78AdminProps } from '../types';
-import Handles from './Handles';
+import Handles from './handles';
 
 /**
  * 渲染入口，可以执行一些渲染前的前置操作
