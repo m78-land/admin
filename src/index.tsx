@@ -8,6 +8,7 @@ import MediaQuery, { MediaQueryType, MediaQuerySize } from './widget/media-query
 import { useMediaQuery, useMediaQueryType, useMediaQuerySize } from './widget/media-query/hooks';
 import { Auth } from './auth/auth';
 import Link from './task/link';
+import task from './task/task';
 
 export {
   FuncBtn,
@@ -23,5 +24,6 @@ export {
   Auth,
   Link,
   M78Admin,
+  task,
 };
 export * from './types';

@@ -1379,6 +1379,13 @@
   dependencies:
     "@ant-design/colors" "^3.2.2"
 
+"@m78/style@^1.0.24":
+  version "1.0.24"
+  resolved "https://registry.yarnpkg.com/@m78/style/-/style-1.0.24.tgz#2941c94ddb371c97e326fd39561c8b125986bcdb"
+  integrity sha512-SuwrKRzf9peeC7jQr8h6D7xakAWni2nl4qkNnEHe6SAWLjcUkUN//oO7lRLjn8sLafmeiYiB9Ox+Qjd1EQBRVg==
+  dependencies:
+    "@ant-design/colors" "^3.2.2"
+
 "@m78/wine@^1.1.7":
   version "1.1.7"
   resolved "https://registry.yarnpkg.com/@m78/wine/-/wine-1.1.7.tgz#32809e1ac8647dc207722c250c9507cd480b638c"
@@ -5972,10 +5979,10 @@ lz-string@^1.4.4:
   resolved "https://registry.npm.taobao.org/lz-string/download/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"
   integrity sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=
 
-m78@^1.0.0-beta.65:
-  version "1.0.0-beta.65"
-  resolved "https://registry.yarnpkg.com/m78/-/m78-1.0.0-beta.65.tgz#725eef960241a57dde61c76dd65845b5233fbed6"
-  integrity sha512-4Lp51+HkZHFf03eakRLDzEpsOBvf296l3CR6yQG6cQggbOzWAtUXZObHD7vY3EXgYFAAx9Re0GIMv0XPFXOvKQ==
+m78@^1.0.0-beta.66:
+  version "1.0.0-beta.66"
+  resolved "https://registry.yarnpkg.com/m78/-/m78-1.0.0-beta.66.tgz#a9323f91f89aa44ab87c004bd52916541854c02b"
+  integrity sha512-6RpzpJApRm+bm+/4D0ywHDSGJzwKBthHGHTsy9xQz/4CB9BNN7udZSHTMXxjXQwWq85xZW/qZPCi86nmPjyqiQ==
   dependencies:
     "@ant-design/icons" "^4.1.0"
     "@babel/runtime" "^7.7.2"
