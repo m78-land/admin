@@ -7,8 +7,8 @@ import clsx from 'clsx';
 import { useFn } from '@lxjx/hooks';
 import taskSeed from '../../task/task-seed';
 import task from '../../task/task';
-import { configGetter, emitConfig } from '../../common/common';
-import { Auth, Badge, FuncBtn } from '../../index';
+import { configGetter, emitConfig, useSubscribeAuthChange } from '../../common/common';
+import { Badge, FuncBtn } from '../../index';
 import {
   closeTaskById,
   collectHandle,
@@ -23,11 +23,12 @@ import {
 const FuncCollects = () => {
   const map = taskSeed.useState(state => state.taskOptionsIdMap);
   const taskList = taskSeed.useState(state => state.taskList);
+
+  const AuthPro = taskSeed.useState(state => state.adminProps.authPro);
   const config = taskSeed.useState(configGetter);
   const collect = config?.collectFunc || [];
 
-  /** 监听authSeed state变更并更新组件 */
-  Auth.useCurrentAuth();
+  useSubscribeAuthChange(AuthPro.authInstance.seed);
 
   /** 拖动结束 */
   const acceptHandle = useFn((e: DragFullEvent<string>) => {

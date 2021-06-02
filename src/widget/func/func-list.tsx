@@ -8,47 +8,57 @@ import taskSeed from '../../task/task-seed';
 import task from '../../task/task';
 import { collectHandle, isPassNode } from '../../task/methods';
 import { TaskOpt } from '../../types';
-import { Auth } from '../../auth/auth';
+import { configGetter, useSubscribeAuthChange } from '../../common/common';
 
 /**
  * 任务列表, 显示在任务栏左侧并通过气跑展开
  * */
 const FuncList = () => {
   const tasks = taskSeed.useState(state => state.taskOptions);
-  const adminProps = taskSeed.useState(state => state.adminProps);
-  const config = adminProps.config;
-
-  const authK = Auth.useCurrentAuth();
+  const AuthPro = taskSeed.useState(state => state.adminProps.authPro);
+  const config = taskSeed.useState(configGetter);
 
   const [popperShow, setPopperShow] = useState(false);
 
+  // state.auth变更监听
+  const authKeyChangeFlag = useSubscribeAuthChange(AuthPro.authInstance.seed);
+
   /** 根据权限过滤后的列表 */
-  const filterAuthTasks = useMemo(filterNotPassNode, [tasks, authK]);
+  const filterAuthTasks = useMemo(filterNotPassNode, [tasks, authKeyChangeFlag]);
 
   /** 从task中处理掉所有无权限和隐藏的节点并返回克隆节点 */
   function filterNotPassNode() {
-    const _tasks: TaskOpt = [];
+    if (!AuthPro) return tasks;
 
-    tasks.forEach(item => {
-      if (isPassNode(item)) {
-        // 过滤掉height属性，和Tree的option配置冲突
-        const { height, ...i } = item;
-        _tasks.push(i);
-      }
+    const filterNodes = (list?: TaskOpt) => {
+      const _tasks: TaskOpt = [];
 
-      if ('children' in item && item.children.length) {
-        const _child = item.children.filter(isPassNode);
+      if (!list?.length) return _tasks;
 
-        if (_child.length) {
-          _tasks.push({
-            ...item,
-            children: _child.map(({ height, ...i }) => i),
-          });
+      list.forEach(item => {
+        if (isPassNode(item)) {
+          // 过滤掉height属性，和Tree的option配置冲突
+          const { height, ...i } = item;
+          _tasks.push(i);
+          return;
         }
-      }
-    });
 
-    return _tasks;
+        if ('children' in item && item.children.length) {
+          const nChildren = filterNodes(item.children);
+
+          if (nChildren?.length) {
+            _tasks.push({
+              name: item.name,
+              children: nChildren,
+            });
+          }
+        }
+      });
+
+      return _tasks;
+    };
+
+    return filterNodes(tasks);
   }
 
   function renderAction(node: TreeNode) {

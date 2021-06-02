@@ -1,10 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Scroller } from 'm78/scroller';
-import { checkElementVisible } from '@lxjx/utils';
+import { checkElementVisible, isFunction } from '@lxjx/utils';
 import clsx from 'clsx';
 import { useFn, useScroll, useSelf } from '@lxjx/hooks';
-import { TaskWindowLayoutProps, WindowLayoutSectionProps } from '../../types';
-import { MediaQueryType } from '../../index';
+import { MediaQuery } from 'm78/layout';
+import {
+  TaskWindowLayoutProps,
+  TaskWindowTopBarTypeKeys,
+  WindowLayoutSectionProps,
+} from '../../types';
 
 interface Self {
   /** 存放所有sections节点的html节点 */
@@ -31,7 +35,8 @@ function WindowLayout({
   scrollRef,
   sideTabs,
   topBar,
-  topBarAlwaysShow = false,
+  topBarType = TaskWindowTopBarTypeKeys.toggle,
+  topBarDefaultShow = false,
   topBarIcon,
   ...ppp
 }: TaskWindowLayoutProps) {
@@ -47,7 +52,7 @@ function WindowLayout({
   const scrollNodeRef = useRef<HTMLDivElement>(null!);
 
   /** 控制顶栏可见 */
-  const [topBarVisible, setBotBarVisible] = useState(topBarAlwaysShow);
+  const [topBarVisible, setBotBarVisible] = useState(topBarDefaultShow);
   /** 控制小屏下的side栏的可见状态 */
   const [sideVisible, setSideVisible] = useState(false);
 
@@ -123,7 +128,7 @@ function WindowLayout({
     }
 
     return (
-      <MediaQueryType>
+      <MediaQuery>
         {meta => {
           const isSmall = meta.isSmall();
 
@@ -147,9 +152,12 @@ function WindowLayout({
             </div>
           );
         }}
-      </MediaQueryType>
+      </MediaQuery>
     );
   }
+
+  const isAlways = topBarType === TaskWindowTopBarTypeKeys.always;
+  const isToggle = topBarType === TaskWindowTopBarTypeKeys.toggle;
 
   return (
     <div className={clsx('m78-admin_window-layout', className)} style={style} {...ppp}>
@@ -157,9 +165,16 @@ function WindowLayout({
 
       <div className="m78-admin_window-layout_main">
         {topBar && (
-          <div className={clsx('m78-admin_window-layout_top-bar', !topBarVisible && '__hide')}>
-            {topBar}
-            {!topBarAlwaysShow && (
+          <div
+            className={clsx(
+              'm78-admin_window-layout_top-bar-wrap',
+              isToggle && !topBarVisible && '__hide',
+            )}
+          >
+            <div className="m78-admin_window-layout_top-bar m78-scrollbar">
+              {isFunction(topBar) ? topBar(topBarVisible) : topBar}
+            </div>
+            {!isAlways && (
               <span
                 title={topBarVisible ? '收起顶栏' : '展开顶栏'}
                 className="m78-admin_window-layout_top-bar-toggler"

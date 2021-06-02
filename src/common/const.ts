@@ -1,12 +1,12 @@
 /** 主窗口区域的偏移 */
 import { TaskWillPopMeta } from '../types';
 
-export const WINE_OFFSET_LEFT = 90;
+export const WINE_OFFSET_LEFT = 89;
 
 /** 主窗口区域的偏移 */
 export const WINE_OFFSET = {
   left: WINE_OFFSET_LEFT,
-  top: 50,
+  top: 49,
 };
 
 /** 记录useWillPop的执行注册信息，用于任务关闭时进行检测 */

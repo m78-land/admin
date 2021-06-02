@@ -2,11 +2,10 @@ import React from 'react';
 import { AnyFunction, isNumber } from '@lxjx/utils';
 import clsx from 'clsx';
 import { Spin } from 'm78/spin';
+import { MediaQueryContext } from 'm78/layout';
 import { TaskCtx } from '../types';
 import { useListenerKeyToUpdate } from './methods';
 import linkContext from './link-context';
-import MediaQueryContext from '../widget/media-query/media-query-context';
-import MediaQueryCalc from '../widget/media-query/media-query-calc';
 
 interface Props {
   /** 待渲染的任务组件 */
@@ -32,7 +31,6 @@ const TaskWindowWrap = ({ ctx, Component }: Props) => {
   return (
     <MediaQueryContext>
       <LinkProvider value={{ parent: ctx }}>
-        <MediaQueryCalc />
         <div className={clsx({ hide: hasIndex })}>
           <React.Suspense fallback={loadingNode}>
             <Component {...ctx} />

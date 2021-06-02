@@ -1,11 +1,13 @@
 import { Button } from 'm78/button';
 import React, { useEffect } from 'react';
 import { Input } from 'm78/input';
-import { Row } from 'm78/layout';
+import { Grids, MediaQuery, Row } from 'm78/layout';
+import { Toggle } from 'm78/fork';
 import WindowLayout from '../widget/window-layout/window-layout';
 import { TaskCtx } from '../types';
 import task from '../task/task';
-import { Link, MediaQuery } from '../index';
+import { Link } from '../index';
+import { Form, FormItem } from 'm78/form';
 
 export default function Test(props: TaskCtx<{ name: string }>) {
   useEffect(() => {
@@ -33,18 +35,63 @@ export default function Test(props: TaskCtx<{ name: string }>) {
           selector: '#s3',
         },
       ]}
-      topBar={
-        <Row mainAlign="between">
-          <span>内容</span>
-          <Input placeholder="输入内容进行搜索" style={{ width: 200 }} />
-        </Row>
-      }
+      topBar={toggle => (
+        <Form fullWidth layout="horizontal">
+          <Grids>
+            <Grids.Item xs={12} md={6} xl={4}>
+              <FormItem label="表单xx">
+                <Input placeholder="输入内容进行搜索" />
+              </FormItem>
+            </Grids.Item>
+            <Grids.Item xs={12} md={6} xl={4}>
+              <FormItem label="表单xx">
+                <Input placeholder="输入内容进行搜索" />
+              </FormItem>
+            </Grids.Item>
+            {toggle && (
+              <>
+                <Grids.Item xs={12} md={6} xl={4}>
+                  <FormItem label="表单xx">
+                    <Input placeholder="输入内容进行搜索" />
+                  </FormItem>
+                </Grids.Item>
+                <Grids.Item xs={12} md={6} xl={4}>
+                  <FormItem label="表单xx">
+                    <Input placeholder="输入内容进行搜索" />
+                  </FormItem>
+                </Grids.Item>
+                <Grids.Item xs={12} md={6} xl={4}>
+                  <FormItem label="表单xx">
+                    <Input placeholder="输入内容进行搜索" />
+                  </FormItem>
+                </Grids.Item>
+                <Grids.Item xs={12} md={6} xl={4}>
+                  <FormItem label="表单xx">
+                    <Input placeholder="输入内容进行搜索" />
+                  </FormItem>
+                </Grids.Item>
+                <Grids.Item xs={12} md={6} xl={4}>
+                  <FormItem label="表单xx">
+                    <Input placeholder="输入内容进行搜索" />
+                  </FormItem>
+                </Grids.Item>
+                <Grids.Item xs={12} md={6} xl={8}>
+                  <FormItem label="表单xx">
+                    <Input placeholder="输入内容进行搜索" />
+                  </FormItem>
+                </Grids.Item>
+              </>
+            )}
+          </Grids>
+        </Form>
+      )}
+      topBarType="eclipse"
       footer={<Button size="large">按钮</Button>}
     >
       <div>
         <div id="s1">
           <h3>角色管理操作1</h3>
-          <MediaQuery.Type>
+          <MediaQuery>
             {meta => (
               <div>
                 {meta.type}
@@ -54,8 +101,8 @@ export default function Test(props: TaskCtx<{ name: string }>) {
                 {meta.isLarge() && 'large'}
               </div>
             )}
-          </MediaQuery.Type>
-          <MediaQuery.Size>{meta => <div>{JSON.stringify(meta)}</div>}</MediaQuery.Size>
+          </MediaQuery>
+          <MediaQuery listenType="size">{meta => <div>{JSON.stringify(meta)}</div>}</MediaQuery>
           <div>
             <div>{JSON.stringify(props.param)}</div>
             <div>

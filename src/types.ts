@@ -3,6 +3,7 @@ import { WineInstance } from '@m78/wine';
 import React, { ReactElement } from 'react';
 import { ComponentBasePropsWithAny } from 'm78/types';
 import { useScroll } from '@lxjx/hooks';
+import { AuthProStrings, RCAuthPro } from 'm78/auth';
 
 /*
  * #####################################################
@@ -26,7 +27,7 @@ export interface TaskOptItem {
   /** 图标 */
   icon?: React.ReactNode;
   /** 权限，此项需要配合 M78Admin 组件的 authSeed 配置使用  */
-  auth?: AuthStrings;
+  auth?: AuthProStrings;
 
   // ####### 窗口设置 ####### //
   /** 0.84 | 窗口占屏幕高度的比例, 取值为0 ~ 1, 如果未设置width，会根据此项计算得到的高度以合适比例设置宽度 */
@@ -181,6 +182,8 @@ export interface M78AdminConfig {
   logo?: string;
   /** 显示在logo下方的名称 */
   name?: string;
+  /** 全屏打开所以未明确指定尺寸的窗口 */
+  initFull?: boolean;
 
   // ####### 性能优化 ####### //
   /** 12 | 最大窗口数量 */
@@ -191,7 +194,9 @@ export interface M78AdminProps {
   // ####### 常用 ####### //
   /** 任务配置列表 */
   tasks: TaskOpt;
-  /** 配置 */
+  /** 应用的AuthPro实例，用于控制菜单等部分的权限 */
+  authPro: RCAuthPro;
+  /** 配置, 这些配置通常情况是期望被持久化的 */
   config?: M78AdminConfig;
   /** 配置被组件内部改变的回调, 如果忽略此项，则内部改变不会生效 */
   onConfigChange?: (config: Partial<NonNullable<M78AdminProps['config']>>) => void;
@@ -211,15 +216,6 @@ export interface M78AdminProps {
   desktopNode?: React.ReactNode;
   /** 桌面底部的简要介绍，默认显示 powerBy 文本 */
   footerNode?: React.ReactNode;
-
-  // ####### 权限 ####### //
-  /**
-   * 添加除`c r u d`以外的自定义权限key
-   * - 如果设置了 c r u d 中的任意key，会将其内部设置重写
-   * */
-  customAuthKeysMap?: AuthKeysMap;
-  /** 为权限限名添加文本映射, 比如将 user:crud 中的 user 映射为 '用户管理' */
-  authNameMap?: String2StringMap;
 
   // ####### 不建议使用 ####### //
   /** 100vh | 高度 */
@@ -267,16 +263,32 @@ export interface TaskLoginProps {
   content?: React.ReactNode;
 }
 
+export enum TaskWindowTopBarTypeKeys {
+  toggle = 'toggle',
+  eclipse = 'eclipse',
+  always = 'always',
+}
+
 /** 布局组件props */
 export interface TaskWindowLayoutProps extends ComponentBasePropsWithAny {
   /** 内容区域, 传入特定类似的子项数组时，会产生不同的行为 */
   children: React.ReactNode;
   /** 底部浮动内容，一般用来放置分页器、操作按钮等 */
   footer?: React.ReactNode;
-  /** 顶栏内容 */
-  topBar?: React.ReactNode;
-  /** 一直显示topBar，不需要点击展开按钮 */
-  topBarAlwaysShow?: boolean;
+  /**
+   * 顶栏内容
+   * - topBarType为eclipse时，可以传入一个render prop并接收toggle来控制展开和收起时显示的内容
+   * */
+  topBar?: React.ReactNode | ((toggle: boolean) => React.ReactNode);
+  /**
+   * 顶栏显示类型
+   * - toggle, 正常的关闭展开型顶栏，可以通过topBarDefaultShow设置默认显示
+   * - eclipse, 用来实现半展开、展开型顶栏，配合topBar的render prop参数使用
+   * - always, 持续显示且不支持关闭
+   * */
+  topBarType?: TaskWindowTopBarTypeKeys | 'toggle' | 'eclipse' | 'always';
+  /** topBarType为toggle时, 默认是否显示topBar */
+  topBarDefaultShow?: boolean;
   /** 自定义topBar展开按钮的图标 */
   topBarIcon?: React.ReactNode;
   /** 左侧栏目内容，传入sideTabs时，此项被忽略 */
@@ -300,142 +312,4 @@ export interface WindowLayoutSectionProps extends ComponentBasePropsWithAny {
   children?: React.ReactNode;
   /** 当前块的描述 */
   desc?: string;
-}
-
-/*
- * #####################################################
- * +++++++++++++++++++++++ 媒体查询 ++++++++++++++++++++++
- * #####################################################
- * */
-
-/**
- * MediaQuery context结构
- * */
-export interface _MediaQueryTypeContext {
-  /** 派发通知到useMediaQuery.onChange的方法 */
-  onChange: (sizeMeta: MediaQuerySizeMete) => void;
-  /** useMediaQuery挂载的所有监听函数 */
-  changeListeners: Array<(meta: MediaQueryMete) => void>;
-  /** 当前meta信息 */
-  meta: MediaQueryMete | null;
-}
-
-/**
- * MediaQuery的所有类型
- * 判断是否在某一类型的方式为 当前宽度大于等于该类型的值且小于下一类型的值
- * */
-export enum MediaQueryTypeValues {
-  XS = 0,
-  SM = 576,
-  MD = 768,
-  LG = 992,
-  XL = 1200,
-  XXL = 1600,
-}
-
-/**
- * MediaQuery的所有类型
- * 判断是否在某一类型的方式为 当前宽度大于等于该类型的值且小于下一类型的值
- * */
-export enum MediaQueryTypeKey {
-  XS = 'xs',
-  SM = 'sm',
-  MD = 'md',
-  LG = 'lg',
-  XL = 'xl',
-  XXL = 'xxl',
-}
-
-/** MediaQuery type元信息 */
-export interface MediaQueryTypeMete {
-  /** 当前类型 */
-  type: MediaQueryTypeKey;
-  /** 检测是否为指定类型 */
-  isXS: () => boolean;
-  isSM: () => boolean;
-  isMD: () => boolean;
-  isLG: () => boolean;
-  isXL: () => boolean;
-  isXXL: () => boolean;
-  /** 当前尺寸是 xs或sm */
-  isSmall: () => boolean;
-  /** 当前尺寸是 md或lg */
-  isMedium: () => boolean;
-  /** 当前尺寸大于 lg */
-  isLarge: () => boolean;
-}
-
-/** MediaQuery size元信息 */
-export interface MediaQuerySizeMete {
-  width: number;
-  height: number;
-}
-
-/** MediaQuery 完整元信息 */
-export interface MediaQueryMete extends MediaQueryTypeMete, MediaQuerySizeMete {}
-
-export interface MediaQueryProps {
-  onChange: (meta: MediaQueryMete) => void;
-}
-
-export interface MediaQuerySizeProps {
-  children: (sizeMeta: MediaQuerySizeMete) => ReactElement<any, any> | null;
-}
-
-export interface MediaQueryTypeProps {
-  children: (sizeMeta: MediaQueryTypeMete) => ReactElement<any, any> | null;
-}
-
-/*
- * #####################################################
- * ++++++++++++++++++++++ 权限类型 ++++++++++++++++++++++
- * #####################################################
- * */
-
-/**
- * 包含格式如 `authName:keys` 的权限数组
- * authName部分表示能代表某个权限的唯一名称
- * keys部分为`crud`类似的字符，表示对此功能的 增加(Create)、检索(Retrieve)、更新(Update)和删除(Delete)权限，keys中也可能包含用户自定义的key
- * */
-export type AuthStrings = string[];
-
-/** 表示crud中的c、r、u、d等简写字符的完整名称和详细信息的map */
-export interface AuthKeysMap {
-  [key: string]: {
-    /** 表示该简写的完整名称, 如 c 的完整 name 为 create */
-    name: string;
-    /** 标题 */
-    label: string;
-    /** 详细描述 */
-    desc?: string;
-  };
-}
-
-/** 表示crud中的c、r、u、d等简写字符的完整名称的映射map */
-export interface String2StringMap {
-  [key: string]: string;
-}
-
-/**
- * 由权限描述字符转换得到的详情对象, 用户自定义了key时可以扩展此类型
- * */
-export interface AuthDetail {
-  create?: boolean;
-  retrieve?: boolean;
-  update?: boolean;
-  delete?: boolean;
-  [key: string]: boolean | undefined;
-}
-
-/** 一组AuthSchemaMapItem */
-export interface AuthDetailMap {
-  [key: string]: AuthDetail;
-}
-
-/** 权限状态 */
-export interface AuthSeedState {
-  /** 用户当前的权限 */
-  auth: AuthStrings;
-  /** 根据当前auth转换得到的AuthSchemaMap, 此属性变更不触发subscribe订阅的函数 */
-  authDetailMap: AuthDetailMap | null;
 }

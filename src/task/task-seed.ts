@@ -12,6 +12,7 @@ const taskSeed = createSeed<TaskState>({
     taskList: [],
     adminProps: {
       tasks: [],
+      authPro: null as any,
     },
   },
 });

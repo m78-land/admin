@@ -24,6 +24,7 @@
     "jsx": "react",
     "strictPropertyInitialization": false,
     "importHelpers": true,
+    "skipLibCheck": true
   },
   "include": [
     "node_modules/@docusaurus/module-type-aliases/src/index.d.ts",

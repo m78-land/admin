@@ -15,7 +15,7 @@ const FuncLogo = () => {
   return (
     <div className="m78-admin_func-bar_logo" title={name}>
       <img className="m78-admin_func-bar_logo-img" src={logo} alt={name} />
-      <div className="ellipsis">{name}</div>
+      <div className="ellipsis mt-4">{name}</div>
     </div>
   );
 };

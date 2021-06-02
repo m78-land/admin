@@ -9,9 +9,8 @@ import { WILL_POP_MAP, WINE_OFFSET } from '../common/const';
 import taskSeed from './task-seed';
 import TaskWindowWrap from './task-window-wrap';
 import { updateByKeyEvent } from './event';
-import { adminWarn, emitConfig } from '../common/common';
+import { adminWarn, configGetter, emitConfig } from '../common/common';
 import task from './task';
-import { Auth } from '../auth/auth';
 
 /*
  * #####################################################
@@ -80,8 +79,9 @@ export function checkBeforeTaskEach(opt: TaskOptItem) {
  * 根据taskAuth检测是是否符合条件
  * */
 export function checkTaskAuth(opt: TaskOptItem) {
-  if (!isArray(opt.auth) || !opt.auth.length) return true;
-  return !Auth.auth(opt.auth);
+  const AuthPro = taskSeed.getState().adminProps.authPro;
+  if (!AuthPro || !isArray(opt.auth) || !opt.auth.length) return true;
+  return !AuthPro.auth(opt.auth);
 }
 
 /**
@@ -148,11 +148,20 @@ export function createTaskInstance(taskOpt: TaskOptItem, opt?: CreateTaskInstanc
  * 💥 此函数参数中的ctx是未完成状态的ctx，部分功能并不存在
  * */
 export function createMainTaskCtx(taskOpt: TaskOptItem, ctx: TaskCtx) {
-  const { id, name, component, icon, auth, ...wineState } = taskOpt;
+  const { id, name, component, icon, auth, taskName, initFull, ...wineState } = taskOpt;
+
+  const config = configGetter(taskSeed.getState());
+  const isDefaultFull = !(
+    wineState.width ||
+    wineState.height ||
+    wineState.sizeRatio ||
+    !config?.initFull
+  );
 
   // 主实例实现
   ctx.wine = Wine.render({
     ...wineState,
+    initFull: initFull || isDefaultFull,
     className: `J_task_${ctx.taskKey}`,
     content: <TaskWindowWrap Component={React.memo(component)} ctx={ctx} />,
     headerCustomer: renderBuiltInHeader,
