@@ -1340,6 +1340,15 @@
     "@babel/runtime" "^7.7.6"
     "@types/node" "^13.11.0"
 
+"@lxjx/utils@^1.14.0":
+  version "1.14.0"
+  resolved "https://registry.npmjs.org/@lxjx/utils/-/utils-1.14.0.tgz#2f9c68017e19591f47a6b18a2659c830e68bf100"
+  integrity sha512-IqlaXzCyWSld7KdB3MmKCio1BDMDEQvb7VHc9lSHWw+uSXNABbNoWhNBjGLCnZUBLwDMbowE7+gNlYlSfQqP0A==
+  dependencies:
+    "@babel/runtime" "^7.7.6"
+    "@types/node" "^13.11.0"
+    "@types/react" "^17.0.9"
+
 "@lxjx/validate-tools@^1.1.0":
   version "1.1.0"
   resolved "https://registry.npmjs.org/@lxjx/validate-tools/-/validate-tools-1.1.0.tgz#4061a7d6cb6b963892fcedbf724e686e5eedb811"
@@ -1887,7 +1896,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@17.0.3", "@types/react@^16.9.23":
+"@types/react@*", "@types/react@17.0.3", "@types/react@^16.9.23", "@types/react@^17.0.9":
   version "17.0.3"
   resolved "https://registry.npmjs.org/@types/react/-/react-17.0.3.tgz#ba6e215368501ac3826951eef2904574c262cc79"
   integrity sha512-wYOUxIgs2HZZ0ACNiIayItyluADNbONl7kt8lkLjVK8IitMH5QMyAh75Fwhmo37r1m7L2JaFj03sIfxBVDvRAg==

@@ -1,6 +1,6 @@
 /** 主窗口区域的偏移 */
 import { TaskWillPopMeta } from '../types';
-export declare const WINE_OFFSET_LEFT = 90;
+export declare const WINE_OFFSET_LEFT = 89;
 /** 主窗口区域的偏移 */
 export declare const WINE_OFFSET: {
     left: number;

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Scroller } from 'm78/scroller';
-import { checkElementVisible, isFunction } from '@lxjx/utils';
+import { isFunction, retry } from '@lxjx/utils';
 import clsx from 'clsx';
 import { useFn, useScroll, useSelf } from '@lxjx/hooks';
 import { MediaQuery } from 'm78/layout';
@@ -64,22 +64,34 @@ function WindowLayout({
 
     if (!cLabel) setCLabel(sideTabs[0].label);
 
-    self.sections = sideTabs
-      .map(item => ({
-        el: scrollNodeRef.current.querySelector(item.selector),
-        opt: item,
-      }))
-      .filter(item => !!item.el) as any;
+    return retry(
+      () => {
+        self.sections = sideTabs
+          .map(item => ({
+            el: scrollNodeRef.current.querySelector(item.selector),
+            opt: item,
+          }))
+          .filter(item => !!item.el) as any;
+
+        console.log(self.sections);
+
+        return !self.sections?.length;
+      },
+      1000,
+      { maxRetry: 5 },
+    ) as any;
   }, [sideTabs]);
 
   const scrollHandle = useFn(() => {
     if (self.sections?.length) {
-      const visibleNodes = self.sections.filter(
-        item =>
-          checkElementVisible(item.el, {
-            wrapEl: calcNodeRef.current,
-          }).visible,
-      );
+      const { top, height } = calcNodeRef.current.getBoundingClientRect();
+
+      const h = height * 2;
+
+      const visibleNodes = self.sections.filter(it => {
+        const bound = it.el.getBoundingClientRect();
+        return bound.top - h < top;
+      });
 
       if (visibleNodes.length) {
         const current = visibleNodes[visibleNodes.length - 1];

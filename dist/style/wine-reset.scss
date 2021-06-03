@@ -2,15 +2,17 @@
   &_decorate {
     border: 1px solid var(--m78-color-border);
     box-shadow: var(--m78-shadow-1-b);
-    border-radius: 0;
     background-color: var(--m78-body-bg);
+    border-radius: var(--m78-border-radius-md);
     //backface-visibility: hidden; /* 防止内容抖动 */
   }
 
-  .m78-wine_content {
-    //box-shadow: var(--m78-shadow-1-focus);
-    border-radius: var(--m78-border-radius);
-    border: 1px solid var(--m78-color-divider);
+  /* TODO: wine去掉默认边距后去掉 */
+  &_content {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 52px !important;
   }
 
   .m78-page-header {

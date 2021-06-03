@@ -27,18 +27,18 @@ var __rest = (source, exclude) => {
   return target;
 };
 import "@m78/admin/style/index.scss";
-import React, {useEffect, createContext, useRef, useContext, useState, useMemo} from "react";
+import React, {useState, useEffect, createContext, useMemo, useRef, useContext} from "react";
 import {Spin} from "m78/spin";
 import {createSeed} from "m78/seed";
 import Wine, {keypressAndClick} from "@m78/wine";
 import {m78Config} from "m78/config";
-import {Divider} from "m78/layout";
+import {Divider, MediaQueryContext, MediaQuery} from "m78/layout";
 import {Scroller} from "m78/scroller";
 import {ContextMenu, ContextMenuItem} from "m78/context-menu";
 import {DNDContext, DND} from "m78/dnd";
 import clsx from "clsx";
-import {createEvent, useFn, useMeasure, useSelf, useScroll, useSetState} from "@lxjx/hooks";
-import {isNumber, isArray, createRandString, isObject, isFunction, isBoolean, checkElementVisible} from "@lxjx/utils";
+import {createEvent, useFn, useSelf, useScroll} from "@lxjx/hooks";
+import {isNumber, createRandString, isObject, isArray, isFunction, isBoolean, retry} from "@lxjx/utils";
 import _debounce from "lodash/debounce";
 import {message} from "m78/message";
 import {PageHeader} from "m78/page-header";
@@ -56,7 +56,8 @@ const taskSeed = createSeed({
     taskOptionsIdMap: {},
     taskList: [],
     adminProps: {
-      tasks: []
+      tasks: [],
+      authPro: null
     }
   }
 });
@@ -70,6 +71,18 @@ function configGetter(state) {
 function emitConfig(conf) {
   const callback = taskSeed.getState().adminProps.onConfigChange;
   callback && callback(conf);
+}
+function useSubscribeAuthChange(seed) {
+  const [authKeyChangeFlag, setFlag] = useState(0);
+  useEffect(() => {
+    const subscribe = seed.subscribe;
+    return subscribe((changes) => {
+      if ("auth" in changes) {
+        setFlag((prev) => prev + 1);
+      }
+    });
+  }, []);
+  return authKeyChangeFlag;
 }
 const ConfigSync = () => {
   const config = taskSeed.useState(configGetter);
@@ -203,103 +216,13 @@ const renderBuiltInHeader = (props, instance, isFull) => {
     })))
   })));
 };
-const WINE_OFFSET_LEFT = 90;
+const WINE_OFFSET_LEFT = 89;
 const WINE_OFFSET = {
   left: WINE_OFFSET_LEFT,
-  top: 50
+  top: 49
 };
 const WILL_POP_MAP = {};
 const ctx = createContext({});
-var MediaQueryTypeValues;
-(function(MediaQueryTypeValues2) {
-  MediaQueryTypeValues2[MediaQueryTypeValues2["XS"] = 0] = "XS";
-  MediaQueryTypeValues2[MediaQueryTypeValues2["SM"] = 576] = "SM";
-  MediaQueryTypeValues2[MediaQueryTypeValues2["MD"] = 768] = "MD";
-  MediaQueryTypeValues2[MediaQueryTypeValues2["LG"] = 992] = "LG";
-  MediaQueryTypeValues2[MediaQueryTypeValues2["XL"] = 1200] = "XL";
-  MediaQueryTypeValues2[MediaQueryTypeValues2["XXL"] = 1600] = "XXL";
-})(MediaQueryTypeValues || (MediaQueryTypeValues = {}));
-var MediaQueryTypeKey;
-(function(MediaQueryTypeKey2) {
-  MediaQueryTypeKey2["XS"] = "xs";
-  MediaQueryTypeKey2["SM"] = "sm";
-  MediaQueryTypeKey2["MD"] = "md";
-  MediaQueryTypeKey2["LG"] = "lg";
-  MediaQueryTypeKey2["XL"] = "xl";
-  MediaQueryTypeKey2["XXL"] = "xxl";
-})(MediaQueryTypeKey || (MediaQueryTypeKey = {}));
-const mediaQueryCtx = createContext({
-  onChange: () => {
-  },
-  changeListeners: [],
-  meta: null
-});
-function calcType(size) {
-  if (size >= MediaQueryTypeValues.XXL) {
-    return MediaQueryTypeKey.XXL;
-  }
-  if (size >= MediaQueryTypeValues.XL && size < MediaQueryTypeValues.XXL) {
-    return MediaQueryTypeKey.XL;
-  }
-  if (size >= MediaQueryTypeValues.LG && size < MediaQueryTypeValues.XL) {
-    return MediaQueryTypeKey.LG;
-  }
-  if (size >= MediaQueryTypeValues.MD && size < MediaQueryTypeValues.LG) {
-    return MediaQueryTypeKey.MD;
-  }
-  if (size >= MediaQueryTypeValues.SM && size < MediaQueryTypeValues.MD) {
-    return MediaQueryTypeKey.SM;
-  }
-  return MediaQueryTypeKey.XS;
-}
-const MediaQueryContext = ({children}) => {
-  const value = useRef({
-    onChange: () => {
-    },
-    changeListeners: [],
-    meta: null
-  });
-  value.current.onChange = useFn(({width, height}) => {
-    const type = calcType(width);
-    const changeListeners = value.current.changeListeners;
-    const size = {
-      width,
-      height
-    };
-    const is = {
-      isXS: () => type === MediaQueryTypeKey.XS,
-      isSM: () => type === MediaQueryTypeKey.SM,
-      isMD: () => type === MediaQueryTypeKey.MD,
-      isLG: () => type === MediaQueryTypeKey.LG,
-      isXL: () => type === MediaQueryTypeKey.XL,
-      isXXL: () => type === MediaQueryTypeKey.XXL,
-      isSmall: () => is.isXS() || is.isSM(),
-      isMedium: () => is.isMD() || is.isLG(),
-      isLarge: () => !is.isSmall() && !is.isMedium()
-    };
-    const full = __assign(__assign(__assign({}, size), {type}), is);
-    value.current.meta = full;
-    if (isArray(changeListeners)) {
-      changeListeners.forEach((fn) => fn(full));
-    }
-  });
-  return /* @__PURE__ */ React.createElement(mediaQueryCtx.Provider, {
-    value: value.current
-  }, children);
-};
-const MediaQueryCalc = () => {
-  const [ref, bound] = useMeasure();
-  const mqCtx = useContext(mediaQueryCtx);
-  useEffect(() => {
-    if (bound.width === 0 && bound.height === 0)
-      return;
-    mqCtx.onChange(bound);
-  }, [bound]);
-  return /* @__PURE__ */ React.createElement("div", {
-    ref,
-    className: "m78-admin_media-query_calc-node"
-  });
-};
 const LinkProvider = ctx.Provider;
 const loadingNode = /* @__PURE__ */ React.createElement(Spin, {
   text: "\u6B63\u5728\u52A0\u8F7D\u8D44\u6E90",
@@ -311,7 +234,7 @@ const TaskWindowWrap = ({ctx: ctx2, Component}) => {
   const hasIndex = isNumber(ctx2.currentChildIndex);
   return /* @__PURE__ */ React.createElement(MediaQueryContext, null, /* @__PURE__ */ React.createElement(LinkProvider, {
     value: {parent: ctx2}
-  }, /* @__PURE__ */ React.createElement(MediaQueryCalc, null), /* @__PURE__ */ React.createElement("div", {
+  }, /* @__PURE__ */ React.createElement("div", {
     className: clsx({hide: hasIndex})
   }, /* @__PURE__ */ React.createElement(React.Suspense, {
     fallback: loadingNode
@@ -325,144 +248,6 @@ const TaskWindowWrap = ({ctx: ctx2, Component}) => {
     }, /* @__PURE__ */ React.createElement(SubComponent, __assign({}, subTask))));
   })));
 };
-const ADMIN_AUTH_NAME = "ADMIN_AUTH";
-const builtInAuthKeysMap = {
-  c: {
-    name: "create",
-    label: "\u521B\u5EFA"
-  },
-  r: {
-    name: "retrieve",
-    label: "\u67E5\u8BE2"
-  },
-  u: {
-    name: "update",
-    label: "\u66F4\u65B0"
-  },
-  d: {
-    name: "delete",
-    label: "\u5220\u9664"
-  }
-};
-function getAuthKeyMap() {
-  const customAuthKeysMap = taskSeed.getState().adminProps.customAuthKeysMap;
-  return __assign(__assign({}, builtInAuthKeysMap), customAuthKeysMap);
-}
-function getAuthNameInfoMap() {
-  const keyMap = getAuthKeyMap();
-  const obj = {};
-  Object.entries(keyMap).forEach(([_, infos]) => {
-    obj[infos.name] = infos;
-  });
-  return obj;
-}
-function parseAuthString(strArr) {
-  if (!isArray(strArr) || !strArr.length)
-    return null;
-  const f = strArr.map((key) => key.split(":")).filter(([k, a]) => k && k.length && a && a.length);
-  if (!f.length)
-    return null;
-  const map = {};
-  const authKeyMap = getAuthKeyMap();
-  f.forEach(([k, a]) => {
-    const auths = a.split("");
-    let cAuth;
-    auths.forEach((authKey) => {
-      const current = authKeyMap[authKey];
-      if (current) {
-        if (!cAuth)
-          cAuth = {};
-        cAuth[current.name] = true;
-      }
-    });
-    if (cAuth) {
-      map[k] = cAuth;
-    }
-  });
-  return map;
-}
-const authSeed = createSeed({
-  state: {
-    auth: [],
-    authDetailMap: null
-  },
-  validators: {
-    [ADMIN_AUTH_NAME]: ({authDetailMap}, extra) => {
-      const authNameMap = taskSeed.getState().adminProps.authNameMap;
-      if (!authDetailMap) {
-        return {
-          label: "\u{1F625} \u6CA1\u6709\u4EFB\u4F55\u6743\u9650~"
-        };
-      }
-      if (!isArray(extra) || !extra.length)
-        return;
-      const beTestAuthMap = parseAuthString(extra);
-      if (!beTestAuthMap)
-        return;
-      let rejectData;
-      const infosMap = getAuthNameInfoMap();
-      for (const [key, beTestAuth] of Object.entries(beTestAuthMap)) {
-        const userAuth = authDetailMap[key];
-        const keys = Object.keys(beTestAuth);
-        const rejectKeys = keys.filter((k) => !(beTestAuth[k] && userAuth && userAuth[k]));
-        if (rejectKeys.length) {
-          const labelKeys = rejectKeys.map((item) => infosMap[item] ? infosMap[item].label : item);
-          if (!rejectData)
-            rejectData = {};
-          rejectData[key] = labelKeys.join(", ");
-        }
-      }
-      if (rejectData) {
-        return {
-          label: "\u6CA1\u6709\u8BBF\u95EE\u6743\u9650",
-          desc: /* @__PURE__ */ React.createElement("div", {
-            className: "lh-2"
-          }, Object.entries(rejectData).map(([key, str], ind) => /* @__PURE__ */ React.createElement("div", {
-            key: ind
-          }, /* @__PURE__ */ React.createElement("span", {
-            className: "color-title"
-          }, (authNameMap == null ? void 0 : authNameMap[key]) || key, ": "), " \u7F3A\u5C11", /* @__PURE__ */ React.createElement("span", {
-            className: "color-error"
-          }, " ", str, " "), "\u6743\u9650"))),
-          rejectData
-        };
-      }
-    }
-  }
-});
-authSeed.subscribe(({auth}) => {
-  if (auth) {
-    authSeed.getState().authDetailMap = parseAuthString(auth);
-  }
-});
-const Auth = (props) => {
-  return /* @__PURE__ */ React.createElement(authSeed.Auth, __assign(__assign({}, props), {
-    keys: [ADMIN_AUTH_NAME],
-    extra: props.keys
-  }), props.children);
-};
-Auth.setAuth = (auth) => {
-  authSeed.setState({
-    auth
-  });
-};
-Auth.getAuth = () => authSeed.getState().auth;
-Auth.getAuthDetail = () => authSeed.getState().authDetailMap;
-Auth.Auth = Auth;
-Auth.useAuth = (auth) => authSeed.useAuth([ADMIN_AUTH_NAME], {
-  extra: auth
-});
-Auth.auth = (auth) => authSeed.auth([ADMIN_AUTH_NAME], {
-  extra: auth
-});
-Auth.withAuth = (_a) => {
-  var {keys} = _a, o = __rest(_a, ["keys"]);
-  return authSeed.withAuth(__assign(__assign({}, o), {
-    extra: keys,
-    keys: [ADMIN_AUTH_NAME]
-  }));
-};
-Auth.useCurrentAuth = () => authSeed.useState(({auth}) => auth);
 function useSyncWineTask() {
   useEffect(() => {
     const closeHandle = _debounce(() => {
@@ -493,9 +278,10 @@ function checkBeforeTaskEach(opt) {
   return checkFn(opt);
 }
 function checkTaskAuth(opt) {
-  if (!isArray(opt.auth) || !opt.auth.length)
+  const AuthPro = taskSeed.getState().adminProps.authPro;
+  if (!AuthPro || !isArray(opt.auth) || !opt.auth.length)
     return true;
-  return !Auth.auth(opt.auth);
+  return !AuthPro.auth(opt.auth);
 }
 function checkTaskAuthAndTips(opt) {
   const check = checkTaskAuth(opt);
@@ -536,8 +322,11 @@ function createTaskInstance(taskOpt, opt) {
   return ctx2;
 }
 function createMainTaskCtx(taskOpt, ctx2) {
-  const {id, name, component, icon, auth} = taskOpt, wineState = __rest(taskOpt, ["id", "name", "component", "icon", "auth"]);
+  const {id, name, component, icon, auth, taskName, initFull} = taskOpt, wineState = __rest(taskOpt, ["id", "name", "component", "icon", "auth", "taskName", "initFull"]);
+  const config = configGetter(taskSeed.getState());
+  const isDefaultFull = !(wineState.width || wineState.height || wineState.sizeRatio || !(config == null ? void 0 : config.initFull));
   ctx2.wine = Wine.render(__assign(__assign({}, wineState), {
+    initFull: initFull || isDefaultFull,
     className: `J_task_${ctx2.taskKey}`,
     content: /* @__PURE__ */ React.createElement(TaskWindowWrap, {
       Component: React.memo(component),
@@ -831,9 +620,10 @@ const task = {
 const FuncCollects = () => {
   const map = taskSeed.useState((state) => state.taskOptionsIdMap);
   const taskList = taskSeed.useState((state) => state.taskList);
+  const AuthPro = taskSeed.useState((state) => state.adminProps.authPro);
   const config = taskSeed.useState(configGetter);
   const collect = (config == null ? void 0 : config.collectFunc) || [];
-  Auth.useCurrentAuth();
+  useSubscribeAuthChange(AuthPro.authInstance.seed);
   const acceptHandle = useFn((e) => {
     const list = [...collect];
     const target = e.target.data;
@@ -923,7 +713,7 @@ const FuncLogo = () => {
     src: logo,
     alt: name
   }), /* @__PURE__ */ React.createElement("div", {
-    className: "ellipsis"
+    className: "ellipsis mt-4"
   }, name));
 };
 const FuncFoot = () => {
@@ -941,31 +731,37 @@ const FuncBar = () => {
 };
 const FuncList = () => {
   const tasks = taskSeed.useState((state) => state.taskOptions);
-  const adminProps = taskSeed.useState((state) => state.adminProps);
-  const config = adminProps.config;
-  const authK = Auth.useCurrentAuth();
+  const AuthPro = taskSeed.useState((state) => state.adminProps.authPro);
+  const config = taskSeed.useState(configGetter);
   const [popperShow, setPopperShow] = useState(false);
-  const filterAuthTasks = useMemo(filterNotPassNode, [tasks, authK]);
+  const authKeyChangeFlag = useSubscribeAuthChange(AuthPro.authInstance.seed);
+  const filterAuthTasks = useMemo(filterNotPassNode, [tasks, authKeyChangeFlag]);
   function filterNotPassNode() {
-    const _tasks = [];
-    tasks.forEach((item) => {
-      if (isPassNode(item)) {
-        const {height} = item, i = __rest(item, ["height"]);
-        _tasks.push(i);
-      }
-      if ("children" in item && item.children.length) {
-        const _child = item.children.filter(isPassNode);
-        if (_child.length) {
-          _tasks.push(__assign(__assign({}, item), {
-            children: _child.map((_a) => {
-              var {height} = _a, i = __rest(_a, ["height"]);
-              return i;
-            })
-          }));
+    if (!AuthPro)
+      return tasks;
+    const filterNodes = (list) => {
+      const _tasks = [];
+      if (!(list == null ? void 0 : list.length))
+        return _tasks;
+      list.forEach((item) => {
+        if (isPassNode(item)) {
+          const {height} = item, i = __rest(item, ["height"]);
+          _tasks.push(i);
+          return;
         }
-      }
-    });
-    return _tasks;
+        if ("children" in item && item.children.length) {
+          const nChildren = filterNodes(item.children);
+          if (nChildren == null ? void 0 : nChildren.length) {
+            _tasks.push({
+              name: item.name,
+              children: nChildren
+            });
+          }
+        }
+      });
+      return _tasks;
+    };
+    return filterNodes(tasks);
   }
   function renderAction(node) {
     var _a;
@@ -1219,8 +1015,8 @@ function M78AdminImpl(props) {
   }
   return /* @__PURE__ */ React.createElement(M78AdminCore, __assign({}, props));
 }
-const FuncBtn = (_b) => {
-  var {icon, text, extraNode, small, circle, className, style} = _b, ppp = __rest(_b, ["icon", "text", "extraNode", "small", "circle", "className", "style"]);
+const FuncBtn = (_a) => {
+  var {icon, text, extraNode, small, circle, className, style} = _a, ppp = __rest(_a, ["icon", "text", "extraNode", "small", "circle", "className", "style"]);
   return /* @__PURE__ */ React.createElement("div", __assign({
     className: clsx("m78-admin_func-bar_func", className, small && "__small", circle && "__circle"),
     style
@@ -1256,7 +1052,13 @@ const Login = ({logo, title, desc, content}) => {
     className: "color-second"
   }, desc)), content));
 };
-function WindowLayout(_c) {
+var TaskWindowTopBarTypeKeys;
+(function(TaskWindowTopBarTypeKeys2) {
+  TaskWindowTopBarTypeKeys2["toggle"] = "toggle";
+  TaskWindowTopBarTypeKeys2["eclipse"] = "eclipse";
+  TaskWindowTopBarTypeKeys2["always"] = "always";
+})(TaskWindowTopBarTypeKeys || (TaskWindowTopBarTypeKeys = {}));
+function WindowLayout(_b) {
   var {
     children,
     side,
@@ -1267,9 +1069,10 @@ function WindowLayout(_c) {
     scrollRef,
     sideTabs,
     topBar,
-    topBarAlwaysShow = false,
+    topBarType = TaskWindowTopBarTypeKeys.toggle,
+    topBarDefaultShow = false,
     topBarIcon
-  } = _c, ppp = __rest(_c, [
+  } = _b, ppp = __rest(_b, [
     "children",
     "side",
     "anchors",
@@ -1279,14 +1082,15 @@ function WindowLayout(_c) {
     "scrollRef",
     "sideTabs",
     "topBar",
-    "topBarAlwaysShow",
+    "topBarType",
+    "topBarDefaultShow",
     "topBarIcon"
   ]);
   const [cLabel, setCLabel] = useState("");
   const self = useSelf();
   const calcNodeRef = useRef(null);
   const scrollNodeRef = useRef(null);
-  const [topBarVisible, setBotBarVisible] = useState(topBarAlwaysShow);
+  const [topBarVisible, setBotBarVisible] = useState(topBarDefaultShow);
   const [sideVisible, setSideVisible] = useState(false);
   useEffect(() => {
     if (!(sideTabs == null ? void 0 : sideTabs.length)) {
@@ -1295,17 +1099,25 @@ function WindowLayout(_c) {
     }
     if (!cLabel)
       setCLabel(sideTabs[0].label);
-    self.sections = sideTabs.map((item) => ({
-      el: scrollNodeRef.current.querySelector(item.selector),
-      opt: item
-    })).filter((item) => !!item.el);
+    return retry(() => {
+      var _a;
+      self.sections = sideTabs.map((item) => ({
+        el: scrollNodeRef.current.querySelector(item.selector),
+        opt: item
+      })).filter((item) => !!item.el);
+      console.log(self.sections);
+      return !((_a = self.sections) == null ? void 0 : _a.length);
+    }, 1e3, {maxRetry: 5});
   }, [sideTabs]);
   const scrollHandle = useFn(() => {
     var _a;
     if ((_a = self.sections) == null ? void 0 : _a.length) {
-      const visibleNodes = self.sections.filter((item) => checkElementVisible(item.el, {
-        wrapEl: calcNodeRef.current
-      }).visible);
+      const {top, height} = calcNodeRef.current.getBoundingClientRect();
+      const h = height * 2;
+      const visibleNodes = self.sections.filter((it) => {
+        const bound = it.el.getBoundingClientRect();
+        return bound.top - h < top;
+      });
       if (visibleNodes.length) {
         const current = visibleNodes[visibleNodes.length - 1];
         const lb = current.opt.label;
@@ -1339,7 +1151,7 @@ function WindowLayout(_c) {
         onClick: () => scrollToNode(item.label, item.selector)
       }, item.label)));
     }
-    return /* @__PURE__ */ React.createElement(MediaQueryType, null, (meta) => {
+    return /* @__PURE__ */ React.createElement(MediaQuery, null, (meta) => {
       const isSmall = meta.isSmall();
       return /* @__PURE__ */ React.createElement("div", {
         className: clsx("m78-admin_window-layout_side", {
@@ -1353,14 +1165,18 @@ function WindowLayout(_c) {
       }, "\u{1F4D1}"));
     });
   }
+  const isAlways = topBarType === TaskWindowTopBarTypeKeys.always;
+  const isToggle = topBarType === TaskWindowTopBarTypeKeys.toggle;
   return /* @__PURE__ */ React.createElement("div", __assign({
     className: clsx("m78-admin_window-layout", className),
     style
   }, ppp), renderSide(), /* @__PURE__ */ React.createElement("div", {
     className: "m78-admin_window-layout_main"
   }, topBar && /* @__PURE__ */ React.createElement("div", {
-    className: clsx("m78-admin_window-layout_top-bar", !topBarVisible && "__hide")
-  }, topBar, !topBarAlwaysShow && /* @__PURE__ */ React.createElement("span", {
+    className: clsx("m78-admin_window-layout_top-bar-wrap", isToggle && !topBarVisible && "__hide")
+  }, /* @__PURE__ */ React.createElement("div", {
+    className: "m78-admin_window-layout_top-bar m78-scrollbar"
+  }, isFunction(topBar) ? topBar(topBarVisible) : topBar), !isAlways && /* @__PURE__ */ React.createElement("span", {
     title: topBarVisible ? "\u6536\u8D77\u9876\u680F" : "\u5C55\u5F00\u9876\u680F",
     className: "m78-admin_window-layout_top-bar-toggler",
     onClick: () => setBotBarVisible((p) => !p)
@@ -1376,68 +1192,8 @@ function WindowLayout(_c) {
     className: "m78-admin_window-layout_calc-node"
   })));
 }
-function useMediaQuery(onChange) {
-  const mqCtx = useContext(mediaQueryCtx);
-  const oc = useFn(onChange);
-  useEffect(() => {
-    mqCtx.changeListeners.push(oc);
-    mqCtx.meta && oc(mqCtx.meta);
-    return () => {
-      const ind = mqCtx.changeListeners.indexOf(oc);
-      if (ind !== -1) {
-        mqCtx.changeListeners.splice(ind, 1);
-      }
-    };
-  }, []);
-}
-function useMediaQuerySize() {
-  const [state, setState] = useSetState({
-    size: null
-  });
-  useMediaQuery((meta) => {
-    var _a, _b;
-    if (meta.width !== ((_a = state.size) == null ? void 0 : _a.width) || meta.height !== ((_b = state.size) == null ? void 0 : _b.height)) {
-      setState({
-        size: {
-          width: meta.width,
-          height: meta.height
-        }
-      });
-    }
-  });
-  return state.size;
-}
-function useMediaQueryType() {
-  const [state, setState] = useSetState({
-    type: null
-  });
-  useMediaQuery((_a) => {
-    var {width, height} = _a, type = __rest(_a, ["width", "height"]);
-    var _a2;
-    if (type.type !== ((_a2 = state.type) == null ? void 0 : _a2.type)) {
-      setState({
-        type
-      });
-    }
-  });
-  return state.type;
-}
-function MediaQuery({onChange}) {
-  useMediaQuery(onChange);
-  return null;
-}
-function MediaQuerySize({children}) {
-  const size = useMediaQuerySize();
-  return size ? children(size) : null;
-}
-function MediaQueryType({children}) {
-  const type = useMediaQueryType();
-  return type ? children(type) : null;
-}
-MediaQuery.Size = MediaQuerySize;
-MediaQuery.Type = MediaQueryType;
-const Link = (_d) => {
-  var {children, replace: replace2, id, param, blank, className, style} = _d, ppp = __rest(_d, ["children", "replace", "id", "param", "blank", "className", "style"]);
+const Link = (_c) => {
+  var {children, replace: replace2, id, param, blank, className, style} = _c, ppp = __rest(_c, ["children", "replace", "id", "param", "blank", "className", "style"]);
   const ctx$1 = useContext(ctx);
   const openHandle = useFn(() => {
     if (blank) {
@@ -1461,4 +1217,4 @@ const Link = (_d) => {
     onClick: openHandle
   });
 };
-export {Auth, Badge, FuncBtn, Link, Login, M78AdminImpl as M78Admin, MediaQuery, MediaQuerySize, MediaQueryType, MediaQueryTypeKey, MediaQueryTypeValues, WindowLayout, useMediaQuery, useMediaQuerySize, useMediaQueryType};
+export {Badge, FuncBtn, Link, Login, M78AdminImpl as M78Admin, TaskWindowTopBarTypeKeys, WindowLayout, task};
