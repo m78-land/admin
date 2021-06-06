@@ -950,9 +950,10 @@ const DesktopItems = () => {
     target: "_blank",
     rel: "noreferrer"
   }, "M78"), "-| |-", /* @__PURE__ */ React.createElement("a", {
-    href: " https://github.com/xianjie-li",
-    target: "_blank"
-  }, "Github"), "-|")));
+    href: "https://github.com/xianjie-li",
+    target: "_blank",
+    rel: "noreferrer"
+  }, "Lime"), "-|")));
 };
 const BaseLayout = () => {
   const width = taskSeed.useState((state) => state.adminProps.width);
@@ -1058,6 +1059,9 @@ var TaskWindowTopBarTypeKeys;
   TaskWindowTopBarTypeKeys2["eclipse"] = "eclipse";
   TaskWindowTopBarTypeKeys2["always"] = "always";
 })(TaskWindowTopBarTypeKeys || (TaskWindowTopBarTypeKeys = {}));
+const builtInToggleIconRender = (toggle) => /* @__PURE__ */ React.createElement("span", {
+  className: clsx("m78-admin_window-layout_top-bar-icon", toggle && "__active")
+}, "\u2699");
 function WindowLayout(_b) {
   var {
     children,
@@ -1071,7 +1075,7 @@ function WindowLayout(_b) {
     topBar,
     topBarType = TaskWindowTopBarTypeKeys.toggle,
     topBarDefaultShow = false,
-    topBarIcon
+    topBarIconCustomer = builtInToggleIconRender
   } = _b, ppp = __rest(_b, [
     "children",
     "side",
@@ -1084,7 +1088,7 @@ function WindowLayout(_b) {
     "topBar",
     "topBarType",
     "topBarDefaultShow",
-    "topBarIcon"
+    "topBarIconCustomer"
   ]);
   const [cLabel, setCLabel] = useState("");
   const self = useSelf();
@@ -1180,9 +1184,7 @@ function WindowLayout(_b) {
     title: topBarVisible ? "\u6536\u8D77\u9876\u680F" : "\u5C55\u5F00\u9876\u680F",
     className: "m78-admin_window-layout_top-bar-toggler",
     onClick: () => setBotBarVisible((p) => !p)
-  }, /* @__PURE__ */ React.createElement("span", {
-    className: "m78-admin_window-layout_top-bar-icon"
-  }, topBarIcon || "\u2699"))), /* @__PURE__ */ React.createElement("div", {
+  }, topBarIconCustomer(topBarVisible))), /* @__PURE__ */ React.createElement("div", {
     ref: scrollNodeRef,
     className: "m78-admin_window-layout_content m78-scrollbar"
   }, children), footer && /* @__PURE__ */ React.createElement("div", {

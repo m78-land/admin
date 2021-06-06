@@ -1,6 +1,6 @@
 {
   "name": "@m78/admin",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Admin for windows&tasks, base on M78",
   "keywords": [
     "admin",
@@ -39,6 +39,7 @@
     "@types/react-dom": ">= 16.0.0"
   },
   "dependencies": {
+    "@ant-design/colors": "^6.0.0",
     "@lxjx/hooks": "^1.16.4",
     "@lxjx/utils": "^1.14.0",
     "@m78/style": "^1.0.29",

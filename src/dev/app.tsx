@@ -4,6 +4,8 @@ import { createAuthPro } from 'm78/auth';
 import { createSeed } from 'm78/seed';
 import { Button } from 'm78/button';
 
+import { TinyColor } from '@ctrl/tinycolor';
+import { generate } from '@ant-design/colors';
 import { M78Admin, Badge, FuncBtn } from '../index';
 import { M78AdminConfig, TaskOpt } from '../types';
 
@@ -191,6 +193,30 @@ const App = () => {
       desktopNode={
         <div>
           <span>🎉🎉欢迎</span>
+          <input
+            type="color"
+            onChange={e => {
+              console.log(e.target.value);
+              const str = e.target.value;
+
+              setConfig(prev => ({
+                ...prev,
+                color: str,
+              }));
+            }}
+          />
+          <input
+            type="color"
+            onChange={e => {
+              console.log(e.target.value);
+              const str = e.target.value;
+
+              setConfig(prev => ({
+                ...prev,
+                subColor: str,
+              }));
+            }}
+          />
           <Button onClick={() => AuthPro.setAuth(['user:cr', 'setting:ud'])}>
             ['user:cr', 'setting:ud']
           </Button>

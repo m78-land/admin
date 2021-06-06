@@ -1,8 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import Wine from '@m78/wine';
 import { m78Config } from 'm78/config';
 import taskSeed from '../task/task-seed';
-import { configGetter } from '../common/common';
+import { configGetter, generateThemeColorRules } from '../common/common';
 
 /**
  * 监听配置变更并对特定配置进行处理
@@ -10,34 +10,63 @@ import { configGetter } from '../common/common';
 const ConfigSync = () => {
   const config = taskSeed.useState(configGetter);
 
+  /*
+   * #################################
+   * 主题模式切换
+   * #################################
+   * */
+
   const darkMode = config?.darkMode || false;
 
-  const maxWindow = config?.maxWindow || 12;
-
-  const color = config?.color;
-
-  const subColor = config?.subColor;
-
-  /* 主题模式切换 */
   useEffect(() => {
     m78Config.setState({
       darkMode,
     });
   }, [darkMode]);
 
-  /* 最大实例改变 */
+  /*
+   * #################################
+   * 最大实例改变
+   * #################################
+   * */
+
+  const maxWindow = config?.maxWindow || 12;
+
   useEffect(() => {
     Wine.setMaxInstance(maxWindow);
   }, [maxWindow]);
 
+  /*
+   * #################################
+   * 主题色配置操作
+   * #################################
+   * */
+
+  const color = config?.color;
+
+  const subColor = config?.subColor;
+
+  /** 注入自定义css变量的style tag */
+  const styleTag = useMemo(() => {
+    const tag = document.createElement('style');
+    tag.setAttribute('type', 'text/css');
+    tag.setAttribute('data-name', 'm78-theme-custom');
+    document.head.appendChild(tag);
+    return tag;
+  }, []);
+
   /* 主题色改变 */
   useEffect(() => {
-    const dSty = document.documentElement.style;
-    if (dSty.setProperty) {
-      dSty.setProperty('--m78-color-6', color || '');
-      dSty.setProperty('--m78-color-sub-6', subColor || '');
-    }
+    styleTag.innerHTML = generateThemeColorRules(color, subColor);
   }, [color, subColor]);
+
+  /* 销毁创建的style节点 */
+  useEffect(
+    () => () => {
+      document.head.removeChild(styleTag);
+    },
+    [],
+  );
 
   return null;
 };

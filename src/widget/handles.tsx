@@ -1,6 +1,9 @@
 import { useEffect } from 'react';
 import { WINE_OFFSET, WINE_OFFSET_LEFT } from '../common/const';
 
+/**
+ * 处理程序
+ * */
 const Handles = () => {
   // 更新传递给wine的bound信息, wine内部不会改变引用，直接改原对象即可
   useEffect(() => {
@@ -11,6 +14,8 @@ const Handles = () => {
         WINE_OFFSET.left = WINE_OFFSET_LEFT;
       }
     };
+
+    resize();
 
     window.addEventListener('resize', resize);
 

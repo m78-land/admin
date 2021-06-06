@@ -233,8 +233,8 @@ export interface TaskWindowLayoutProps extends ComponentBasePropsWithAny {
     topBarType?: TaskWindowTopBarTypeKeys | 'toggle' | 'eclipse' | 'always';
     /** topBarType为toggle时, 默认是否显示topBar */
     topBarDefaultShow?: boolean;
-    /** 自定义topBar展开按钮的图标 */
-    topBarIcon?: React.ReactNode;
+    /** 自定义topBar展开按钮的图标, toggle为当前展开状态 */
+    topBarIconCustomer?: (toggle: boolean) => React.ReactNode;
     /** 左侧栏目内容，传入sideTabs时，此项被忽略 */
     side?: React.ReactNode;
     /** 生成侧栏tab，点击tab时会跳转到对应选择器的内容，滚动到对应区域时会同步到对应tab */

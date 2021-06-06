@@ -73,7 +73,7 @@
     max-height: 50%;
     z-index: 100;
     border-bottom: 1px solid var(--m78-color-border);
-    margin-bottom: var(--m78-space-1);
+    //margin-bottom: var(--m78-space-1);
     padding: var(--m78-space-1);
 
     &.__hide {
@@ -109,6 +109,15 @@
     z-index: 100;
     background-color: var(--m78-body-bg);
     user-select: none;
+  }
+
+  &_top-bar-icon {
+    transform: rotate(0);
+    transition: transform 0.3s;
+  }
+
+  &_top-bar-icon.__active {
+    transform: rotate(90deg) scale(1.1);
   }
 
   &_footer {
