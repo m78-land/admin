@@ -21,8 +21,8 @@ const DesktopItems = () => {
               M78
             </a>
             -| |-
-            <a href=" https://github.com/xianjie-li" target="_blank">
-              Github
+            <a href="https://github.com/xianjie-li" target="_blank" rel="noreferrer">
+              Lime
             </a>
             -|
           </>

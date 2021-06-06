@@ -20,10 +20,14 @@ interface Self {
   }> | null;
 }
 
+/** 内置顶栏按钮渲染器 */
+const builtInToggleIconRender: TaskWindowLayoutProps['topBarIconCustomer'] = (toggle: boolean) => (
+  <span className={clsx('m78-admin_window-layout_top-bar-icon', toggle && '__active')}>⚙</span>
+);
+
 /**
- * 为窗口提供可选的窗口基础布局:
- * - 包含内容区域、窗口底部操作区、侧栏、顶栏
- * - 使用MediaQuery系列组件进行媒体查询时，此组件是必选的父组件
+ * 为窗口提供可选的基础布局:
+ * - 包含内容区域、底部操作区、侧栏、顶栏
  * */
 function WindowLayout({
   children,
@@ -37,7 +41,7 @@ function WindowLayout({
   topBar,
   topBarType = TaskWindowTopBarTypeKeys.toggle,
   topBarDefaultShow = false,
-  topBarIcon,
+  topBarIconCustomer = builtInToggleIconRender,
   ...ppp
 }: TaskWindowLayoutProps) {
   /** 当前选中节点的tab */
@@ -192,7 +196,7 @@ function WindowLayout({
                 className="m78-admin_window-layout_top-bar-toggler"
                 onClick={() => setBotBarVisible(p => !p)}
               >
-                <span className="m78-admin_window-layout_top-bar-icon">{topBarIcon || '⚙'}</span>
+                {topBarIconCustomer!(topBarVisible)}
               </span>
             )}
           </div>
