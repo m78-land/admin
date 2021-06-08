@@ -77,8 +77,6 @@ function WindowLayout({
           }))
           .filter(item => !!item.el) as any;
 
-        console.log(self.sections);
-
         return !self.sections?.length;
       },
       1000,

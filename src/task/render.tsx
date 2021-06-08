@@ -6,6 +6,7 @@ import React from 'react';
 import { Divider } from 'm78/layout';
 import Crumbs from '../widget/unit/crumbs';
 import TaskNameDynamic from '../widget/task/task-name-dynamic';
+import { TaskCtx } from '../types';
 
 /**
  * 自定义渲染任务窗口头部
@@ -16,13 +17,17 @@ export const renderBuiltInHeader: NonNullable<WineProps['state']['headerCustomer
   isFull,
 ) => {
   const taskOpt = (instance.state as any).taskOption;
-  const ctx = (instance.state as any).ctx;
+  const ctx: TaskCtx = (instance.state as any).ctx;
 
   return (
     <ContextMenu
       content={
         <div>
-          <ContextMenuItem title="刷新" onClick={ctx.refresh} />
+          <ContextMenuItem
+            title="刷新窗口"
+            desc="该窗口下所有任务将会被重置"
+            onClick={ctx.wine.current?.refresh}
+          />
           <ContextMenuItem title="最小化" onClick={instance.hide} />
           <ContextMenuItem title="最大化" onClick={instance.current?.full} />
           <ContextMenuItem title="关闭" onClick={ctx.dispose} />

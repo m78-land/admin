@@ -24,7 +24,7 @@ const TaskTab = ({ instance }: Props) => {
     <ContextMenu
       content={
         <div>
-          <ContextMenuItem title="刷新" onClick={instance.refresh} />
+          <ContextMenuItem title="刷新窗口" onClick={instance.wine.current?.refresh} />
           <ContextMenuItem
             title="关闭其他窗口"
             onClick={() => closeOtherTaskByKey(instance.taskKey)}

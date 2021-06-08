@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import './style.scss';
-import { createAuthPro } from 'm78/auth';
-import { createSeed } from 'm78/seed';
 import { Button } from 'm78/button';
 
-import { TinyColor } from '@ctrl/tinycolor';
-import { generate } from '@ant-design/colors';
-import { M78Admin, Badge, FuncBtn } from '../index';
+import { M78Admin, Badge, FuncBtn, Link, task } from '../index';
 import { M78AdminConfig, TaskOpt } from '../types';
+import { AuthPro } from './AuthPro';
 
 const TestLazy = React.lazy(() => import('./Test'));
 const TestLazy2 = React.lazy(() => import('./Test2'));
@@ -39,6 +36,7 @@ const opt: TaskOpt = [
         icon: '✂',
         component: TestLazy3,
         taskName: ctx => ctx.param.name || '呵呵哒',
+        singleton: true,
         // auth: ['user:crud', 'setting:cud'],
       },
       {
@@ -130,25 +128,6 @@ const opt: TaskOpt = [
   },
 ];
 
-const AuthPro = createAuthPro({
-  seed: createSeed(),
-  auth: ['user:cr'],
-  authNameMap: {
-    user: '用户',
-    setting: '设置',
-  },
-  customAuthKeysMap: {
-    b: {
-      name: 'batch',
-      label: '批处理',
-    },
-    p: {
-      name: 'publish',
-      label: '发布内容',
-    },
-  },
-});
-
 // Auth.setAuth(['user:cr', 'setting:ud']);
 
 const App = () => {
@@ -186,79 +165,99 @@ const App = () => {
   // );
 
   return (
-    <M78Admin
-      // width="70vw"
-      // height="70vh"
-      tasks={opt}
-      desktopNode={
-        <div>
-          <span>🎉🎉欢迎</span>
-          <input
-            type="color"
-            onChange={e => {
-              console.log(e.target.value);
-              const str = e.target.value;
+    <>
+      <M78Admin
+        // width="70vw"
+        // height="70vh"
+        tasks={opt}
+        desktopNode={
+          <div>
+            <span>🎉🎉欢迎</span>
 
-              setConfig(prev => ({
-                ...prev,
-                color: str,
-              }));
-            }}
-          />
-          <input
-            type="color"
-            onChange={e => {
-              console.log(e.target.value);
-              const str = e.target.value;
+            <Link id="role1" param={{ name: 'lxj' }}>
+              跳转 role1
+            </Link>
 
-              setConfig(prev => ({
-                ...prev,
-                subColor: str,
-              }));
-            }}
-          />
-          <Button onClick={() => AuthPro.setAuth(['user:cr', 'setting:ud'])}>
-            ['user:cr', 'setting:ud']
-          </Button>
-          <Button onClick={() => AuthPro.setAuth(['user:ud', 'setting:cr'])}>
-            ['user:cr', 'setting:ud']
-          </Button>
-        </div>
-      }
-      // footerNode={<div>🎉✨</div>}
-      loading={false}
-      funcBarExtraNode={
-        <>
-          <FuncBtn text="设置" icon="⚙" small />
-          <FuncBtn text="帮助中心" icon="📙" small />
-          <FuncBtn
-            text="LXJ"
-            extraNode={
-              <Badge color="red" out>
-                23
-              </Badge>
-            }
-            circle
-          />
-        </>
-      }
-      authPro={AuthPro}
-      // beforeTaskEach={opts => {
-      //   if (opts.id === 'role1') {
-      //     message.tips({ content: '错误' });
-      //     return false;
-      //   }
-      //   return true;
-      // }}
-      config={config}
-      onConfigChange={conf => {
-        setConfig(prev => ({
-          ...prev,
-          ...conf,
-        }));
-        console.log('config change: ', conf);
-      }}
-    />
+            <Button onClick={() => console.log(task.get())}>get</Button>
+            <Button onClick={() => console.log(task.get({ includeSubTask: true }))}>get all</Button>
+
+            <Button onClick={() => console.log(task.get({ id: 'role1' }))}>get id</Button>
+            <Button onClick={() => console.log(task.get({ id: 'role1', includeSubTask: true }))}>
+              get all id
+            </Button>
+
+            <Button onClick={() => task.dispose({ id: 'role1' })}>refresh </Button>
+            <Button onClick={() => task.dispose({ id: 'role1', includeSubTask: true })}>
+              refresh role1
+            </Button>
+
+            <input
+              type="color"
+              onChange={e => {
+                console.log(e.target.value);
+                const str = e.target.value;
+
+                setConfig(prev => ({
+                  ...prev,
+                  color: str,
+                }));
+              }}
+            />
+            <input
+              type="color"
+              onChange={e => {
+                console.log(e.target.value);
+                const str = e.target.value;
+
+                setConfig(prev => ({
+                  ...prev,
+                  subColor: str,
+                }));
+              }}
+            />
+            <Button onClick={() => AuthPro.setAuth(['user:cr', 'setting:ud'])}>
+              ['user:cr', 'setting:ud']
+            </Button>
+            <Button onClick={() => AuthPro.setAuth(['user:ud', 'setting:cr'])}>
+              ['user:cr', 'setting:ud']
+            </Button>
+          </div>
+        }
+        // footerNode={<div>🎉✨</div>}
+        loading={false}
+        funcBarExtraNode={
+          <>
+            <FuncBtn text="设置" icon="⚙" small />
+            <FuncBtn text="帮助中心" icon="📙" small />
+            <FuncBtn
+              text="LXJ"
+              extraNode={
+                <Badge color="red" out>
+                  23
+                </Badge>
+              }
+              circle
+            />
+          </>
+        }
+        authPro={AuthPro}
+        // beforeTaskEach={opts => {
+        //   if (opts.id === 'role1') {
+        //     message.tips({ content: '错误' });
+        //     return false;
+        //   }
+        //   return true;
+        // }}
+        config={config}
+        onConfigChange={conf => {
+          setConfig(prev => ({
+            ...prev,
+            ...conf,
+          }));
+          console.log('config change: ', conf);
+        }}
+      />
+    </>
   );
 };
 

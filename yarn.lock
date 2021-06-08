@@ -1392,10 +1392,10 @@
     "@lxjx/utils" "^1.13.0"
     tslib "^2.2.0"
 
-"@m78/style@^1.0.29":
-  version "1.0.29"
-  resolved "https://registry.npmjs.org/@m78/style/-/style-1.0.29.tgz#cc16b03a0897c0a7a9404bfc0bfd83428b3e1037"
-  integrity sha512-+FKEm855RlsPJTfptJid2qsG0eQXzenQJIMIf9Nae5CV2X8w/SVt8jYNrfVG40RdggLcjuyw35MALulThJtEzw==
+"@m78/style@^1.0.30":
+  version "1.0.30"
+  resolved "https://registry.npmjs.org/@m78/style/-/style-1.0.30.tgz#7ea0ccf7e343dc79fbfa1cb58112ede01477e7be"
+  integrity sha512-9zS4+BPTrzVQSFsTcwr0ifBWBa3jl8NChkUb2DjdMF7McSJMlR2D1w67vCR0tjtsiz1bq6gOi59TVdB6d/WCWQ==
   dependencies:
     "@ant-design/colors" "^3.2.2"
 
@@ -5988,10 +5988,10 @@ lz-string@^1.4.4:
   resolved "https://registry.npm.taobao.org/lz-string/download/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"
   integrity sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=
 
-m78@^1.0.0-beta.70:
-  version "1.0.0-beta.70"
-  resolved "https://registry.npmjs.org/m78/-/m78-1.0.0-beta.70.tgz#3143bdee1bdf0950255545f15cca93779a3861e2"
-  integrity sha512-uzHUnsF4bdZFeD0omoHhMgiJBWgpC6R5udFKbklFvVMxbQEnlAAwEY6sLOqXKPutjq/UzZuN8krW8k/m3/zJdw==
+m78@^1.0.0-beta.76:
+  version "1.0.0-beta.76"
+  resolved "https://registry.npmjs.org/m78/-/m78-1.0.0-beta.76.tgz#e99e1b7fa3d2a4b27870072a12c4bdc7bc4675de"
+  integrity sha512-SyI3C+gLcYhEH+H+1qkZvc3loPJNZXPpGQz5Ho76WEfb8C8ITCynlyacJXw4ptCtNAe49hfw8ySkWLvzD6ZqEw==
   dependencies:
     "@ant-design/icons" "^4.1.0"
     "@babel/runtime" "^7.7.2"
@@ -6000,11 +6000,11 @@ m78@^1.0.0-beta.70:
     "@lxjx/hooks" "^1.16.4"
     "@lxjx/react-render-api" "^0.5.0"
     "@lxjx/react-transition-spring" "^1.2.5"
-    "@lxjx/utils" "^1.13.0"
+    "@lxjx/utils" "^1.14.0"
     "@lxjx/validate-tools" "^1.1.0"
     "@m78/auth" "^1.1.4"
     "@m78/seed" "^2.0.2"
-    "@m78/style" "^1.0.29"
+    "@m78/style" "^1.0.30"
     "@types/lodash" "^4.14.141"
     "@types/node" "^12.7.5"
     "@types/react-beautiful-dnd" "^13.0.0"

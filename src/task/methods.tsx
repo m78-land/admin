@@ -8,8 +8,8 @@ import { renderBuiltInHeader } from './render';
 import { WILL_POP_MAP, WINE_OFFSET } from '../common/const';
 import taskSeed from './task-seed';
 import TaskWindowWrap from './task-window-wrap';
-import { updateByKeyEvent } from './event';
-import { adminWarn, configGetter, emitConfig } from '../common/common';
+import { refreshEvent, updateByKeyEvent } from './event';
+import { configGetter, emitConfig } from '../common/common';
 import task from './task';
 
 /*
@@ -148,7 +148,19 @@ export function createTaskInstance(taskOpt: TaskOptItem, opt?: CreateTaskInstanc
  * 💥 此函数参数中的ctx是未完成状态的ctx，部分功能并不存在
  * */
 export function createMainTaskCtx(taskOpt: TaskOptItem, ctx: TaskCtx) {
-  const { id, name, component, icon, auth, taskName, initFull, ...wineState } = taskOpt;
+  const {
+    /* 这里将非wine的配置取出，反正后面api扩展时产生冲突 */
+    id,
+    name,
+    component,
+    icon,
+    auth,
+    taskName,
+    initFull,
+    singleton,
+    hide,
+    ...wineState
+  } = taskOpt;
 
   const config = configGetter(taskSeed.getState());
   const isDefaultFull = !(
@@ -173,7 +185,8 @@ export function createMainTaskCtx(taskOpt: TaskOptItem, ctx: TaskCtx) {
   });
 
   ctx.children = [];
-  ctx.refresh = () => ctx.wine.current?.refresh();
+
+  ctx.refresh = () => refreshEvent.emit(ctx.taskKey);
 
   ctx.open = () => {
     ctx.wine.show();
@@ -186,7 +199,6 @@ export function createMainTaskCtx(taskOpt: TaskOptItem, ctx: TaskCtx) {
     closeTaskByKey(ctx.taskKey);
   };
 
-  // 此push用于添加子实例
   ctx.push = (_id, _param) => {
     const currentOpt = getTaskOpt(_id);
     if (!currentOpt) return;
@@ -194,6 +206,16 @@ export function createMainTaskCtx(taskOpt: TaskOptItem, ctx: TaskCtx) {
     if (!checkTaskAuthAndTips(currentOpt)) return;
 
     if (!checkBeforeTaskEach(currentOpt)) return;
+
+    // 单例窗口处理
+    if (currentOpt.singleton && ctx.children?.length) {
+      const exist = ctx.children.find(item => item.id === _id);
+
+      if (exist) {
+        exist.open();
+        return;
+      }
+    }
 
     const instance = createTaskInstance(currentOpt, {
       param: _param,
@@ -231,8 +253,7 @@ export function createSubTaskCtx(taskOpt: TaskOptItem, opt: CreateTaskInstanceOp
   // 子实例实现
   ctx.parent = parent;
 
-  // 刷新实例所在窗口
-  ctx.refresh = parent.refresh;
+  ctx.refresh = () => refreshEvent.emit(ctx.taskKey);
 
   // open需要先将窗口索引切换到当前实例
   ctx.open = () => {
@@ -271,19 +292,10 @@ export function createSubTaskCtx(taskOpt: TaskOptItem, opt: CreateTaskInstanceOp
     updateByKeyEvent.emit(parent.taskKey);
   };
 
-  // 子实例的push/replace不可用
-  ctx.push = () => {
-    if (parent) {
-      adminWarn('push() of child ctx will be ignored');
-    }
-  };
+  // 子实例的push/replace直接调用父实例
+  ctx.push = parent.push;
 
-  // 子实例的push不可用
-  ctx.replace = () => {
-    if (parent) {
-      adminWarn('replace() of child ctx will be ignored');
-    }
-  };
+  ctx.replace = parent.replace;
 }
 
 /**
@@ -459,7 +471,7 @@ export function closeLeftTaskByKey(key: string) {
  * */
 export function hideTaskById(id: string) {
   if (!id) return;
-  const list = task.get(id);
+  const list = task.get({ id });
   list.forEach(item => item.hide());
 }
 
@@ -468,7 +480,7 @@ export function hideTaskById(id: string) {
  * */
 export function openTaskById(id: string) {
   if (!id) return;
-  const list = task.get(id);
+  const list = task.get({ id });
   list.forEach(item => item.open());
 }
 

@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { isNumber } from '@lxjx/utils';
 import { Scroller } from 'm78/scroller';
 import { DirectionEnum } from 'm78/types';
+import { ContextMenu, ContextMenuItem } from 'm78/context-menu';
 import { TaskCtx } from '../../types';
 import { updateByKeyEvent } from '../../task/event';
 import { useListenerKeyToUpdate } from '../../task/methods';
@@ -30,6 +31,21 @@ const Crumbs = ({ ctx }: Props) => {
 
   if (!childLen) return null;
 
+  function renderWithMenu(el: React.ReactElement, currentCtx: TaskCtx) {
+    return (
+      <ContextMenu
+        content={
+          <div>
+            <ContextMenuItem title="刷新任务" onClick={currentCtx.refresh} />
+            {currentCtx !== ctx && <ContextMenuItem title="关闭" onClick={currentCtx.dispose} />}
+          </div>
+        }
+      >
+        {el}
+      </ContextMenu>
+    );
+  }
+
   return (
     <Scroller
       scrollFlag
@@ -37,36 +53,42 @@ const Crumbs = ({ ctx }: Props) => {
       direction={DirectionEnum.horizontal}
       className="m78-admin_crumbs"
     >
-      <span
-        className={clsx('m78-admin_crumbs-item ellipsis m78-admin_effect pr-8', {
-          __active: !isNumber(childInd),
-        })}
-        onClick={() => changeTaskHandle()}
-      >
-        {ctx.option.name}
-      </span>
+      {renderWithMenu(
+        <span
+          className={clsx('m78-admin_crumbs-item ellipsis m78-admin_effect pr-8', {
+            __active: !isNumber(childInd),
+          })}
+          onClick={() => changeTaskHandle()}
+        >
+          {ctx.option.name}
+        </span>,
+        ctx,
+      )}
       <span className="color-disabled mlr-8">/</span>
 
       {ctx.children.map((item, index) => (
         <React.Fragment key={item.taskKey}>
-          <span
-            className={clsx('m78-admin_crumbs-item ellipsis m78-admin_effect', {
-              __active: index === childInd,
-            })}
-            onClick={() => changeTaskHandle(index)}
-          >
-            {item.option.name}
+          {renderWithMenu(
             <span
-              className="m78-admin_crumbs-close m78-admin_effect ml-4"
-              title="关闭"
-              onClick={e => {
-                e.stopPropagation();
-                item.dispose();
-              }}
+              className={clsx('m78-admin_crumbs-item ellipsis m78-admin_effect', {
+                __active: index === childInd,
+              })}
+              onClick={() => changeTaskHandle(index)}
             >
-              <CloseOutlined className="m78-close-icon color-disabled fs" />
-            </span>
-          </span>
+              {item.option.name}
+              <span
+                className="m78-admin_crumbs-close m78-admin_effect ml-4"
+                title="关闭"
+                onClick={e => {
+                  e.stopPropagation();
+                  item.dispose();
+                }}
+              >
+                <CloseOutlined className="m78-close-icon color-disabled fs" />
+              </span>
+            </span>,
+            item,
+          )}
           {index !== childLen - 1 && <span className="color-disabled mlr-8">/</span>}
         </React.Fragment>
       ))}

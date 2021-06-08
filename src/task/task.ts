@@ -15,8 +15,18 @@ import { WILL_POP_MAP } from '../common/const';
  * #####################################################
  * */
 
-const get: TaskGlobal['get'] = id => {
-  const list = taskSeed.getState().taskList;
+const get: TaskGlobal['get'] = ({ id, includeSubTask } = {}) => {
+  const list = [...taskSeed.getState().taskList];
+
+  // 合并子任务
+  if (includeSubTask) {
+    list.forEach(item => {
+      if (item.children?.length) {
+        list.push(...item.children);
+      }
+    });
+  }
+
   if (!id) return list;
   return list.filter(item => item.id === id);
 };
@@ -29,6 +39,17 @@ const push: TaskGlobal['push'] = (id, param) => {
 
   if (!checkBeforeTaskEach(currentOpt)) return;
 
+  // 单例窗口处理
+  if (currentOpt.singleton) {
+    const exist = get({ id });
+    const last = exist[exist.length - 1];
+
+    if (last) {
+      last.open();
+      return;
+    }
+  }
+
   const instance = createTaskInstance(currentOpt, {
     param,
   });
@@ -38,23 +59,23 @@ const push: TaskGlobal['push'] = (id, param) => {
   });
 };
 
-const refresh: TaskGlobal['refresh'] = id => {
-  const ls = get(id);
+const refresh: TaskGlobal['refresh'] = opt => {
+  const ls = get(opt);
   ls.forEach(item => item.refresh());
 };
 
 const open: TaskGlobal['open'] = id => {
-  const ls = get(id);
+  const ls = get({ id });
   ls.forEach(item => item.open());
 };
 
 const hide: TaskGlobal['hide'] = id => {
-  const ls = get(id);
+  const ls = get({ id });
   ls.forEach(item => item.hide());
 };
 
-const dispose: TaskGlobal['dispose'] = id => {
-  const ls = get(id);
+const dispose: TaskGlobal['dispose'] = opt => {
+  const ls = get(opt);
   ls.forEach(item => item.dispose());
 };
 
@@ -79,7 +100,7 @@ const replace: TaskGlobal['replace'] = (id, param) => {
 
   if (!checkBeforeTaskEach(currentOpt)) return;
 
-  const sameList = get(id);
+  const sameList = get({ id });
 
   sameList.forEach(item => item.dispose());
 

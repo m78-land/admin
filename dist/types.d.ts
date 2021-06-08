@@ -30,6 +30,13 @@ export interface TaskOptItem {
     alignment?: TupleNumber;
     /** 初始化时最大化显示 */
     initFull?: boolean;
+    /**
+     * false | 是否为单例任务窗口
+     * - 设置此项时，窗口被多次打开时，只会开启一个窗口, 不同于replace, 他不会销毁存在的窗口
+     * - 单例是基于窗口的，作为主任务时，只会存在一个，作为子任务时，在某个任务窗口只会存在一次
+     * - 只作用于push(),使用replace()方法依然可以销毁并创建新窗口
+     * */
+    singleton?: boolean;
     /** 作为隐藏任务，可以命令式打开，但不会显示在功能菜单中 */
     hide?: boolean;
     /**
@@ -50,25 +57,44 @@ export interface TaskItemCategory {
  * 任务配置列表
  * */
 export declare type TaskOpt = Array<TaskItemCategory | TaskOptItem>;
+/** 某些task方法接收的任务选项 */
+export interface TaskArgOpt {
+    /** 只针对指定id的任务 */
+    id?: string;
+    /** 是否包含子任务, 默认不包含 */
+    includeSubTask?: boolean;
+}
 /** 全局task对象 */
 export interface TaskGlobal {
     /** 打开一个指定id的任务窗口 */
     push: (id: string, param?: any) => void;
-    /** 刷新指定id的任务，不传id时刷新全部 (不包含子任务) */
-    refresh: (id?: string) => void;
-    /** 打开指定id的任务，不传id时打开全部 (不包含子任务) */
+    /** 打开指定id的任务窗口，不传id时打开全部 */
     open: (id?: string) => void;
-    /** 隐藏指定id的任务，不传id时隐藏全部 (不包含子任务) */
+    /** 隐藏指定id的任务窗口，不传id时隐藏全部 */
     hide: (id?: string) => void;
-    /** 关闭指定id的任务，不传id时闭全部 (不包含子任务) */
-    dispose: (id?: string) => void;
     /**
-     * 关闭其他同id任务并开启新一个任务
+     * 关闭其他同id任务并新开启一个任务窗口
      * - 如果历史任务包含useWillPop检测且用户主动阻止了关闭则不会关闭该历史任务
      * */
     replace: (id: string, param?: any) => void;
-    /** 获取指定id的所有任务实例，不传id时获取全部实例 (不包含子任务) */
-    get: (id?: string) => TaskCtxList;
+    /**
+     * 刷新任务组件
+     * - 传入opt.id时刷新指定主任务，否则刷新全部主任务
+     * - 传入opt.includeSubTask来将子任务包含到刷新列表中
+     * */
+    refresh: (opt?: TaskArgOpt) => void;
+    /**
+     * 关闭任务
+     * - 传入opt.id时关闭指定主任务，否则关闭全部主任务
+     * - 传入opt.includeSubTask来将子任务包含到关闭列表中
+     * */
+    dispose: (opt?: TaskArgOpt) => void;
+    /**
+     * 获取当前任务
+     * - 传入opt.id时获取指定主任务，否则获取全部主任务
+     * - 传入opt.includeSubTask来将子任务包含到获取列表中
+     * */
+    get: (opt?: TaskArgOpt) => TaskCtxList;
     /**
      * 在窗口关闭时进行警告
      * @param ctx - 所属任务上下文对象
@@ -91,23 +117,20 @@ export interface TaskCtx<Param = any> {
     /** 此任务对应的wine实例 */
     wine: WineInstance;
     /**
-     * 在当前任务下打开子任务
-     * - 此方法在子任务实例下无效
-     * */
+     * 主任务: 在当前任务下打开子任务,如果当前任务是子任务, 则在其所在窗口下打开新的任务 */
     push: (id: string, param?: any) => void;
     /**
-     * 关闭该实例下的其他同id任务并开启新一个任务
-     * - 此方法在子任务实例下无效
-     * - 如果历史任务包含useWillPop检测且用户主动阻止了关闭则不会关闭该历史任务
+     * 关闭该实例下的其他同id任务并开启一个相同的新任务, 如果当前任务是子任务，则关闭所有兄弟任务窗口中同id的任务并打开新任务
+     * - 如果被替换的任务包含useWillPop检测且用户主动阻止了关闭则不会关闭
      * */
     replace: (id: string, param?: any) => void;
-    /** 刷新此任务, 子任务调用时，刷新所在窗口(包含父任务和其他子任务) */
+    /** 刷新并重置任务组件 */
     refresh: () => void;
-    /** 打开当前窗口并置顶显示 */
+    /** 打开当前任务窗口并置顶显示, 子任务中执行时, 切换到当前任务 */
     open: () => void;
-    /** 隐藏当前窗口 */
+    /** 隐藏当前任务窗口 */
     hide: () => void;
-    /** 关闭当前窗口 */
+    /** 关闭当前任务窗口 */
     dispose: () => void;
     /** 是否是子任务 */
     parent?: TaskCtx;
@@ -186,7 +209,7 @@ export interface TaskState {
     taskOptionsIdMap: {
         [key: string]: TaskOptItem;
     };
-    /** 所有已打开的任务实例 */
+    /** 所有已打开的任务实例(主任务) */
     taskList: TaskCtxList;
     /** 接收的AdminProps */
     adminProps: M78AdminProps;

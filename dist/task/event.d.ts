@@ -7,3 +7,12 @@ export declare const updateByKeyEvent: {
     off: (listener: (key: string) => void) => void;
     emit: (...args: any) => void;
 };
+/**
+ * 用于实现任务组件的refresh()
+ * */
+export declare const refreshEvent: {
+    useEvent: (listener: (key: string) => void) => void;
+    on: (listener: (key: string) => void) => void;
+    off: (listener: (key: string) => void) => void;
+    emit: (...args: any) => void;
+};

@@ -1,9 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Button } from 'm78/button';
+import { TaskCtx } from '../types';
 
-const Test3 = () => {
+const Test3 = (props: TaskCtx) => {
+  const [count, setCount] = useState(0);
+
   return (
     <div>
-      <div>Test3</div>
+      <span onClick={() => setCount(prev => prev + 1)}>count: {count}</span>
+      <Button
+        onClick={() => {
+          props.replace('role1');
+        }}
+      >
+        replace
+      </Button>
+      <Button
+        onClick={() => {
+          props.push('role1');
+        }}
+      >
+        push
+      </Button>
     </div>
   );
 };

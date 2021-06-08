@@ -87,7 +87,10 @@ const FuncCollects = () => {
                           <Divider />
                         </>
                       )}
-                      <ContextMenuItem title="打开新窗口" onClick={() => task.push(item.id)} />
+                      <ContextMenuItem
+                        title={item.singleton ? '打开窗口' : '打开新窗口'}
+                        onClick={() => task.push(item.id)}
+                      />
                       <ContextMenuItem
                         title="从常用功能中移除"
                         onClick={() => collectHandle(item.id, config?.collectFunc || [])}

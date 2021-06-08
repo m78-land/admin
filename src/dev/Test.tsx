@@ -128,6 +128,13 @@ export default function Test(props: TaskCtx<{ name: string }>) {
                 >
                   replace
                 </Button>
+                <Button
+                  onClick={() => {
+                    props.push('role1');
+                  }}
+                >
+                  push
+                </Button>
                 <Link id="xxx1" param={{ name: 'lxj' }}>
                   跳转 xxx1
                 </Link>
