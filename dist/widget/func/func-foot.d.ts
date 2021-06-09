@@ -1,3 +1,4 @@
+/// <reference types="react" />
 /**
  * 功能栏底部
  * */

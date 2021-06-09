@@ -5,14 +5,20 @@
   &_task-tab {
     display: inline-flex;
     align-items: center;
-    height: 38px;
-    padding: var(--m78-space-1) var(--m78-space-2);
+    height: 36px;
+    padding: 0 var(--m78-space-2);
     user-select: none;
+    border-bottom: 2px solid transparent;
+    border-top: 2px solid transparent;
     border-radius: var(--m78-border-radius);
     background-color: var(--m78-color-bg);
 
     & + & {
       margin-left: var(--m78-space-2);
+    }
+
+    &.__active {
+      border-bottom: 2px solid var(--m78-color);
     }
 
     @include effect-bg;

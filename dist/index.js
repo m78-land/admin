@@ -33,7 +33,7 @@ import {createSeed} from "m78/seed";
 import Wine, {keypressAndClick} from "@m78/wine";
 import {m78Config} from "m78/config";
 import {generate} from "@ant-design/colors";
-import {Divider, MediaQueryContext, MediaQuery} from "m78/layout";
+import {Divider, MediaQueryContext, MediaQueryTypeValues, MediaQuery} from "m78/layout";
 import {Scroller} from "m78/scroller";
 import {ContextMenu, ContextMenuItem} from "m78/context-menu";
 import {DNDContext, DND} from "m78/dnd";
@@ -1266,7 +1266,7 @@ function createMainTaskCtx(taskOpt, ctx2) {
     "hide"
   ]);
   const config = configGetter(taskSeed.getState());
-  const isDefaultFull = !(wineState.width || wineState.height || wineState.sizeRatio || !(config == null ? void 0 : config.initFull));
+  const isDefaultFull = window.innerWidth <= MediaQueryTypeValues.SM || !(wineState.width || wineState.height || wineState.sizeRatio || !(config == null ? void 0 : config.initFull));
   ctx2.wine = Wine.render(__assign(__assign({}, wineState), {
     initFull: initFull || isDefaultFull,
     className: `J_task_${ctx2.taskKey}`,
@@ -1277,7 +1277,12 @@ function createMainTaskCtx(taskOpt, ctx2) {
     headerCustomer: renderBuiltInHeader,
     limitBound: WINE_OFFSET,
     taskOption: taskOpt,
-    ctx: ctx2
+    ctx: ctx2,
+    onActive: () => {
+      taskSeed.setState({
+        activeTaskKey: ctx2.taskKey
+      });
+    }
   }));
   ctx2.children = [];
   ctx2.refresh = () => refreshEvent.emit(ctx2.taskKey);
@@ -1773,6 +1778,7 @@ const FuncList = () => {
 const TaskTab = ({instance}) => {
   var _a;
   const opt = instance.option;
+  const activeTaskKey = taskSeed.useState((state) => state.activeTaskKey);
   return /* @__PURE__ */ React.createElement(ContextMenu, {
     content: /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(ContextMenuItem, {
       title: "\u5237\u65B0\u7A97\u53E3",
@@ -1791,7 +1797,7 @@ const TaskTab = ({instance}) => {
       onClick: instance.dispose
     }))
   }, /* @__PURE__ */ React.createElement("span", {
-    className: "m78-admin_task-tab",
+    className: clsx("m78-admin_task-tab", activeTaskKey === instance.taskKey && "__active"),
     onClick: instance.open
   }, opt.icon, " ", /* @__PURE__ */ React.createElement(TaskNameDynamic, {
     ctx: instance

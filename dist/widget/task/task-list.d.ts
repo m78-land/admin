@@ -1,3 +1,4 @@
+/// <reference types="react" />
 /**
  * 任务栏 -> 任务列表区域
  * */

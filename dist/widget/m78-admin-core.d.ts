@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { M78AdminProps } from '../types';
 /**
  * 渲染入口，可以执行一些渲染前的前置操作

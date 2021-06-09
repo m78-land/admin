@@ -123,6 +123,8 @@
 
   // 定制的窗口顶栏
   &_window-header {
+    touch-action: none;
+
     .m78-page-header_title {
       display: flex;
       align-items: center;

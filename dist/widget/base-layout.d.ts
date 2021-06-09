@@ -1,3 +1,4 @@
+/// <reference types="react" />
 /**
  * 窗口的主要布局
  * */

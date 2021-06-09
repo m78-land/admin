@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { TaskLinkProps } from '../types';
 /**
  * 开启任务的快捷方式，其底层是ctx.push/ctx.replace等方法

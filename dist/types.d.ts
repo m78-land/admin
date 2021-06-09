@@ -20,11 +20,14 @@ export interface TaskOptItem {
     icon?: React.ReactNode;
     /** 权限，此项需要配合 M78Admin 组件的 authSeed 配置使用  */
     auth?: AuthProStrings;
-    /** 0.84 | 窗口占屏幕高度的比例, 取值为0 ~ 1, 如果未设置width，会根据此项计算得到的高度以合适比例设置宽度 */
+    /**
+     *  0.84 | 以浏览器窗口大小的一定比例来设置一个适合的窗口尺寸, 取值为0 ~ 1
+     *  - 如果屏幕宽度小于576, 会忽略尺寸设置强制全屏显示窗口
+     *  */
     sizeRatio?: number;
-    /** 宽度, 覆盖sizeRatio对应方向的配置 */
+    /** 宽度, 会覆盖sizeRatio对应方向的配置 */
     width?: number;
-    /** 高度, 覆盖sizeRatio对应方向的配置 */
+    /** 高度, 会覆盖sizeRatio对应方向的配置 */
     height?: number;
     /** [0.5, 0.5] | 弹窗在屏幕上的位置, 取值为0 ~ 1 */
     alignment?: TupleNumber;
@@ -211,6 +214,8 @@ export interface TaskState {
     };
     /** 所有已打开的任务实例(主任务) */
     taskList: TaskCtxList;
+    /** 当前活动任务的key */
+    activeTaskKey?: string;
     /** 接收的AdminProps */
     adminProps: M78AdminProps;
 }

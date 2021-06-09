@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { TaskCtx } from '../../types';
 interface Props {
     instance: TaskCtx;

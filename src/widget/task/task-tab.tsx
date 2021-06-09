@@ -9,6 +9,8 @@ import {
   closeTaskByKey,
 } from '../../task/methods';
 import TaskNameDynamic from './task-name-dynamic';
+import taskSeed from '../../task/task-seed';
+import clsx from 'clsx';
 
 interface Props {
   instance: TaskCtx;
@@ -19,6 +21,8 @@ interface Props {
  * */
 const TaskTab = ({ instance }: Props) => {
   const opt = instance.option;
+
+  const activeTaskKey = taskSeed.useState(state => state.activeTaskKey);
 
   return (
     <ContextMenu
@@ -41,7 +45,10 @@ const TaskTab = ({ instance }: Props) => {
         </div>
       }
     >
-      <span className="m78-admin_task-tab" onClick={instance.open}>
+      <span
+        className={clsx('m78-admin_task-tab', activeTaskKey === instance.taskKey && '__active')}
+        onClick={instance.open}
+      >
         {opt.icon} <TaskNameDynamic ctx={instance} />
         <span
           className="m78-admin_effect ml-4"

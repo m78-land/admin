@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { TaskWindowLayoutProps } from '../../types';
 /**
  * 为窗口提供可选的基础布局:

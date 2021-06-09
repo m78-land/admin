@@ -11,6 +11,7 @@ import TaskWindowWrap from './task-window-wrap';
 import { refreshEvent, updateByKeyEvent } from './event';
 import { configGetter, emitConfig } from '../common/common';
 import task from './task';
+import { MediaQueryTypeValues } from 'm78/layout';
 
 /*
  * #####################################################
@@ -163,12 +164,11 @@ export function createMainTaskCtx(taskOpt: TaskOptItem, ctx: TaskCtx) {
   } = taskOpt;
 
   const config = configGetter(taskSeed.getState());
-  const isDefaultFull = !(
-    wineState.width ||
-    wineState.height ||
-    wineState.sizeRatio ||
-    !config?.initFull
-  );
+
+  const isDefaultFull =
+    // 小于SM的设备全屏显示窗口
+    window.innerWidth <= MediaQueryTypeValues.SM ||
+    !(wineState.width || wineState.height || wineState.sizeRatio || !config?.initFull);
 
   // 主实例实现
   ctx.wine = Wine.render({
@@ -182,6 +182,12 @@ export function createMainTaskCtx(taskOpt: TaskOptItem, ctx: TaskCtx) {
     taskOption: taskOpt,
     // 额外状态，交由renderBuiltInHeader使用
     ctx,
+    onActive: () => {
+      // 更新活动窗口
+      taskSeed.setState({
+        activeTaskKey: ctx.taskKey,
+      });
+    },
   });
 
   ctx.children = [];

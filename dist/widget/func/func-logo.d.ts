@@ -1,3 +1,4 @@
+/// <reference types="react" />
 /**
  * 功能栏logo部分
  * */

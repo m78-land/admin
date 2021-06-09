@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { M78AdminProps } from './types';
 /**
  * 入口组件

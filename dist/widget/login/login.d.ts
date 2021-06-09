@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { TaskLoginProps } from '../../types';
 /**
  * 内置的登录样式，非必选

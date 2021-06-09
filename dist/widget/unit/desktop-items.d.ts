@@ -1,3 +1,4 @@
+/// <reference types="react" />
 /**
  * 桌面的各种元素
  * */

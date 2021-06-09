@@ -1,3 +1,4 @@
+/// <reference types="react" />
 /**
  * 任务栏主要布局组件
  * */

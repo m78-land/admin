@@ -1,3 +1,4 @@
+/// <reference types="react" />
 import { AnyFunction } from '@lxjx/utils';
 import { TaskCtx } from '../types';
 interface Props {

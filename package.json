@@ -1,6 +1,6 @@
 {
   "name": "@m78/admin",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "description": "Admin for windows&tasks, base on M78",
   "keywords": [
     "admin",
@@ -42,12 +42,12 @@
     "@ant-design/colors": "^6.0.0",
     "@lxjx/hooks": "^1.16.4",
     "@lxjx/utils": "^1.14.0",
-    "@m78/style": "^1.0.30",
-    "@m78/wine": "^1.1.7",
+    "@m78/style": "^1.0.31",
+    "@m78/wine": "^1.2.0",
     "@types/lodash": "^4.14.168",
     "clsx": "^1.1.1",
     "lodash": "^4.17.21",
-    "m78": "^1.0.0-beta.76",
+    "m78": "^1.0.0-beta.77",
     "react": "^17.0.1",
     "react-dom": "^17.0.2",
     "tslib": "^2.1.0"
