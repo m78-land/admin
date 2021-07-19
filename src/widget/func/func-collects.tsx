@@ -72,7 +72,6 @@ const FuncCollects = () => {
             <DND key={item.id} data={item.id} enableDrop>
               {({ innerRef, status, enables }) => (
                 <ContextMenu
-                  key={item.id}
                   content={
                     <div>
                       {length > 0 && (

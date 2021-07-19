@@ -28,6 +28,41 @@ const opt: TaskOpt = [
     auth: ['user:ud', 'setting:cr'],
   },
   {
+    id: 'xxx3',
+    name: '无名功能2',
+    icon: '😛',
+    component: TestLazy2,
+    auth: ['user:ud', 'setting:cr'],
+  },
+  {
+    id: 'xxx4',
+    name: '无名功能2',
+    icon: '😛',
+    component: TestLazy2,
+    auth: ['user:ud', 'setting:cr'],
+  },
+  {
+    id: 'xxx5',
+    name: '无名功能2',
+    icon: '😛',
+    component: TestLazy2,
+    auth: ['user:ud', 'setting:cr'],
+  },
+  {
+    id: 'xxx6',
+    name: '无名功能2',
+    icon: '😛',
+    component: TestLazy2,
+    auth: ['user:ud', 'setting:cr'],
+  },
+  {
+    id: 'xxx7',
+    name: '无名功能2',
+    icon: '😛',
+    component: TestLazy2,
+    auth: ['user:ud', 'setting:cr'],
+  },
+  {
     name: '角色',
     children: [
       {

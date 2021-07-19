@@ -20,7 +20,17 @@ interface Props extends ComponentBaseProps {
 /**
  * 内部使用的功能按钮、为了方便同一样式，将其暴露出来
  * */
-const FuncBtn = ({ icon, text, extraNode, small, circle, className, style, ...ppp }: Props) => {
+const FuncBtn = ({
+  icon,
+  text,
+  extraNode,
+  small,
+  circle,
+  className,
+  style,
+  innerRef,
+  ...ppp
+}: Props) => {
   return (
     <div
       className={clsx(
@@ -30,6 +40,7 @@ const FuncBtn = ({ icon, text, extraNode, small, circle, className, style, ...pp
         circle && '__circle',
       )}
       style={style}
+      ref={innerRef}
       {...ppp}
     >
       {!circle && (
