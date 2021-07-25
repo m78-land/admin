@@ -1,20 +1,26 @@
 import React from 'react';
 import { Divider } from 'm78/layout';
-import FuncList from '../func/func-list';
 import TaskList from './task-list';
 import TaskActions from './task-actions';
+import taskSeed from '../../task/task-seed';
 
 /**
  * 任务栏主要布局组件
  * */
 const TaskBar = () => {
+  const taskBarLeadingExtraNode = taskSeed.useState(
+    state => state.adminProps.taskBarLeadingExtraNode,
+  );
+
   return (
     <div className="m78-admin_task-bar">
-      <div className="m78-admin_task-bar_before">
-        <FuncList />
-      </div>
+      {taskBarLeadingExtraNode && (
+        <>
+          {taskBarLeadingExtraNode}
 
-      <Divider vertical className="h-1d4em" />
+          <Divider vertical className="h-1d4em" />
+        </>
+      )}
 
       <TaskList />
 

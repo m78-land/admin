@@ -4,17 +4,15 @@
 // 一些小控件的样式
 
 .m78-admin {
+  // # 通用徽章样式
   &_badge {
-    position: absolute;
-    right: 4px;
-    top: 4px;
     padding: 0 2px;
     display: flex;
     align-items: center;
     justify-content: center;
     letter-spacing: 0;
-    height: 20px;
-    min-width: 20px;
+    height: 18px;
+    min-width: 18px;
     line-height: 0;
     border-radius: var(--m78-border-radius-lg);
     background-color: var(--m78-gray-6);
@@ -55,15 +53,21 @@
     }
   }
 
+  // # 通用光标交互效果
   &_effect {
     line-height: 1;
     border-radius: var(--m78-border-radius);
     padding: var(--m78-space-1);
     user-select: none;
 
+    &.__inline {
+      display: inline-block;
+    }
+
     @include effect-bg;
   }
 
+  // # 面包屑
   &_crumbs {
     font-size: var(--m78-fs);
     font-weight: 400;
@@ -102,7 +106,7 @@
     }
   }
 
-  // lazy组件加载提升节点
+  // # lazy组件加载提升节点
   &_fixed-center-text {
     position: fixed;
     z-index: var(--m78-z-index-message);
@@ -112,7 +116,7 @@
     color: var(--m78-color-title);
   }
 
-  // 阻塞型加载样式
+  // # 阻塞型加载样式
   &_blocked-loading {
     position: fixed;
     background-color: var(--m78-body-bg);
@@ -121,7 +125,7 @@
     @include full;
   }
 
-  // 定制的窗口顶栏
+  // # 定制的窗口顶栏
   &_window-header {
     touch-action: none;
 
@@ -139,5 +143,32 @@
   &_link {
     display: inline-block;
     cursor: pointer;
+  }
+
+  // # 功能入口按钮
+  &_func-item {
+    flex: 1;
+    height: 32px;
+    padding: 0 var(--m78-space-2);
+    border-radius: var(--m78-border-radius);
+    font-size: var(--m78-fs);
+    line-height: 1;
+    user-select: none;
+
+    @include effect-bg;
+
+    &.__active {
+      background-color: var(--m78-color-opacity-sm);
+    }
+
+    &.__disabled {
+      background-color: var(--m78-color-bg);
+      color: var(--m78-color-disable);
+    }
+
+    .m78-tile_leading {
+      margin-right: 8px;
+      font-size: var(--m78-fs-md);
+    }
   }
 }

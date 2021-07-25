@@ -14,7 +14,7 @@ const FuncFoot = () => {
     <>
       <Divider />
 
-      <div className="m78-admin_func-bar_side">{funcBarExtraNode}</div>
+      <div>{funcBarExtraNode}</div>
     </>
   );
 };

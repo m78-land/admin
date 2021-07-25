@@ -22,7 +22,7 @@ const DesktopItems = () => {
             </a>
             -| |-
             <a href="https://github.com/xianjie-li" target="_blank" rel="noreferrer">
-              Lime
+              Link
             </a>
             -|
           </>

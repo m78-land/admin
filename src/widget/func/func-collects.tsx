@@ -1,5 +1,4 @@
 import React from 'react';
-import { Scroller } from 'm78/scroller';
 import { ContextMenu, ContextMenuItem } from 'm78/context-menu';
 import { Divider } from 'm78/layout';
 import { DND, DNDContext, DragFullEvent } from 'm78/dnd';
@@ -8,7 +7,7 @@ import { useFn } from '@lxjx/hooks';
 import taskSeed from '../../task/task-seed';
 import task from '../../task/task';
 import { configGetter, emitConfig, useSubscribeAuthChange } from '../../common/common';
-import { Badge, FuncBtn } from '../../index';
+import { Badge } from '../../index';
 import {
   closeTaskById,
   collectHandle,
@@ -16,6 +15,7 @@ import {
   isPassNode,
   openTaskById,
 } from '../../task/methods';
+import FuncItem from '../unit/func-item';
 
 /**
  * 渲染的所有收藏功能列表
@@ -51,7 +51,7 @@ const FuncCollects = () => {
 
   return (
     <DNDContext onAccept={acceptHandle}>
-      <Scroller className="m78-admin_func-bar_main" scrollFlag hideScrollbar>
+      <div className="m78-admin_func-bar_main">
         {collect.map(id => {
           const item = map[id];
 
@@ -113,29 +113,23 @@ const FuncCollects = () => {
                     </div>
                   }
                 >
-                  <div ref={innerRef} className="m78-dnd-box-anime">
-                    <FuncBtn
-                      className={clsx('m78-dnd-box-anime_main', {
-                        // 禁用、拖动到中间的状态
-                        __active: status.dragOver,
-                        __disabled: !enables.enable || status.dragging,
-                        __left: status.dragLeft,
-                        __top: status.dragTop,
-                        __right: status.dragRight,
-                        __bottom: status.dragBottom,
-                      })}
-                      text={item.name}
-                      icon={item.icon}
-                      onClick={openTask}
-                      extraNode={length > 0 && <Badge>{length > 1 ? length : undefined}</Badge>}
-                    />
-                  </div>
+                  <FuncItem
+                    innerRef={innerRef}
+                    icon={item.icon}
+                    title={item.name}
+                    trailing={length > 0 && <Badge>{length > 1 ? length : undefined}</Badge>}
+                    className={clsx({
+                      __active: status.dragOver,
+                      __disabled: !enables.enable || status.dragging,
+                    })}
+                    onClick={openTask}
+                  />
                 </ContextMenu>
               )}
             </DND>
           );
         })}
-      </Scroller>
+      </div>
     </DNDContext>
   );
 };

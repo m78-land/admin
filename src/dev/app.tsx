@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import './style.scss';
 import { Button } from 'm78/button';
 
-import { M78Admin, Badge, FuncBtn, Link, task } from '../index';
+import { Row } from 'm78/layout';
+import { M78Admin, FuncItem, Link, task } from '../index';
 import { M78AdminConfig, TaskOpt } from '../types';
 import { AuthPro } from './AuthPro';
 
@@ -15,7 +16,6 @@ const opt: TaskOpt = [
   {
     id: 'xxx1',
     name: '无名功能1',
-    icon: '😍',
     component: TestLazy,
     // hide: true,
     auth: ['user:cr', 'setting:ud'],
@@ -64,6 +64,7 @@ const opt: TaskOpt = [
   },
   {
     name: '角色',
+    auth: ['user:cr', 'setting:ud'],
     children: [
       {
         id: 'role1',
@@ -260,19 +261,23 @@ const App = () => {
         }
         // footerNode={<div>🎉✨</div>}
         loading={false}
+        taskBarLeadingExtraNode={<span>呵呵哒</span>}
+        taskBarExtraNode={<span>呵呵</span>}
         funcBarExtraNode={
           <>
-            <FuncBtn text="设置" icon="⚙" small />
-            <FuncBtn text="帮助中心" icon="📙" small />
-            <FuncBtn
-              text="LXJ"
-              extraNode={
-                <Badge color="red" out>
-                  23
-                </Badge>
-              }
-              circle
-            />
+            <Row>
+              <FuncItem icon="⚙" title="设置" />
+              <FuncItem icon="📙" title="帮助" />
+            </Row>
+            {/* <FuncBtn */}
+            {/*  text="LXJ" */}
+            {/*  extraNode={ */}
+            {/*    <Badge color="red" out> */}
+            {/*      23 */}
+            {/*    </Badge> */}
+            {/*  } */}
+            {/*  circle */}
+            {/* /> */}
           </>
         }
         authPro={AuthPro}

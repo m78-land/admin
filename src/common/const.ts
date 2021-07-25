@@ -1,12 +1,14 @@
 /** 主窗口区域的偏移 */
 import { TaskWillPopMeta } from '../types';
 
-export const WINE_OFFSET_LEFT = 89;
+/** 功能菜单宽度 */
+export const FUNC_BAR_WIDTH = 200;
 
-/** 主窗口区域的偏移 */
+/** 主窗口区域的偏移, 此对象可以动态更高值，用于调整窗口显示区域 */
 export const WINE_OFFSET = {
-  left: WINE_OFFSET_LEFT,
-  top: 49,
+  left: FUNC_BAR_WIDTH,
+  top: 49 /* -1px 任务栏边框位置 */,
+  right: -1 /* 去除最大化时窗口右边的1px空隙? */,
 };
 
 /** 记录useWillPop的执行注册信息，用于任务关闭时进行检测 */

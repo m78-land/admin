@@ -25,7 +25,7 @@ export interface TaskOptItem {
    * */
   component: AnyFunction;
   /** 图标 */
-  icon?: React.ReactNode;
+  icon?: React.ReactNode | string;
   /** 权限，此项需要配合 M78Admin 组件的 authSeed 配置使用  */
   auth?: AuthProStrings;
 
@@ -68,6 +68,10 @@ export interface TaskItemCategory {
   name: string;
   /** 此分组下的任务 */
   children: TaskOpt;
+  /** 目录图标 */
+  icon?: TaskOptItem['icon'];
+  /** 同TaskOptItem.auth, 其作用于所有子级 */
+  auth?: TaskOptItem['auth'];
 }
 
 /**
@@ -211,6 +215,12 @@ export interface M78AdminConfig {
   name?: string;
   /** 全屏打开所以未明确指定尺寸的窗口 */
   initFull?: boolean;
+  /** 使菜单悬浮 */
+  funcBarFloat?: boolean;
+  /** 菜单的收藏部分是否展开 */
+  funcBarCollectToggle?: boolean;
+  /** 菜单的功能菜单部分是否展开 */
+  funcBarFuncToggle?: boolean;
 
   // ####### 性能优化 ####### //
   /** 12 | 最大窗口数量 */
@@ -237,6 +247,8 @@ export interface M78AdminProps {
   // ####### 样式定制/扩展 ####### //
   /** 任务栏额外节点 */
   taskBarExtraNode?: React.ReactNode;
+  /** 任务栏的前部额外节点 */
+  taskBarLeadingExtraNode?: React.ReactNode;
   /** 功能栏额外节点 */
   funcBarExtraNode?: React.ReactNode;
   /** 桌面显示的内容 */
@@ -265,6 +277,8 @@ export interface TaskState {
   activeTaskKey?: string;
   /** 接收的AdminProps */
   adminProps: M78AdminProps;
+  /** 内部的菜单浮动控制状态, 和config.funcBarFloat共同控制菜单的浮动状态, 但其拥有更高的控制权限 */
+  funcBarFloat?: boolean;
 }
 
 /** 用于useWillPop的元数据 */

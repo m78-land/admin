@@ -18,6 +18,8 @@ const TaskActions = () => {
 
   return (
     <>
+      {aProps.taskBarExtraNode}
+
       <Popper content="收起所有窗口" direction="bottom">
         <Button icon onClick={Wine.hideAll}>
           <span style={{ fontSize: 18 }}>📘</span>
@@ -42,8 +44,6 @@ const TaskActions = () => {
       {/*    <span style={{ fontSize: 18 }}>✂</span> */}
       {/*  </Button> */}
       {/* </Popper> */}
-
-      {aProps.taskBarExtraNode}
 
       <Check
         className="ml-12"

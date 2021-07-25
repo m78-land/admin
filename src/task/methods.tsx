@@ -3,6 +3,7 @@ import Wine from '@m78/wine';
 import { createRandString, isArray, isBoolean, isFunction, isObject } from '@lxjx/utils';
 import _debounce from 'lodash/debounce';
 import { message } from 'm78/message';
+import { MediaQueryTypeValues } from 'm78/layout';
 import { TaskCtx, TaskItemCategory, TaskOpt, TaskOptItem, TaskState } from '../types';
 import { renderBuiltInHeader } from './render';
 import { WILL_POP_MAP, WINE_OFFSET } from '../common/const';
@@ -11,7 +12,6 @@ import TaskWindowWrap from './task-window-wrap';
 import { refreshEvent, updateByKeyEvent } from './event';
 import { configGetter, emitConfig } from '../common/common';
 import task from './task';
-import { MediaQueryTypeValues } from 'm78/layout';
 
 /*
  * #####################################################
@@ -74,36 +74,6 @@ export function checkBeforeTaskEach(opt: TaskOptItem) {
   const checkFn = taskSeed.getState().adminProps.beforeTaskEach;
   if (!checkFn) return true;
   return checkFn(opt);
-}
-
-/**
- * 根据taskAuth检测是是否符合条件
- * */
-export function checkTaskAuth(opt: TaskOptItem) {
-  const AuthPro = taskSeed.getState().adminProps.authPro;
-  if (!AuthPro || !isArray(opt.auth) || !opt.auth.length) return true;
-  return !AuthPro.auth(opt.auth);
-}
-
-/**
- * 根据taskAuth检测是是否符合条件
- * */
-export function checkTaskAuthAndTips(opt: TaskOptItem) {
-  const check = checkTaskAuth(opt);
-
-  if (!check) {
-    message.tips({
-      type: 'warning',
-      content: (
-        <span>
-          <span className="bold">{opt.name}: </span>您没有此功能的访问权限
-        </span>
-      ),
-      duration: 2000,
-    });
-  }
-
-  return check;
 }
 
 /**
@@ -314,6 +284,7 @@ export function getTaskOpt(id: string) {
 
 /**
  * 处理TaskOpt并生成taskOptions/taskOptionsFlat/taskOptionsIdMap
+ * - 每个节点都会被附加私有属性__parents?，表示该节点的所有父级按顺序组成的数组
  * */
 export function taskOptFormat(taskOpt: TaskOpt) {
   // 清理无效选项后的配置
@@ -324,10 +295,10 @@ export function taskOptFormat(taskOpt: TaskOpt) {
   const taskOptionsIdMap: TaskState['taskOptionsIdMap'] = {};
 
   // 深拷贝taskOptions剔除无效选项并生成平铺列表
-  function flatTaskOptions(_taskOptions: TaskOpt, list?: TaskOpt) {
+  function flatTaskOptions(_taskOptions: TaskOpt, list?: TaskOpt, parents?: TaskItemCategory[]) {
     _taskOptions.forEach(item => {
-      if ('id' in item && item.component && item.name) {
-        const c = { ...item };
+      if (isTaskOptItem(item)) {
+        const c = { ...item, __parents: parents };
 
         taskOptionsFlat.push(c);
         taskOptionsIdMap[c.id] = c;
@@ -337,23 +308,26 @@ export function taskOptFormat(taskOpt: TaskOpt) {
         }
       }
 
-      if ('children' in item && item.name && item.children.length) {
+      if (isTaskItemCategory(item)) {
         const c = {
           ...item,
           children: [],
+          __parents: parents,
         };
 
         if (list) {
           list.push(c);
         }
 
-        flatTaskOptions(item.children, c.children);
+        flatTaskOptions(item.children, c.children, [...(parents || []), c]);
       }
       // 不满足条件的选项直接忽略
     });
   }
 
   flatTaskOptions(taskOpt, taskOptions);
+
+  console.log(taskOptions, 222);
 
   return {
     taskOptions,
@@ -511,7 +485,67 @@ export function closeConfirm(ctx: TaskCtx) {
   return confirm(`您在 “${ctx.option.name}” 窗口进行的操作可能不会保存，确认要将其关闭吗?`);
 }
 
+export function isTaskOptItem(arg: any): arg is TaskOptItem {
+  return 'id' in arg && arg.component && arg.name;
+}
+
+export function isTaskItemCategory(arg: any): arg is TaskItemCategory {
+  return 'children' in arg && arg.name && arg.children?.length;
+}
+
+/**
+ * 根据taskAuth检测是是否符合条件
+ * */
+export function checkTaskAuth(opt: TaskOptItem | TaskItemCategory) {
+  const AuthPro = taskSeed.getState().adminProps.authPro;
+
+  /* taskOptFormat()中添加，所有父节点组成的数组 */
+  const parents: TaskItemCategory[] = (opt as any).__parents;
+
+  // 检测所有父级是否通过校验
+  if (parents?.length) {
+    // 所有父级的auth是否均验证通过
+    const everyPass = parents.every(item => (isArray(item.auth) ? !AuthPro.auth(item.auth) : true));
+    if (!everyPass) return false;
+  }
+
+  // 未配置auth时跳过验证
+  if (!AuthPro || !isArray(opt.auth) || !opt.auth.length) return true;
+
+  // 验证当前节点
+  return !AuthPro.auth(opt.auth);
+}
+
+/**
+ * 根据taskAuth检测是是否符合条件， 无权限是触发提示
+ * */
+export function checkTaskAuthAndTips(opt: TaskOptItem) {
+  const check = checkTaskAuth(opt);
+
+  if (!check) {
+    message.tips({
+      type: 'warning',
+      content: (
+        <span>
+          <span className="bold">{opt.name}: </span>您没有此功能的访问权限
+        </span>
+      ),
+      duration: 2000,
+    });
+  }
+
+  return check;
+}
+
 /** 检测是否是非隐藏且有权限的task选项 */
 export function isPassNode(item: TaskItemCategory | TaskOptItem): item is TaskOptItem {
-  return item && 'id' in item && !item.hide && checkTaskAuth(item);
+  return isTaskOptItem(item) && !item.hide && checkTaskAuth(item);
+}
+
+/** 检测是否是有权访问的节点或目录 */
+export function isPassNodeOrCategory(item: TaskItemCategory | TaskOptItem) {
+  if (!item) return false;
+  if (isTaskOptItem(item)) return isPassNode(item);
+  if (isTaskItemCategory(item)) return checkTaskAuth(item);
+  return false;
 }

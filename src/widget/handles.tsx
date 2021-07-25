@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
-import { WINE_OFFSET, WINE_OFFSET_LEFT } from '../common/const';
+import { LG } from 'm78/util';
+import _debounce from 'lodash/debounce';
+import taskSeed from '../task/task-seed';
 
 /**
  * 处理程序
@@ -7,13 +9,19 @@ import { WINE_OFFSET, WINE_OFFSET_LEFT } from '../common/const';
 const Handles = () => {
   // 更新传递给wine的bound信息, wine内部不会改变引用，直接改原对象即可
   useEffect(() => {
-    const resize = () => {
-      if (window.innerWidth < 680 /* style/common.scss */) {
-        WINE_OFFSET.left = 0;
+    const resize = _debounce(() => {
+      if (window.innerWidth < LG) {
+        // 小屏下强制使用浮动菜单
+        taskSeed.setState({
+          funcBarFloat: true,
+        });
       } else {
-        WINE_OFFSET.left = WINE_OFFSET_LEFT;
+        // 大屏下还原菜单
+        taskSeed.setState({
+          funcBarFloat: false,
+        });
       }
-    };
+    }, 200);
 
     resize();
 

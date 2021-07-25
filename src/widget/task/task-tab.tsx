@@ -1,6 +1,7 @@
 import React from 'react';
 import { CloseOutlined } from 'm78/icon';
 import { ContextMenu, ContextMenuItem } from 'm78/context-menu';
+import clsx from 'clsx';
 import { TaskCtx } from '../../types';
 import {
   closeLeftTaskByKey,
@@ -10,7 +11,6 @@ import {
 } from '../../task/methods';
 import TaskNameDynamic from './task-name-dynamic';
 import taskSeed from '../../task/task-seed';
-import clsx from 'clsx';
 
 interface Props {
   instance: TaskCtx;
