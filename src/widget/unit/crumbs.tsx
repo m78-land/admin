@@ -1,5 +1,5 @@
 import React from 'react';
-import { CloseOutlined } from 'm78/icon';
+import { CloseOutlined, DeleteOutlined, SyncOutlined } from 'm78/icon';
 import clsx from 'clsx';
 import { isNumber } from '@lxjx/utils';
 import { Scroller } from 'm78/scroller';
@@ -36,8 +36,18 @@ const Crumbs = ({ ctx }: Props) => {
       <ContextMenu
         content={
           <div>
-            <ContextMenuItem title="刷新任务" onClick={currentCtx.refresh} />
-            {currentCtx !== ctx && <ContextMenuItem title="关闭" onClick={currentCtx.dispose} />}
+            <ContextMenuItem
+              leading={<SyncOutlined />}
+              title="刷新任务"
+              onClick={currentCtx.refresh}
+            />
+            {currentCtx !== ctx && (
+              <ContextMenuItem
+                leading={<DeleteOutlined />}
+                title="关闭"
+                onClick={currentCtx.dispose}
+              />
+            )}
           </div>
         }
       >

@@ -14,7 +14,7 @@ interface Props {
  * */
 const Badge: React.FC<Props> = ({ children, out, color }) => {
   return (
-    <span className={clsx('m78-admin_badge', out && '__out', color && `__${color}`)}>
+    <span className={clsx('m78-admin_badge __small', out && '__out', color && `__${color}`)}>
       {children}
     </span>
   );

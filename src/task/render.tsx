@@ -4,6 +4,7 @@ import { ContextMenu, ContextMenuItem } from 'm78/context-menu';
 import { keypressAndClick } from '@m78/wine';
 import React from 'react';
 import { Divider } from 'm78/layout';
+import { DeleteOutlined, FullscreenExitOutlined, FullscreenOutlined, SyncOutlined } from 'm78/icon';
 import Crumbs from '../widget/unit/crumbs';
 import TaskNameDynamic from '../widget/task/task-name-dynamic';
 import { TaskCtx } from '../types';
@@ -24,13 +25,22 @@ export const renderBuiltInHeader: NonNullable<WineProps['state']['headerCustomer
       content={
         <div>
           <ContextMenuItem
-            title="刷新窗口"
+            leading={<SyncOutlined />}
+            title={<span className="color-red">刷新窗口</span>}
             desc="该窗口下所有任务将会被重置"
             onClick={ctx.wine.current?.refresh}
           />
-          <ContextMenuItem title="最小化" onClick={instance.hide} />
-          <ContextMenuItem title="最大化" onClick={instance.current?.full} />
-          <ContextMenuItem title="关闭" onClick={ctx.dispose} />
+          <ContextMenuItem
+            leading={<FullscreenExitOutlined />}
+            title="最小化"
+            onClick={instance.hide}
+          />
+          <ContextMenuItem
+            leading={<FullscreenOutlined />}
+            title="最大化"
+            onClick={instance.current?.full}
+          />
+          <ContextMenuItem leading={<DeleteOutlined />} title="关闭" onClick={ctx.dispose} />
         </div>
       }
     >

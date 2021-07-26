@@ -456,12 +456,26 @@ export function hideTaskById(id: string) {
 }
 
 /**
- * 隐藏指定id的所有任务
+ * 打开指定id的所有任务
  * */
 export function openTaskById(id: string) {
   if (!id) return;
   const list = task.get({ id });
   list.forEach(item => item.open());
+}
+
+/**
+ * 打开指定id的任务, 如果该任务已存在实例，则打开其最后一个实例
+ * */
+export function pushTaskOrOpenLastTask(id: string) {
+  if (!id) return;
+  const list = task.get({ id });
+  const length = list.length;
+  if (!length) {
+    task.push(id);
+    return;
+  }
+  list[length - 1].open();
 }
 
 /** 检测指定key的任务是否可安全的关闭 */

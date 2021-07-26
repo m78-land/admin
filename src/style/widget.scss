@@ -20,8 +20,14 @@
     color: #fff;
 
     &.__out {
+      position: absolute;
       right: -4px;
       top: -4px;
+    }
+
+    &.__small {
+      height: 15px;
+      min-width: 15px;
     }
 
     &.__primary {

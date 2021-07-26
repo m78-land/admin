@@ -1,4 +1,12 @@
-.func-list {
+.m78-admin_func-list {
+
+  &_more-btn {
+    opacity: 0;
+  }
+
+  .m78-tree_item:hover &_more-btn {
+    opacity: 1;
+  }
 
   .m78-tree {
     padding: 0 !important;
