@@ -5,13 +5,13 @@ import _debounce from 'lodash/debounce';
 import { message } from 'm78/message';
 import { MediaQueryTypeValues } from 'm78/layout';
 import { TaskCtx, TaskItemCategory, TaskOpt, TaskOptItem, TaskState } from '../types';
-import { renderBuiltInHeader } from './render';
 import { WILL_POP_MAP, WINE_OFFSET } from '../common/const';
 import taskSeed from './task-seed';
 import TaskWindowWrap from './task-window-wrap';
 import { refreshEvent, updateByKeyEvent } from './event';
 import { configGetter, emitConfig } from '../common/common';
 import task from './task';
+import { taskWindowHeaderCustomer } from '../renders/renders';
 
 /*
  * #####################################################
@@ -146,7 +146,7 @@ export function createMainTaskCtx(taskOpt: TaskOptItem, ctx: TaskCtx) {
     initFull: initFull || isDefaultFull,
     className: `J_task_${ctx.taskKey}`,
     content: <TaskWindowWrap Component={React.memo(component)} ctx={ctx} />,
-    headerCustomer: renderBuiltInHeader,
+    headerCustomer: taskWindowHeaderCustomer,
     limitBound: WINE_OFFSET,
     // @ts-ignore - 额外状态，交由renderBuiltInHeader使用
     taskOption: taskOpt,

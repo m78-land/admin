@@ -18,6 +18,7 @@ import {
 } from '../../task/methods';
 import TaskNameDynamic from './task-name-dynamic';
 import taskSeed from '../../task/task-seed';
+import IconRender from '../unit/icon-render';
 
 interface Props {
   instance: TaskCtx;
@@ -63,7 +64,8 @@ const TaskTab = ({ instance }: Props) => {
         className={clsx('m78-admin_task-tab', activeTaskKey === instance.taskKey && '__active')}
         onClick={instance.open}
       >
-        {opt.icon} <TaskNameDynamic ctx={instance} />
+        <IconRender icon={opt.icon} className="mr-4" />
+        <TaskNameDynamic ctx={instance} />
         <span
           className="m78-admin_effect ml-4"
           title="关闭窗口"

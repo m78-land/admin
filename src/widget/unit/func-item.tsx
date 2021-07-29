@@ -1,6 +1,7 @@
 import { Tile, TileProps } from 'm78/layout';
 import React from 'react';
 import clsx from 'clsx';
+import IconRender from './icon-render';
 
 interface Props extends TileProps {
   icon?: React.ReactNode;
@@ -13,7 +14,7 @@ const FuncItem = ({ title, icon, className, ...pp }: Props) => {
     <Tile
       crossAlign="center"
       className={clsx('m78-admin_func-item', className)}
-      leading={icon}
+      leading={<IconRender icon={icon} />}
       title={title}
       {...pp}
     />

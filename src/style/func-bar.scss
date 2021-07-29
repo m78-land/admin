@@ -22,7 +22,7 @@
     box-shadow: var(--m78-shadow-2-b);
     border: 1px solid var(--m78-color-border);
     transform: translateX(0%);
-    z-index: 99999;
+    z-index: var(--m78-z-index-modal);
 
     &.__hover {
       transform: translateX(-92%);

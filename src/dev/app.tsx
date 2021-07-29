@@ -3,9 +3,11 @@ import './style.scss';
 import { Button } from 'm78/button';
 
 import { Row } from 'm78/layout';
+import { PushpinOutlined, SettingOutlined, ThunderboltOutlined } from 'm78/icon';
 import { M78Admin, FuncItem, Link, task } from '../index';
 import { M78AdminConfig, TaskOpt } from '../types';
 import { AuthPro } from './AuthPro';
+import IconRender from '../widget/unit/icon-render';
 
 const TestLazy = React.lazy(() => import('./Test'));
 const TestLazy2 = React.lazy(() => import('./Test2'));
@@ -23,21 +25,21 @@ const opt: TaskOpt = [
   {
     id: 'xxx2',
     name: '无名功能2',
-    icon: '😛',
+    icon: 'http://pic.51yuansu.com/pic3/cover/01/35/81/5924def7eadc7_610.jpg',
     component: TestLazy2,
     auth: ['user:ud', 'setting:cr'],
   },
   {
     id: 'xxx3',
     name: '无名功能2',
-    icon: '😛',
+    icon: <SettingOutlined />,
     component: TestLazy2,
     auth: ['user:ud', 'setting:cr'],
   },
   {
     id: 'xxx4',
     name: '无名功能2',
-    icon: '😛',
+    icon: 'http://pic.51yuansu.com/pic3/cover/01/35/81/5924def7eadc7_610.jpg',
     component: TestLazy2,
     auth: ['user:ud', 'setting:cr'],
   },
@@ -51,7 +53,7 @@ const opt: TaskOpt = [
   {
     id: 'xxx6',
     name: '无名功能2',
-    icon: '😛',
+    icon: <SettingOutlined />,
     component: TestLazy2,
     auth: ['user:ud', 'setting:cr'],
   },
@@ -177,21 +179,38 @@ const App = () => {
   //   <Login
   //     logo={Logo}
   //     title="M78 Admin"
-  //     desc="以任务为维度的后台管理系统"
+  //     desc="全新的多任务后台系统"
   //     content={
   //       <Form style={{ width: 300 }}>
-  //         <Form.Item name="name">
+  //         <Form.Item name="name" required min={6}>
   //           <Input size="large" placeholder="用户名" />
   //         </Form.Item>
-  //         <Form.Item name="password">
+  //         <Form.Item name="password" required min={6}>
   //           <Input size="large" type="password" placeholder="密码" />
   //         </Form.Item>
   //
-  //         <Row mainAlign="between" crossAlign="center">
-  //           <a className="fs" href="">
-  //             忘记密码?
-  //           </a>
-  //           <Button outline color="primary">
+  //         <Row className="p-12" mainAlign="between" crossAlign="center">
+  //           <div>
+  //             <a
+  //               className="fs"
+  //               onClick={() => {
+  //                 Wine.render({
+  //                   headerNode: <div>你好啊</div>,
+  //                   content: (
+  //                     <div>
+  //                       <h1>标题</h1>
+  //                       <div>12312312</div>
+  //                     </div>
+  //                   ),
+  //                 });
+  //               }}
+  //             >
+  //               忘记密码?
+  //             </a>
+  //             <Divider vertical />
+  //             <a className="fs">注册</a>
+  //           </div>
+  //           <Button type="submit" size="large" outline color="primary">
   //             登录
   //           </Button>
   //         </Row>
@@ -208,6 +227,15 @@ const App = () => {
         tasks={opt}
         desktopNode={
           <div>
+            <div>
+              <IconRender icon="✨" />
+              <IconRender icon="🎨" />
+              <IconRender icon={<ThunderboltOutlined />} />
+              <IconRender icon={<SettingOutlined />} />
+              <IconRender icon={<PushpinOutlined />} />
+              <IconRender icon="http://pic.51yuansu.com/pic3/cover/01/35/81/5924def7eadc7_610.jpg" />
+              <IconRender icon="https://pic.onlinewebfonts.com/svg/img_365060.png" />
+            </div>
             <span>🎉🎉欢迎</span>
 
             <Link id="role1" param={{ name: 'lxj' }}>

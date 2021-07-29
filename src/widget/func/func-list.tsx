@@ -1,9 +1,7 @@
 import React from 'react';
 import { EllipsisOutlined } from 'm78/icon';
 import { Tree, TreeNode } from 'm78/tree';
-import { Divider } from 'm78/layout';
 import { Popper, PopperDirectionEnum } from 'm78/popper';
-import { ContextMenuItem } from 'm78/context-menu';
 import taskSeed from '../../task/task-seed';
 import task from '../../task/task';
 import { isPassNodeOrCategory, pushTaskOrOpenLastTask } from '../../task/methods';
@@ -12,6 +10,7 @@ import { TaskOptItem } from '../../types';
 import { actionPopperCustomer } from '../../renders/renders';
 import FuncContextMenuBuilder from '../unit/func-context-menu-builder';
 import FuncStatusFlagBuilder from '../unit/func-status-flag-builder';
+import IconRender from '../unit/icon-render';
 
 /**
  * 任务列表, 显示在任务栏左侧并通过气跑展开
@@ -84,6 +83,7 @@ const FuncList = () => {
           onNodeClick={chooseHandle}
           actions={renderAction}
           filter={node => isPassNodeOrCategory(node.origin as TaskOptItem)}
+          customIconRender={icon => <IconRender icon={icon} />}
         />
       </div>
     );

@@ -177,4 +177,19 @@
       font-size: var(--m78-fs-md);
     }
   }
+
+  // 图标渲染
+  &_icon-render {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: top;
+    line-height: 1;
+    letter-spacing: 0;
+
+    >img, >svg {
+      display: inline-block;
+      height: 100%;
+    }
+  }
 }
