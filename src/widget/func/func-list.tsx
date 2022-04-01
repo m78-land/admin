@@ -1,16 +1,12 @@
 import React from 'react';
-import { EllipsisOutlined } from 'm78/icon';
 import { Tree, TreeNode } from 'm78/tree';
-import { Popper, PopperDirectionEnum } from 'm78/popper';
 import taskSeed from '../../task/task-seed';
-import task from '../../task/task';
+import taskGlobal from '../../task/task-global';
 import { isPassNodeOrCategory, pushTaskOrOpenLastTask } from '../../task/methods';
 import { configGetter, useSubscribeAuthChange } from '../../common/common';
-import { TaskOptItem } from '../../types';
-import { actionPopperCustomer } from '../../renders/renders';
-import FuncContextMenuBuilder from '../unit/func-context-menu-builder';
-import FuncStatusFlagBuilder from '../unit/func-status-flag-builder';
+import { TaskOptItem } from '../../types/types';
 import IconRender from '../unit/icon-render';
+import { renderFuncActions } from './renders';
 
 /**
  * 任务列表, 显示在任务栏左侧并通过气跑展开
@@ -32,35 +28,10 @@ const FuncList = () => {
     if (node.children?.length) return null;
 
     const id = node.origin.id;
-    const tasks = task.get({ id });
-    const length = tasks.length;
+    const tasks = taskGlobal.get({ id });
     const isCollectd = collectFunc.includes(id);
 
-    return (
-      <>
-        <span style={{ marginRight: 2 }}>
-          <FuncStatusFlagBuilder length={length} />
-        </span>
-        <Popper
-          trigger="click"
-          offset={0}
-          customer={actionPopperCustomer}
-          direction={PopperDirectionEnum.rightStart}
-          content={
-            <FuncContextMenuBuilder
-              tasks={tasks}
-              taskOptItem={node.origin as TaskOptItem}
-              config={config}
-              isCollectd={isCollectd}
-            />
-          }
-        >
-          <span className="m78-admin_func-list_more-btn m78-admin_effect fs-md">
-            <EllipsisOutlined />
-          </span>
-        </Popper>
-      </>
-    );
+    return renderFuncActions(tasks, isCollectd, node.origin as TaskOptItem, config);
   }
 
   function chooseHandle({ origin, children }: TreeNode) {

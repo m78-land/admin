@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TaskCtx } from '../types';
+import { TaskCtx } from '../types/types';
 import { refreshEvent } from './event';
 
 interface Props {

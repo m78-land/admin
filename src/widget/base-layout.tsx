@@ -14,7 +14,7 @@ const BaseLayout = () => {
 
   return (
     <div
-      className="m78-admin_layout"
+      className="m78 m78-admin_layout"
       style={{
         height,
         width,
@@ -27,8 +27,6 @@ const BaseLayout = () => {
         <TaskBar />
 
         <div className="m78-admin_layout_window">
-          <Wine.RenderBoxTarget />
-
           <DesktopItems />
         </div>
       </div>

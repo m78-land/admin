@@ -6,7 +6,7 @@ import taskSeed from '../../task/task-seed';
  * 功能栏底部
  * */
 const FuncFoot = () => {
-  const funcBarExtraNode = taskSeed.useState(state => state.adminProps.funcBarExtraNode);
+  const funcBarExtraNode = taskSeed.useState(state => state.adminProps.funcBarExtra);
 
   if (!funcBarExtraNode) return null;
 

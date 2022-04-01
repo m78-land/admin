@@ -1,8 +1,7 @@
 import React from 'react';
-import Wine from '@m78/wine';
 import clsx from 'clsx';
 import { MediaQuery } from 'm78/layout';
-import { TaskLoginProps } from '../../types';
+import { TaskLoginProps } from '../../types/types';
 
 /**
  * 内置的登录样式，非必选
@@ -14,7 +13,6 @@ const Login = ({ logo, title, desc, content }: TaskLoginProps) => {
         const isSmall = meta.isSmall();
         return (
           <>
-            <Wine.RenderBoxTarget />
             <div className="m78-admin_login">
               <div className="m78-admin_login-bg" />
               <div

@@ -3,9 +3,10 @@ import { CloseOutlined, DeleteOutlined, SyncOutlined } from 'm78/icon';
 import clsx from 'clsx';
 import { isNumber } from '@lxjx/utils';
 import { Scroller } from 'm78/scroller';
-import { DirectionEnum } from 'm78/types';
-import { ContextMenu, ContextMenuItem } from 'm78/context-menu';
-import { TaskCtx } from '../../types';
+import { DirectionEnum, SizeEnum } from 'm78/common';
+import { ContextMenu } from 'm78/context-menu';
+import { ListView, ListViewItem } from 'm78/list-view';
+import { TaskCtx } from '../../types/types';
 import { updateByKeyEvent } from '../../task/event';
 import { useListenerKeyToUpdate } from '../../task/methods';
 
@@ -35,20 +36,20 @@ const Crumbs = ({ ctx }: Props) => {
     return (
       <ContextMenu
         content={
-          <div>
-            <ContextMenuItem
+          <ListView size={SizeEnum.small}>
+            <ListViewItem
               leading={<SyncOutlined />}
               title="刷新任务"
               onClick={currentCtx.refresh}
             />
             {currentCtx !== ctx && (
-              <ContextMenuItem
+              <ListViewItem
                 leading={<DeleteOutlined />}
                 title="关闭"
                 onClick={currentCtx.dispose}
               />
             )}
-          </div>
+          </ListView>
         }
       >
         {el}
@@ -69,6 +70,7 @@ const Crumbs = ({ ctx }: Props) => {
             __active: !isNumber(childInd),
           })}
           onClick={() => changeTaskHandle()}
+          onContextMenu={e => e.preventDefault()}
         >
           {ctx.option.name}
         </span>,
@@ -84,6 +86,10 @@ const Crumbs = ({ ctx }: Props) => {
                 __active: index === childInd,
               })}
               onClick={() => changeTaskHandle(index)}
+              onContextMenu={e => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
             >
               {item.option.name}
               <span

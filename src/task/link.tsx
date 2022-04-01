@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import { useFn } from '@lxjx/hooks';
 import clsx from 'clsx';
-import { TaskLinkProps } from '../types';
+import { TaskLinkProps } from '../types/types';
 import linkContext from './link-context';
-import task from './task';
+import taskGlobal from './task-global';
 
 /**
  * 开启任务的快捷方式，其底层是ctx.push/ctx.replace等方法
@@ -17,16 +17,16 @@ const Link = ({ children, replace, id, param, blank, className, style, ...ppp }:
 
   const openHandle = useFn(() => {
     if (blank) {
-      replace ? task.replace(id, param) : task.push(id, param);
+      replace ? taskGlobal.replace(id, param) : taskGlobal.push(id, param);
       return;
     }
 
     if (replace) {
-      ctx.parent ? ctx.parent.replace(id, param) : task.replace(id, param);
+      ctx.parent ? ctx.parent.replace(id, param) : taskGlobal.replace(id, param);
       return;
     }
 
-    ctx.parent ? ctx.parent.push(id, param) : task.push(id, param);
+    ctx.parent ? ctx.parent.push(id, param) : taskGlobal.push(id, param);
   });
 
   if (typeof children === 'string') {

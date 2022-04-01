@@ -4,7 +4,7 @@ import { TinyColor } from '@ctrl/tinycolor';
 import { generate } from '@ant-design/colors';
 import { isString } from '@lxjx/utils';
 import taskSeed from '../task/task-seed';
-import { M78AdminConfig, TaskState } from '../types';
+import { M78AdminConfig, TaskState } from '../types/types';
 
 /**
  * 发送警告信息
@@ -24,7 +24,7 @@ export function configGetter(state: TaskState) {
  * 向外部发送配置变更通知
  * */
 export function emitConfig(conf: Partial<M78AdminConfig>) {
-  const callback = taskSeed.getState().adminProps.onConfigChange;
+  const callback = taskSeed.get().adminProps.onConfigChange;
   callback && callback(conf);
 }
 
@@ -79,7 +79,7 @@ export function generateThemeColorRules(color?: string, subColor?: string) {
 
   return s
     ? `
-      :root {
+      .m78 {
         ${s}
       }
     `
@@ -89,7 +89,7 @@ export function generateThemeColorRules(color?: string, subColor?: string) {
 /** 支持渲染的图片后缀类型 */
 const stringIconSuffix = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
 
-/** 是否是img表情可渲染的图片地址 网络图片/base64等 */
+/** 是否是img标签可渲染的图片地址 网络图片/base64等 */
 export function isStringIcon(icon: any): icon is string {
   if (!isString(icon)) return false;
   if (icon.startsWith('data:image')) return true;

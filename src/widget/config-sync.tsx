@@ -19,7 +19,7 @@ const ConfigSync = () => {
   const darkMode = config?.darkMode || false;
 
   useEffect(() => {
-    m78Config.setState({
+    m78Config.set({
       darkMode,
     });
   }, [darkMode]);
@@ -33,7 +33,9 @@ const ConfigSync = () => {
   const maxWindow = config?.maxWindow || 12;
 
   useEffect(() => {
-    Wine.setMaxInstance(maxWindow);
+    Wine.setOption({
+      maxInstance: maxWindow,
+    });
   }, [maxWindow]);
 
   /*

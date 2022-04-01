@@ -2,10 +2,10 @@ import { Button } from 'm78/button';
 import React, { useEffect } from 'react';
 import { Input } from 'm78/input';
 import { Grids, MediaQuery } from 'm78/layout';
-import { Form, FormItem } from 'm78/form';
+import { useForm } from 'm78/form';
 import WindowLayout from '../widget/window-layout/window-layout';
-import { TaskCtx } from '../types';
-import task from '../task/task';
+import { TaskCtx } from '../types/types';
+import taskGlobal from '../task/task-global';
 import { Link } from '../index';
 
 export default function Test(props: TaskCtx<{ name: string }>) {
@@ -14,7 +14,9 @@ export default function Test(props: TaskCtx<{ name: string }>) {
     return () => console.log('un_render');
   }, []);
 
-  task.useWillPop(props, () => props.id === 'role1');
+  taskGlobal.useWillPop(props, () => props.id === 'role1');
+
+  const Form = useForm();
 
   console.log('1111 render');
 
@@ -35,54 +37,59 @@ export default function Test(props: TaskCtx<{ name: string }>) {
         },
       ]}
       topBar={toggle => (
-        <Form fullWidth layout="horizontal">
+        <div>
           <Grids>
             <Grids.Item xs={12} md={6} xl={4}>
-              <FormItem label="表单xx">
+              <Form.Field label="表单xx" name="f1">
                 <Input placeholder="输入内容进行搜索" />
-              </FormItem>
+              </Form.Field>
             </Grids.Item>
             <Grids.Item xs={12} md={6} xl={4}>
-              <FormItem label="表单xx">
+              <Form.Field label="表单xx" name="f2">
                 <Input placeholder="输入内容进行搜索" />
-              </FormItem>
+              </Form.Field>
             </Grids.Item>
             {toggle && (
               <>
                 <Grids.Item xs={12} md={6} xl={4}>
-                  <FormItem label="表单xx">
+                  <Form.Field label="表单xx" name="f3">
                     <Input placeholder="输入内容进行搜索" />
-                  </FormItem>
+                  </Form.Field>
                 </Grids.Item>
                 <Grids.Item xs={12} md={6} xl={4}>
-                  <FormItem label="表单xx">
+                  <Form.Field label="表单xx" name="f3">
                     <Input placeholder="输入内容进行搜索" />
-                  </FormItem>
+                  </Form.Field>
                 </Grids.Item>
                 <Grids.Item xs={12} md={6} xl={4}>
-                  <FormItem label="表单xx">
+                  <Form.Field label="表单xx" name="f3">
                     <Input placeholder="输入内容进行搜索" />
-                  </FormItem>
+                  </Form.Field>
                 </Grids.Item>
                 <Grids.Item xs={12} md={6} xl={4}>
-                  <FormItem label="表单xx">
+                  <Form.Field label="表单xx" name="f3">
                     <Input placeholder="输入内容进行搜索" />
-                  </FormItem>
+                  </Form.Field>
                 </Grids.Item>
                 <Grids.Item xs={12} md={6} xl={4}>
-                  <FormItem label="表单xx">
+                  <Form.Field label="表单xx" name="f3">
                     <Input placeholder="输入内容进行搜索" />
-                  </FormItem>
+                  </Form.Field>
                 </Grids.Item>
-                <Grids.Item xs={12} md={6} xl={8}>
-                  <FormItem label="表单xx">
+                <Grids.Item xs={12} md={6} xl={4}>
+                  <Form.Field label="表单xx" name="f3">
                     <Input placeholder="输入内容进行搜索" />
-                  </FormItem>
+                  </Form.Field>
+                </Grids.Item>
+                <Grids.Item xs={12} md={6} xl={4}>
+                  <Form.Field label="表单xx" name="f3">
+                    <Input placeholder="输入内容进行搜索" />
+                  </Form.Field>
                 </Grids.Item>
               </>
             )}
           </Grids>
-        </Form>
+        </div>
       )}
       topBarType="eclipse"
       footer={<Button size="large">按钮</Button>}

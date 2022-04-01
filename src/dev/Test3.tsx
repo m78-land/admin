@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from 'm78/button';
-import { TaskCtx } from '../types';
+import { TaskCtx } from '../types/types';
 
 const Test3 = (props: TaskCtx) => {
   const [count, setCount] = useState(0);

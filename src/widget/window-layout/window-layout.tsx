@@ -8,7 +8,7 @@ import {
   TaskWindowLayoutProps,
   TaskWindowTopBarTypeKeys,
   WindowLayoutSectionProps,
-} from '../../types';
+} from '../../types/types';
 
 interface Self {
   /** 存放所有sections节点的html节点 */

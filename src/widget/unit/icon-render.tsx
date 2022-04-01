@@ -32,7 +32,12 @@ const IconRender = ({ icon, size = regular, className, style }: Props) => {
 
   return (
     <span
-      style={{ width: size, height: size, fontSize: size, ...style }}
+      style={{
+        width: size,
+        height: size + 4 /* 微调高度, 使字体图标和图片图标显示更一致 */,
+        fontSize: size,
+        ...style,
+      }}
       className={clsx('m78-admin_icon-render', className)}
     >
       {render()}

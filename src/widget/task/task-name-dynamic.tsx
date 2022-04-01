@@ -1,6 +1,6 @@
 import React from 'react';
-import { TaskCtx } from '../../types';
-import { useListenerKeyToUpdate } from '../../task/methods';
+import { TaskCtx } from '../../types/types';
+import { getTaskName, useListenerKeyToUpdate } from '../../task/methods';
 
 interface Props {
   ctx: TaskCtx;
@@ -12,8 +12,7 @@ interface Props {
 const TaskNameDynamic = ({ ctx }: Props) => {
   useListenerKeyToUpdate(ctx);
 
-  const opt = ctx.option;
-  return <span>{opt.taskName ? opt.taskName(ctx) : opt.name}</span>;
+  return <span>{getTaskName(ctx)}</span>;
 };
 
 export default TaskNameDynamic;

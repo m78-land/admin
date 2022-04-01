@@ -1,11 +1,13 @@
 import React from 'react';
-import { Popper } from 'm78/popper';
 import { Button } from 'm78/button';
 import Wine from '@m78/wine';
 import { Check } from 'm78/check';
+import { Bubble } from 'm78/bubble';
+import { FullscreenExitOutlined, FullscreenOutlined, ImportOutlined } from 'm78/icon';
+import { Divider } from 'm78/layout';
 import taskSeed from '../../task/task-seed';
 import { emitConfig } from '../../common/common';
-import task from '../../task/task';
+import taskGlobal from '../../task/task-global';
 
 /**
  * 任务栏右侧操作区域
@@ -18,25 +20,33 @@ const TaskActions = () => {
 
   return (
     <>
-      {aProps.taskBarExtraNode}
+      {aProps.taskBarExtra}
 
-      <Popper content="收起所有窗口" direction="bottom">
+      <Divider vertical className="h-1d4em" />
+
+      <Bubble content="收起所有窗口" direction="bottom">
         <Button icon onClick={Wine.hideAll}>
-          <span style={{ fontSize: 18 }}>📘</span>
+          <span style={{ fontSize: 18 }}>
+            <FullscreenExitOutlined />
+          </span>
         </Button>
-      </Popper>
+      </Bubble>
 
-      <Popper content="展开所有窗口" direction="bottom">
+      <Bubble content="展开所有窗口" direction="bottom">
         <Button icon onClick={Wine.showAll}>
-          <span style={{ fontSize: 18 }}>📖</span>
+          <span style={{ fontSize: 18 }}>
+            <FullscreenOutlined />
+          </span>
         </Button>
-      </Popper>
+      </Bubble>
 
-      <Popper content="关闭所有窗口" direction="bottom">
-        <Button icon onClick={() => task.dispose()}>
-          <span style={{ fontSize: 18 }}>🗑</span>
+      <Bubble content="关闭所有窗口" direction="bottom">
+        <Button icon onClick={() => taskGlobal.dispose()}>
+          <span style={{ fontSize: 18 }}>
+            <ImportOutlined />
+          </span>
         </Button>
-      </Popper>
+      </Bubble>
 
       {/* TODO: 自动排列 */}
       {/* <Popper content="自动排列窗口" direction="bottom"> */}

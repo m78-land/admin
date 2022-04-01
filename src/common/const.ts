@@ -1,10 +1,13 @@
 /** 主窗口区域的偏移 */
-import { TaskWillPopMeta } from '../types';
+import { TaskWillPopMeta } from '../types/types';
+
+/** 窗口层级, 仅高于常规内容层即可 */
+export const WINDOW_Z_INDEX = 100;
 
 /** 功能菜单宽度 */
 export const FUNC_BAR_WIDTH = 200;
 
-/** 主窗口区域的偏移, 此对象可以动态更高值，用于调整窗口显示区域 */
+/** 主窗口区域的偏移, 此对象可以动态更改值，用于调整窗口显示区域 */
 export const WINE_OFFSET = {
   left: FUNC_BAR_WIDTH,
   top: 49 /* -1px 任务栏边框位置 */,

@@ -4,7 +4,12 @@
     opacity: 0;
   }
 
-  .m78-tree_item:hover &_more-btn {
+  &_context-menu {
+    width: 260px;
+    padding: var(--m78-space-1) !important;
+  }
+
+  .m78-tree_item:hover &_more-btn, .m78-admin_func-item:hover &_more-btn {
     opacity: 1;
   }
 

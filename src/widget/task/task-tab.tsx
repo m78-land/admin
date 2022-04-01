@@ -7,9 +7,11 @@ import {
   SplitCellsOutlined,
   SyncOutlined,
 } from 'm78/icon';
-import { ContextMenu, ContextMenuItem } from 'm78/context-menu';
+import { ContextMenu } from 'm78/context-menu';
 import clsx from 'clsx';
-import { TaskCtx } from '../../types';
+import { ListView, ListViewItem } from 'm78/list-view';
+import { SizeEnum } from 'm78/common';
+import { TaskCtx } from '../../types/types';
 import {
   closeLeftTaskByKey,
   closeOtherTaskByKey,
@@ -35,29 +37,29 @@ const TaskTab = ({ instance }: Props) => {
   return (
     <ContextMenu
       content={
-        <div>
-          <ContextMenuItem
+        <ListView size={SizeEnum.small}>
+          <ListViewItem
             leading={<SyncOutlined />}
             title="刷新窗口"
             onClick={instance.wine.current?.refresh}
           />
-          <ContextMenuItem
+          <ListViewItem
             leading={<SplitCellsOutlined />}
             title="关闭其他窗口"
             onClick={() => closeOtherTaskByKey(instance.taskKey)}
           />
-          <ContextMenuItem
+          <ListViewItem
             leading={<ImportOutlined />}
             title="关闭左侧窗口"
             onClick={() => closeLeftTaskByKey(instance.taskKey)}
           />
-          <ContextMenuItem
+          <ListViewItem
             leading={<ExportOutlined />}
             title="关闭右侧窗口"
             onClick={() => closeRightTaskByKey(instance.taskKey)}
           />
-          <ContextMenuItem leading={<DeleteOutlined />} title="关闭" onClick={instance.dispose} />
-        </div>
+          <ListViewItem leading={<DeleteOutlined />} title="关闭" onClick={instance.dispose} />
+        </ListView>
       }
     >
       <span

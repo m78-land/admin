@@ -1,22 +1,16 @@
-import { useEffect } from 'react';
-import { TaskGlobal } from '../types';
-import taskSeed from './task-seed';
-import {
-  checkBeforeTaskEach,
-  checkTaskAuthAndTips,
-  createTaskInstance,
-  getTaskOpt,
-} from './methods';
-import { WILL_POP_MAP } from '../common/const';
-
-/*
- * #####################################################
- * 实现全局任务实例 +++++++++++++++++++++++++++++++++++++++
- * #####################################################
+/**
+ * 实现全局task实例
  * */
 
+import { useEffect } from 'react';
+import { TaskGlobal } from '../types/types';
+import taskSeed from './task-seed';
+import { checkBeforeTaskEach, checkTaskAuthAndTips, getTaskOpt } from './methods';
+import { WILL_POP_MAP } from '../common/const';
+import { createTaskInstance } from './create-task';
+
 const get: TaskGlobal['get'] = ({ id, includeSubTask } = {}) => {
-  const list = [...taskSeed.getState().taskList];
+  const list = [...taskSeed.get().taskList];
 
   // 合并子任务
   if (includeSubTask) {
@@ -54,7 +48,7 @@ const push: TaskGlobal['push'] = (id, param) => {
     param,
   });
 
-  taskSeed.setState({
+  taskSeed.set({
     taskList: [...get(), instance],
   });
 };
@@ -107,7 +101,7 @@ const replace: TaskGlobal['replace'] = (id, param) => {
   push(id, param);
 };
 
-const task: TaskGlobal = {
+const taskGlobal: TaskGlobal = {
   get,
   push,
   refresh,
@@ -118,4 +112,4 @@ const task: TaskGlobal = {
   replace,
 };
 
-export default task;
+export default taskGlobal;

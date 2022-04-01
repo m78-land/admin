@@ -3,7 +3,7 @@ import { Scroller } from 'm78/scroller';
 import { MenuFoldOutlined, MenuUnfoldOutlined } from 'm78/icon';
 import { Divider, Row, Spacer } from 'm78/layout';
 import clsx from 'clsx';
-import { useDelayDerivedToggleStatus } from 'm78/hooks';
+import { useDelayToggle } from '@lxjx/hooks';
 import { Portal } from 'm78/portal';
 import FuncList from './func-list';
 import FuncCollects from './func-collects';
@@ -30,7 +30,7 @@ const FuncBar = () => {
   ]);
 
   // 启用功能菜单的hover展开收起效果，用于实现延迟菜单初次设置为悬浮后延迟收起
-  const enableHover = useDelayDerivedToggleStatus(isFloat, 1000);
+  const enableHover = useDelayToggle(isFloat, 1000);
 
   // 浮动方式变更时，更新bound
   useEffect(() => {

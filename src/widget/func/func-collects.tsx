@@ -3,13 +3,18 @@ import { ContextMenu } from 'm78/context-menu';
 import { DND, DNDContext, DragFullEvent } from 'm78/dnd';
 import clsx from 'clsx';
 import { useFn } from '@lxjx/hooks';
+import { Bubble, BubbleTypeEnum } from 'm78/bubble';
+import { OverlayDirectionEnum } from 'm78/overlay';
+import { EllipsisOutlined } from 'm78/icon';
 import taskSeed from '../../task/task-seed';
-import task from '../../task/task';
+import taskGlobal from '../../task/task-global';
 import { configGetter, emitConfig, useSubscribeAuthChange } from '../../common/common';
 import { isPassNode, pushTaskOrOpenLastTask } from '../../task/methods';
 import FuncItem from '../unit/func-item';
 import FuncContextMenuBuilder from '../unit/func-context-menu-builder';
 import FuncStatusFlagBuilder from '../unit/func-status-flag-builder';
+import { TaskOptItem } from '../../types/types';
+import { renderFuncActions } from './renders';
 
 /**
  * 渲染的所有收藏功能列表
@@ -53,35 +58,23 @@ const FuncCollects = () => {
 
           if (!isPassNode(item)) return null;
 
-          const tasks = task.get({ id });
-          const length = tasks.length;
+          const tasks = taskGlobal.get({ id });
           const isCollectd = collectFunc.includes(item.id);
 
           return (
             <DND key={item.id} data={item.id} enableDrop>
               {({ innerRef, status, enables }) => (
-                <ContextMenu
-                  content={
-                    <FuncContextMenuBuilder
-                      tasks={tasks}
-                      taskOptItem={item}
-                      config={config}
-                      isCollectd={isCollectd}
-                    />
-                  }
-                >
-                  <FuncItem
-                    innerRef={innerRef}
-                    icon={item.icon}
-                    title={item.name}
-                    trailing={<FuncStatusFlagBuilder length={length} />}
-                    className={clsx({
-                      __active: status.dragOver,
-                      __disabled: !enables.enable || status.dragging,
-                    })}
-                    onClick={() => pushTaskOrOpenLastTask(id)}
-                  />
-                </ContextMenu>
+                <FuncItem
+                  innerRef={innerRef}
+                  icon={item.icon}
+                  title={item.name}
+                  trailing={renderFuncActions(tasks, isCollectd, item, config)}
+                  className={clsx({
+                    __active: status.dragOver,
+                    __disabled: !enables.enable || status.dragging,
+                  })}
+                  onClick={() => pushTaskOrOpenLastTask(id)}
+                />
               )}
             </DND>
           );

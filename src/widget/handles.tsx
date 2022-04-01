@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { LG } from 'm78/util';
+import { LG } from 'm78/common';
 import _debounce from 'lodash/debounce';
 import taskSeed from '../task/task-seed';
 
@@ -12,12 +12,12 @@ const Handles = () => {
     const resize = _debounce(() => {
       if (window.innerWidth < LG) {
         // 小屏下强制使用浮动菜单
-        taskSeed.setState({
+        taskSeed.set({
           funcBarFloat: true,
         });
       } else {
         // 大屏下还原菜单
-        taskSeed.setState({
+        taskSeed.set({
           funcBarFloat: false,
         });
       }

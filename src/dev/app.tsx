@@ -4,17 +4,48 @@ import { Button } from 'm78/button';
 
 import { Row } from 'm78/layout';
 import { PushpinOutlined, SettingOutlined, ThunderboltOutlined } from 'm78/icon';
-import { M78Admin, FuncItem, Link, task } from '../index';
-import { M78AdminConfig, TaskOpt } from '../types';
+import Wine from '@m78/wine';
+import { M78Admin, FuncItem, Link, taskGlobal, Login } from '../index';
+import { M78AdminConfig, TaskOpt } from '../types/types';
 import { AuthPro } from './AuthPro';
 import IconRender from '../widget/unit/icon-render';
+import WillPopChild from './will-pop/will-pop-child';
+
+import bjPng from './assets/bj.png';
+import yhqPng from './assets/yhq.png';
 
 const TestLazy = React.lazy(() => import('./Test'));
 const TestLazy2 = React.lazy(() => import('./Test2'));
 const TestLazy3 = React.lazy(() => import('./Test3'));
 const TestLazy4 = React.lazy(() => import('./Test4'));
+const WillPop = React.lazy(() => import('./will-pop/will-pop'));
 
 const opt: TaskOpt = [
+  {
+    name: '关闭提示',
+    children: [
+      {
+        id: 'WillPopDemo',
+        name: '关闭提示',
+        component: WillPop,
+      },
+      {
+        id: 'WillPopDemo1',
+        name: '关闭提示子页1',
+        component: WillPopChild,
+      },
+      {
+        id: 'WillPopDemo2',
+        name: '关闭提示子页2',
+        component: WillPopChild,
+      },
+      {
+        id: 'WillPopDemo3',
+        name: '关闭提示子页3',
+        component: WillPopChild,
+      },
+    ],
+  },
   {
     id: 'xxx1',
     name: '无名功能1',
@@ -25,7 +56,7 @@ const opt: TaskOpt = [
   {
     id: 'xxx2',
     name: '无名功能2',
-    icon: 'http://pic.51yuansu.com/pic3/cover/01/35/81/5924def7eadc7_610.jpg',
+    icon: bjPng,
     component: TestLazy2,
     auth: ['user:ud', 'setting:cr'],
   },
@@ -39,7 +70,7 @@ const opt: TaskOpt = [
   {
     id: 'xxx4',
     name: '无名功能2',
-    icon: 'http://pic.51yuansu.com/pic3/cover/01/35/81/5924def7eadc7_610.jpg',
+    icon: yhqPng,
     component: TestLazy2,
     auth: ['user:ud', 'setting:cr'],
   },
@@ -175,57 +206,13 @@ const App = () => {
     // initFull: true,
   });
 
-  // return (
-  //   <Login
-  //     logo={Logo}
-  //     title="M78 Admin"
-  //     desc="全新的多任务后台系统"
-  //     content={
-  //       <Form style={{ width: 300 }}>
-  //         <Form.Item name="name" required min={6}>
-  //           <Input size="large" placeholder="用户名" />
-  //         </Form.Item>
-  //         <Form.Item name="password" required min={6}>
-  //           <Input size="large" type="password" placeholder="密码" />
-  //         </Form.Item>
-  //
-  //         <Row className="p-12" mainAlign="between" crossAlign="center">
-  //           <div>
-  //             <a
-  //               className="fs"
-  //               onClick={() => {
-  //                 Wine.render({
-  //                   headerNode: <div>你好啊</div>,
-  //                   content: (
-  //                     <div>
-  //                       <h1>标题</h1>
-  //                       <div>12312312</div>
-  //                     </div>
-  //                   ),
-  //                 });
-  //               }}
-  //             >
-  //               忘记密码?
-  //             </a>
-  //             <Divider vertical />
-  //             <a className="fs">注册</a>
-  //           </div>
-  //           <Button type="submit" size="large" outline color="primary">
-  //             登录
-  //           </Button>
-  //         </Row>
-  //       </Form>
-  //     }
-  //   />
-  // );
-
   return (
     <>
       <M78Admin
         // width="70vw"
         // height="70vh"
         tasks={opt}
-        desktopNode={
+        desktop={
           <div>
             <div>
               <IconRender icon="✨" />
@@ -242,16 +229,20 @@ const App = () => {
               跳转 role1
             </Link>
 
-            <Button onClick={() => console.log(task.get())}>get</Button>
-            <Button onClick={() => console.log(task.get({ includeSubTask: true }))}>get all</Button>
+            <Button onClick={() => console.log(taskGlobal.get())}>get</Button>
+            <Button onClick={() => console.log(taskGlobal.get({ includeSubTask: true }))}>
+              get all
+            </Button>
 
-            <Button onClick={() => console.log(task.get({ id: 'role1' }))}>get id</Button>
-            <Button onClick={() => console.log(task.get({ id: 'role1', includeSubTask: true }))}>
+            <Button onClick={() => console.log(taskGlobal.get({ id: 'role1' }))}>get id</Button>
+            <Button
+              onClick={() => console.log(taskGlobal.get({ id: 'role1', includeSubTask: true }))}
+            >
               get all id
             </Button>
 
-            <Button onClick={() => task.dispose({ id: 'role1' })}>refresh </Button>
-            <Button onClick={() => task.dispose({ id: 'role1', includeSubTask: true })}>
+            <Button onClick={() => taskGlobal.dispose({ id: 'role1' })}>refresh </Button>
+            <Button onClick={() => taskGlobal.dispose({ id: 'role1', includeSubTask: true })}>
               refresh role1
             </Button>
 
@@ -289,9 +280,9 @@ const App = () => {
         }
         // footerNode={<div>🎉✨</div>}
         loading={false}
-        taskBarLeadingExtraNode={<span>呵呵哒</span>}
-        taskBarExtraNode={<span>呵呵</span>}
-        funcBarExtraNode={
+        taskBarLeadingExtra={<span>呵呵哒</span>}
+        taskBarExtra={<span>呵呵</span>}
+        funcBarExtra={
           <>
             <Row>
               <FuncItem icon="⚙" title="设置" />
@@ -324,6 +315,41 @@ const App = () => {
           }));
           console.log('config change: ', conf);
         }}
+        // body={
+        //   <Login
+        //     // logo={Logo}
+        //     title="M78 Admin"
+        //     desc="全新的多任务后台系统"
+        //     content={
+        //       <Row className="p-12" mainAlign="between" crossAlign="center">
+        //         <div>
+        //           <a
+        //             className="fs"
+        //             onClick={() => {
+        //               taskGlobal.push('WillPopDemo');
+        //
+        //               // Wine.render({
+        //               //   header: <div>你好啊</div>,
+        //               //   content: (
+        //               //     <div>
+        //               //       <h1>标题</h1>
+        //               //       <div>12312312</div>
+        //               //     </div>
+        //               //   ),
+        //               // });
+        //             }}
+        //           >
+        //             忘记密码?
+        //           </a>
+        //           <a className="fs">注册</a>
+        //         </div>
+        //         <Button type="submit" size="large" outline color="primary">
+        //           登录
+        //         </Button>
+        //       </Row>
+        //     }
+        //   />
+        // }
       />
     </>
   );

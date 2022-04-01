@@ -3,7 +3,7 @@ import { AnyFunction, isNumber } from '@lxjx/utils';
 import clsx from 'clsx';
 import { Spin } from 'm78/spin';
 import { MediaQueryContext } from 'm78/layout';
-import { TaskCtx } from '../types';
+import { TaskCtx } from '../types/types';
 import { useListenerKeyToUpdate } from './methods';
 import linkContext from './link-context';
 import TaskComponentHandle from './task-component-handle';

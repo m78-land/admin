@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { DirectionEnum } from 'm78/types';
+import { DirectionEnum } from 'm78/common';
 import { Scroller, ScrollerRef } from 'm78/scroller';
 import TaskTab from './task-tab';
 import taskSeed from '../../task/task-seed';

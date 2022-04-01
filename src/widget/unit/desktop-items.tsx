@@ -11,10 +11,10 @@ const DesktopItems = () => {
 
   return (
     <>
-      <div className="m78-admin_desktop-node">{aProps.desktopNode}</div>
+      <div className="m78-admin_desktop-node">{aProps.desktop}</div>
 
       <div className="m78-admin_layout_desc">
-        {aProps.footerNode || (
+        {aProps.footer || (
           <>
             POWER BY |-
             <a href="https://github.com/xianjie-li/m78" target="_blank" rel="noreferrer">

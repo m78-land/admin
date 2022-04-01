@@ -1,8 +1,8 @@
 import { createSeed } from 'm78/seed';
-import { TaskState } from '../types';
+import { TaskState } from '../types/types';
 
 /**
- * 管理所有内部状态管理的seed
+ * 管理所有内部状态的seed
  * */
 const taskSeed = createSeed<TaskState>({
   state: {

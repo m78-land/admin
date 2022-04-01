@@ -1,14 +1,17 @@
+/**
+ * 渲染入口，可以执行一些渲染前的前置操作
+ * */
+
 import React, { useEffect, useState } from 'react';
+import Wine from '@m78/wine';
+import { Spin } from 'm78/spin';
 import ConfigSync from './config-sync';
 import BaseLayout from './base-layout';
 import taskSeed from '../task/task-seed';
 import { useSyncWineTask, taskOptFormat } from '../task/methods';
-import { M78AdminProps } from '../types';
+import { M78AdminProps } from '../types/types';
 import Handles from './handles';
 
-/**
- * 渲染入口，可以执行一些渲染前的前置操作
- * */
 const M78AdminCore = (props: M78AdminProps) => {
   const { tasks } = props;
 
@@ -16,7 +19,7 @@ const M78AdminCore = (props: M78AdminProps) => {
   const [pass, setPass] = useState(false);
 
   useEffect(() => {
-    taskSeed.setState(taskOptFormat(tasks));
+    taskSeed.set(taskOptFormat(tasks));
 
     if (!pass) setPass(true);
   }, []);
@@ -25,11 +28,26 @@ const M78AdminCore = (props: M78AdminProps) => {
 
   if (!pass) return null;
 
+  function render() {
+    if (props.loading) {
+      return (
+        <div className="m78-admin_blocked-loading">
+          <Spin size="big" text="" full />
+        </div>
+      );
+    }
+
+    if (props.body) return props.body;
+
+    return <BaseLayout />;
+  }
+
   return (
     <>
       <ConfigSync />
       <Handles />
-      <BaseLayout />
+      <Wine.RenderTarget />
+      {render()}
     </>
   );
 };
