@@ -93,6 +93,8 @@ function createMainTaskCtx(taskOpt: TaskOptItem, ctx: TaskCtx) {
     window.innerWidth <= MediaQueryTypeValues.SM ||
     !(wineState.width || wineState.height || wineState.sizeRatio || !config?.initFull);
 
+  ctx.children = [];
+
   // 主实例实现
   ctx.wine = Wine.render({
     zIndex: WINDOW_Z_INDEX,
@@ -113,8 +115,6 @@ function createMainTaskCtx(taskOpt: TaskOptItem, ctx: TaskCtx) {
       });
     },
   });
-
-  ctx.children = [];
 
   ctx.refresh = () => refreshEvent.emit(ctx.taskKey);
 

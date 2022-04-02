@@ -11,8 +11,9 @@ import FuncLogo from './func-logo';
 import taskSeed from '../../task/task-seed';
 import { configGetter, emitConfig } from '../../common/common';
 import FuncFoot from './func-foot';
-import { FUNC_BAR_WIDTH, WINE_OFFSET } from '../../common/const';
+import { FUNC_BAR_WIDTH, WINDOW_Z_INDEX, WINE_OFFSET } from '../../common/const';
 import { getTaskOpt, isPassNode } from '../../task/methods';
+import { usePin } from './use-pin';
 
 const FuncBar = () => {
   const insideFuncBarFloat = taskSeed.useState(state => state.funcBarFloat);
@@ -31,6 +32,9 @@ const FuncBar = () => {
 
   // 启用功能菜单的hover展开收起效果，用于实现延迟菜单初次设置为悬浮后延迟收起
   const enableHover = useDelayToggle(isFloat, 1000);
+
+  // 某些情况需要强制固定funcBar
+  const pin = usePin(isFloat);
 
   // 浮动方式变更时，更新bound
   useEffect(() => {
@@ -64,7 +68,9 @@ const FuncBar = () => {
         className={clsx('m78-admin_func-bar', {
           __fixed: isFloat,
           __hover: enableHover,
+          '__force-show': pin,
         })}
+        style={{ zIndex: WINDOW_Z_INDEX - 1 }}
       >
         <Row crossAlign="center">
           <FuncLogo />

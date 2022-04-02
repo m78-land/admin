@@ -13,7 +13,6 @@
   background-color: var(--m78-component-bg);
   transition: 0.2s;
   border-right: 1px solid var(--m78-color-border);
-  z-index: var(--m78-z-index);
 
   &.__fixed {
     top: 10%;
@@ -22,7 +21,7 @@
     box-shadow: var(--m78-shadow-2-b);
     border: 1px solid var(--m78-color-border);
     transform: translateX(0%);
-    z-index: var(--m78-z-index-modal);
+    z-index: var(--m78-z-index-modal) !important;
 
     &.__hover {
       transform: translateX(-92%);
@@ -31,6 +30,10 @@
         transform: translateX(0%);
       }
     }
+  }
+
+  &.__force-show {
+    transform: translateX(0%) !important;
   }
 
   &_logo {
@@ -49,5 +52,6 @@
 
   &_main {
     flex: 1;
+    border-radius: var(--m78-border-radius);
   }
 }

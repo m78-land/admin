@@ -6,6 +6,7 @@ import { UseTriggerTypeEnum } from 'm78/hooks';
 import FuncContextMenuBuilder from '../unit/func-context-menu-builder';
 import FuncStatusFlagBuilder from '../unit/func-status-flag-builder';
 import { M78AdminConfig, TaskCtxList, TaskOptItem } from '../../types/types';
+import { pinEvent } from './use-pin';
 
 export function renderFuncActions(
   tasks: TaskCtxList,
@@ -22,6 +23,7 @@ export function renderFuncActions(
       </span>
       <ContextMenu
         triggerType={UseTriggerTypeEnum.click}
+        onChange={pinEvent.emit}
         content={
           <FuncContextMenuBuilder
             tasks={tasks}

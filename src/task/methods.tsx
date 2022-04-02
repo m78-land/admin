@@ -194,7 +194,6 @@ export function closeTaskList(checker: (ctx: TaskCtx, ind: number) => boolean) {
     });
 
     if (confirmTasks.length) {
-      console.log(confirmTasks.length);
       closeConfirm(confirmTasks, actionClose);
     } else {
       actionClose();

@@ -2,7 +2,7 @@
 import { TaskWillPopMeta } from '../types/types';
 
 /** 窗口层级, 仅高于常规内容层即可 */
-export const WINDOW_Z_INDEX = 100;
+export const WINDOW_Z_INDEX = 10;
 
 /** 功能菜单宽度 */
 export const FUNC_BAR_WIDTH = 200;
