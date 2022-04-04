@@ -1,7 +1,7 @@
 import { keypressAndClick, WineState } from '@m78/wine';
 import { ContextMenu } from 'm78/context-menu';
 import { ListView, ListViewItem } from 'm78/list-view';
-import { SizeEnum } from 'm78/common';
+import { Size } from 'm78/common';
 import { DeleteOutlined, FullscreenExitOutlined, FullscreenOutlined, SyncOutlined } from 'm78/icon';
 import { PageHeader } from 'm78/page-header';
 import { Divider, Row } from 'm78/layout';
@@ -26,7 +26,7 @@ export const taskWindowHeaderCustomer: NonNullable<WineState['headerCustomer']> 
   return (
     <ContextMenu
       content={
-        <ListView size={SizeEnum.small}>
+        <ListView size={Size.small}>
           <ListViewItem
             leading={<SyncOutlined />}
             crossAlign="start"

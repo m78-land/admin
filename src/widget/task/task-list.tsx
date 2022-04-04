@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { DirectionEnum } from 'm78/common';
+import { Direction } from 'm78/common';
 import { Scroller, ScrollerRef } from 'm78/scroller';
 import TaskTab from './task-tab';
 import taskSeed from '../../task/task-seed';
@@ -35,7 +35,7 @@ const TaskList = () => {
       className="m78-admin_task-bar_main"
       scrollFlag
       hideScrollbar
-      direction={DirectionEnum.horizontal}
+      direction={Direction.horizontal}
       ref={scroller}
     >
       {taskList.map(item => (

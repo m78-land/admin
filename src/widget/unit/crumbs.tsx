@@ -3,7 +3,7 @@ import { CloseOutlined, DeleteOutlined, SyncOutlined } from 'm78/icon';
 import clsx from 'clsx';
 import { isNumber } from '@lxjx/utils';
 import { Scroller } from 'm78/scroller';
-import { DirectionEnum, SizeEnum } from 'm78/common';
+import { Direction, Size } from 'm78/common';
 import { ContextMenu } from 'm78/context-menu';
 import { ListView, ListViewItem } from 'm78/list-view';
 import { TaskCtx } from '../../types/types';
@@ -36,7 +36,7 @@ const Crumbs = ({ ctx }: Props) => {
     return (
       <ContextMenu
         content={
-          <ListView size={SizeEnum.small}>
+          <ListView size={Size.small}>
             <ListViewItem
               leading={<SyncOutlined />}
               title="刷新任务"
@@ -61,7 +61,7 @@ const Crumbs = ({ ctx }: Props) => {
     <Scroller
       scrollFlag
       hideScrollbar
-      direction={DirectionEnum.horizontal}
+      direction={Direction.horizontal}
       className="m78-admin_crumbs"
     >
       {renderWithMenu(

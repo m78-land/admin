@@ -11,7 +11,7 @@ import {
   ToTopOutlined,
 } from 'm78/icon';
 import { ListView, ListViewItem } from 'm78/list-view';
-import { SizeEnum } from 'm78/common';
+import { Size } from 'm78/common';
 import { useFn } from '@lxjx/hooks';
 import taskGlobal from '../../task/task-global';
 import { closeTaskById, collectHandle, hideTaskById, openTaskById } from '../../task/methods';
@@ -34,7 +34,7 @@ const FuncContextMenuBuilder = ({ tasks, taskOptItem, config, isCollectd }: Prop
   const delayCall = useFn((cb: Function) => () => setTimeout(cb, 120));
 
   return (
-    <ListView size={SizeEnum.small}>
+    <ListView size={Size.small}>
       {tasks.length > 0 && (
         <>
           {tasks.map((i, ind) => (

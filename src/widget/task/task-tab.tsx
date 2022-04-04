@@ -10,7 +10,7 @@ import {
 import { ContextMenu } from 'm78/context-menu';
 import clsx from 'clsx';
 import { ListView, ListViewItem } from 'm78/list-view';
-import { SizeEnum } from 'm78/common';
+import { Size } from 'm78/common';
 import { TaskCtx } from '../../types/types';
 import {
   closeLeftTaskByKey,
@@ -37,7 +37,7 @@ const TaskTab = ({ instance }: Props) => {
   return (
     <ContextMenu
       content={
-        <ListView size={SizeEnum.small}>
+        <ListView size={Size.small}>
           <ListViewItem
             leading={<SyncOutlined />}
             title="刷新窗口"

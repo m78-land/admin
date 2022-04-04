@@ -2,7 +2,7 @@ import { EllipsisOutlined } from 'm78/icon';
 import React from 'react';
 import { Row } from 'm78/layout';
 import { ContextMenu } from 'm78/context-menu';
-import { UseTriggerTypeEnum } from 'm78/hooks';
+import { UseTriggerType } from 'm78/hooks';
 import FuncContextMenuBuilder from '../unit/func-context-menu-builder';
 import FuncStatusFlagBuilder from '../unit/func-status-flag-builder';
 import { M78AdminConfig, TaskCtxList, TaskOptItem } from '../../types/types';
@@ -22,7 +22,7 @@ export function renderFuncActions(
         <FuncStatusFlagBuilder length={length} />
       </span>
       <ContextMenu
-        triggerType={UseTriggerTypeEnum.click}
+        triggerType={UseTriggerType.click}
         onChange={pinEvent.emit}
         content={
           <FuncContextMenuBuilder
