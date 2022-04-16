@@ -1366,6 +1366,17 @@
     lodash "^4.17.21"
     tslib "^2.2.0"
 
+"@m78/permission@^2.1.1":
+  version "2.1.1"
+  resolved "https://registry.npmmirror.com/@m78/permission/-/permission-2.1.1.tgz#975649ff7d64b77299b81c85343db9c88848b603"
+  integrity sha512-5HruYgCx44xY/MI60NNO2XwdK2zDQWsxUnxK+5RMwO5pBfSDH+VNwY3WUpAvlfv5ko6tI/FLdku0ffc22kTcdw==
+  dependencies:
+    "@lxjx/utils" "^1.7.9"
+    "@m78/seed" "^2.1.0"
+    "@types/lodash" "^4.14.170"
+    lodash "^4.17.21"
+    tslib "^2.3.1"
+
 "@m78/render-api@^1.4.1":
   version "1.4.1"
   resolved "https://registry.npmjs.org/@m78/render-api/-/render-api-1.4.1.tgz#38229d42f42e28375e841f4bafe93c60bde5f8c7"
@@ -5918,10 +5929,10 @@ lz-string@^1.4.4:
   resolved "https://registry.npm.taobao.org/lz-string/download/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"
   integrity sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=
 
-m78@^1.0.0-beta.90:
-  version "1.0.0-beta.90"
-  resolved "https://registry.npmjs.org/m78/-/m78-1.0.0-beta.90.tgz#e7de34789510f69f70debc1fa79a392725d27bbe"
-  integrity sha512-y1Y0TcKny5UjIukV+VqAkazrWMe6fGRw4x2JwVw0usB7aWtFTj8bgjyMSFiOS7/lzFyhl6Pu7Uda7T7193AWtw==
+m78@^1.0.0-beta.91:
+  version "1.0.0-beta.91"
+  resolved "https://registry.npmmirror.com/m78/-/m78-1.0.0-beta.91.tgz#7e42eca161d4a0fd57f2cb6287392fb20b8a6fb3"
+  integrity sha512-EH/tMfZkQa50tfPp97DdMhkQbMIkggFqeZZ+6OzJlw+0RswEt5qLg9HPKmHdWVIhpgan45C9jr2ssHr6S3Y6oQ==
   dependencies:
     "@ant-design/icons" "^4.7.0"
     "@babel/runtime" "^7.7.2"
@@ -5932,6 +5943,7 @@ m78@^1.0.0-beta.90:
     "@lxjx/utils" "^1.7.7"
     "@lxjx/validate-tools" "^1.1.0"
     "@m78/auth" "^1.1.5"
+    "@m78/permission" "^2.1.1"
     "@m78/render-api" "^1.4.1"
     "@m78/seed" "^2.1.0"
     "@m78/style" "^2.1.3"

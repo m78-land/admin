@@ -28,15 +28,15 @@ export function emitConfig(conf: Partial<M78AdminConfig>) {
   callback && callback(conf);
 }
 
-/** 接收一个state中包含auth的seed，并在其改变时触发更新 */
-export function useSubscribeAuthChange(seed: Seed) {
+/** 接收一个state中包含permission的seed，并在其改变时触发更新 */
+export function useSubscribePermissionChange(seed: Seed) {
   const [authKeyChangeFlag, setFlag] = useState(0);
 
   useEffect(() => {
     const subscribe = seed.subscribe;
 
     return subscribe(changes => {
-      if ('auth' in changes) {
+      if ('permission' in changes) {
         setFlag(prev => prev + 1);
       }
     });

@@ -3,6 +3,7 @@ import { AnyFunction, isNumber } from '@lxjx/utils';
 import clsx from 'clsx';
 import { Spin } from 'm78/spin';
 import { MediaQueryContext } from 'm78/layout';
+import { PermissionProTplList } from 'm78/permission';
 import { TaskCtx } from '../types/types';
 import { useListenerKeyToUpdate } from './methods';
 import linkContext from './link-context';
@@ -29,15 +30,27 @@ const TaskWindowWrap = ({ ctx, Component }: Props) => {
   const hasChild = !!ctx.children.length;
   const hasIndex = isNumber(ctx.currentChildIndex);
 
+  function render(
+    key: string,
+    permissionKeys: PermissionProTplList | undefined,
+    childRender: () => React.ReactElement,
+  ) {
+    return (
+      <React.Suspense fallback={loadingNode}>
+        <TaskComponentHandle taskKey={key} permissionKeys={permissionKeys}>
+          {childRender}
+        </TaskComponentHandle>
+      </React.Suspense>
+    );
+  }
+
   return (
     <MediaQueryContext>
       <LinkProvider value={{ parent: ctx }}>
         <div className={clsx({ hide: hasIndex })}>
-          <React.Suspense fallback={loadingNode}>
-            <TaskComponentHandle>
-              <Component {...ctx} />
-            </TaskComponentHandle>
-          </React.Suspense>
+          {render(ctx.taskKey, ctx.option.permission, () => (
+            <Component {...ctx} />
+          ))}
         </div>
         {hasChild &&
           ctx.children.map((subTask, ind) => {
@@ -45,11 +58,9 @@ const TaskWindowWrap = ({ ctx, Component }: Props) => {
 
             return (
               <div key={subTask.taskKey} className={clsx({ hide: ctx.currentChildIndex !== ind })}>
-                <React.Suspense fallback={loadingNode}>
-                  <TaskComponentHandle>
-                    <SubComponent {...subTask} />
-                  </TaskComponentHandle>
-                </React.Suspense>
+                {render(subTask.taskKey, subTask.option.permission, () => (
+                  <SubComponent {...subTask} />
+                ))}
               </div>
             );
           })}

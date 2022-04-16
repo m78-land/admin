@@ -1,6 +1,6 @@
 import { AnyFunction, ComponentBasePropsWithAny, TupleNumber } from '@lxjx/utils';
 import React from 'react';
-import { AuthProStrings } from 'm78/auth';
+import { PermissionProTplList } from 'm78/permission';
 import { RenderApiComponentInstance } from '@m78/render-api';
 import { WineInstance, WineState } from '@m78/wine';
 
@@ -19,8 +19,8 @@ export interface TaskOptItem {
   component: AnyFunction;
   /** 图标 */
   icon?: React.ReactNode | string;
-  /** 权限，此项需要配合 M78Admin 组件的 authSeed 配置使用  */
-  auth?: AuthProStrings;
+  /** 权限，此项需要配合 M78Admin 组件的 permission 配置使用  */
+  permission?: PermissionProTplList;
 
   // ####### 窗口设置 这些配置继承至Wine ####### //
   /**
@@ -64,7 +64,7 @@ export interface TaskItemCategory {
   /** 目录图标 */
   icon?: TaskOptItem['icon'];
   /** 同TaskOptItem.auth, 其作用于所有子级 */
-  auth?: TaskOptItem['auth'];
+  permission?: TaskOptItem['permission'];
 }
 
 /**

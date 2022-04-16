@@ -336,10 +336,10 @@ export function isTaskItemCategory(arg: any): arg is TaskItemCategory {
 }
 
 /**
- * 根据taskAuth检测是是否符合条件
+ * 检测选项是是否符满足权限
  * */
 export function checkTaskAuth(opt: TaskOptItem | TaskItemCategory) {
-  const AuthPro = taskSeed.get().adminProps.authPro;
+  const pro = taskSeed.get().adminProps.permission;
 
   /* taskOptFormat()中添加，所有父节点组成的数组 */
   const parents: TaskItemCategory[] = (opt as any).__parents;
@@ -347,15 +347,17 @@ export function checkTaskAuth(opt: TaskOptItem | TaskItemCategory) {
   // 检测所有父级是否通过校验
   if (parents?.length) {
     // 所有父级的auth是否均验证通过
-    const everyPass = parents.every(item => (isArray(item.auth) ? !AuthPro.auth(item.auth) : true));
+    const everyPass = parents.every(item =>
+      isArray(item.permission) ? !pro.check(item.permission) : true,
+    );
     if (!everyPass) return false;
   }
 
   // 未配置auth时跳过验证
-  if (!AuthPro || !isArray(opt.auth) || !opt.auth.length) return true;
+  if (!pro || !isArray(opt.permission) || !opt.permission.length) return true;
 
   // 验证当前节点
-  return !AuthPro.auth(opt.auth);
+  return !pro.check(opt.permission);
 }
 
 /**

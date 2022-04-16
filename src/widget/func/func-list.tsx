@@ -3,7 +3,7 @@ import { Tree, TreeNode } from 'm78/tree';
 import taskSeed from '../../task/task-seed';
 import taskGlobal from '../../task/task-global';
 import { isPassNodeOrCategory, pushTaskOrOpenLastTask } from '../../task/methods';
-import { configGetter, useSubscribeAuthChange } from '../../common/common';
+import { configGetter, useSubscribePermissionChange } from '../../common/common';
 import { TaskOptItem } from '../../types/types';
 import IconRender from '../unit/icon-render';
 import { renderFuncActions } from './renders';
@@ -17,12 +17,12 @@ const FuncList = () => {
   // 任务列表变更时触发render
   taskSeed.useState(state => state.taskList);
 
-  const AuthPro = taskSeed.useState(state => state.adminProps.authPro);
+  const permissionPro = taskSeed.useState(state => state.adminProps.permission);
   const config = taskSeed.useState(configGetter);
   const collectFunc = config?.collectFunc || [];
 
-  // state.auth变更监听
-  const authKeyChangeFlag = useSubscribeAuthChange(AuthPro.authInstance.seed);
+  // state.permission变更监听
+  const authKeyChangeFlag = useSubscribePermissionChange(permissionPro.permission.seed);
 
   function renderAction(node: TreeNode) {
     if (node.children?.length) return null;

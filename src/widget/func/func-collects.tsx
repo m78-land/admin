@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { useFn } from '@lxjx/hooks';
 import taskSeed from '../../task/task-seed';
 import taskGlobal from '../../task/task-global';
-import { configGetter, emitConfig, useSubscribeAuthChange } from '../../common/common';
+import { configGetter, emitConfig, useSubscribePermissionChange } from '../../common/common';
 import { isPassNode, pushTaskOrOpenLastTask } from '../../task/methods';
 import FuncItem from '../unit/func-item';
 import { renderFuncActions } from './renders';
@@ -18,11 +18,11 @@ const FuncCollects = () => {
   // 任务列表变更时触发render
   taskSeed.useState(state => state.taskList);
 
-  const AuthPro = taskSeed.useState(state => state.adminProps.authPro);
+  const permissionPro = taskSeed.useState(state => state.adminProps.permission);
   const config = taskSeed.useState(configGetter);
   const collectFunc = config?.collectFunc || [];
 
-  useSubscribeAuthChange(AuthPro.authInstance.seed);
+  useSubscribePermissionChange(permissionPro.permission.seed);
 
   /** 拖动结束 */
   const acceptHandle = useFn((e: DragFullEvent<string>) => {

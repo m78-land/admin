@@ -1,5 +1,5 @@
-import { RCAuthPro } from 'm78/auth';
 import React from 'react';
+import { RCPermissionPro } from 'm78/permission';
 import { TaskCtxList, TaskOpt, TaskOptItem } from './tasks';
 
 /** 配置 */
@@ -39,8 +39,8 @@ export interface M78AdminProps {
   // ####### 常用 ####### //
   /** 任务配置列表 */
   tasks: TaskOpt;
-  /** 应用的AuthPro实例，用于控制菜单等区域的权限 */
-  authPro: RCAuthPro;
+  /** 应用的PermissionPro实例，用于控制菜单和任务的权限 */
+  permission: RCPermissionPro;
   /** 配置, 这些配置通常情况是期望被持久化的, 所以放在单独的属性中方便统一管理, 可以通过onConfigChange订阅变更并选择保存到接口或本地缓存 */
   config?: M78AdminConfig;
   /** 配置被组件内部改变的回调, 如果忽略此项，则内部改变不会生效 */

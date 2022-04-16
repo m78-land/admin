@@ -35,7 +35,7 @@ interface M78AdminProps {
   // ####### 常用 ####### //
   /** 任务配置列表 */
   tasks: TaskOpt;
-  /** 应用的AuthPro实例，用于控制菜单等区域的权限 */
+  /** 应用的AuthPro实例，用于控制菜单和任务的权限 */
   authPro: RCAuthPro;
   /** 配置, 这些配置通常情况是期望被持久化的, 所以放在单独的属性中方便统一管理, 可以通过onConfigChange订阅变更并选择保存到接口或本地缓存 */
   config?: M78AdminConfig;

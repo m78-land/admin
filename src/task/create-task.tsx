@@ -78,7 +78,7 @@ function createMainTaskCtx(taskOpt: TaskOptItem, ctx: TaskCtx) {
     name,
     component,
     icon,
-    auth,
+    permission,
     taskName,
     initFull,
     singleton,
