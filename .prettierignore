@@ -7,7 +7,6 @@ package.json
 .dockerignore
 .DS_Store
 .eslintignore
-*.png
 *.toml
 docker
 .editorconfig
@@ -25,3 +24,5 @@ yarn-error.log
 *.ttf
 *.woff
 *.woff2
+*/assets
+/src/dev/assets/

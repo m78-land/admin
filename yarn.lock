@@ -5929,10 +5929,10 @@ lz-string@^1.4.4:
   resolved "https://registry.npm.taobao.org/lz-string/download/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"
   integrity sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=
 
-m78@^1.0.0-beta.91:
-  version "1.0.0-beta.91"
-  resolved "https://registry.npmmirror.com/m78/-/m78-1.0.0-beta.91.tgz#7e42eca161d4a0fd57f2cb6287392fb20b8a6fb3"
-  integrity sha512-EH/tMfZkQa50tfPp97DdMhkQbMIkggFqeZZ+6OzJlw+0RswEt5qLg9HPKmHdWVIhpgan45C9jr2ssHr6S3Y6oQ==
+m78@^1.0.0-beta.92:
+  version "1.0.0-beta.92"
+  resolved "https://registry.npmjs.org/m78/-/m78-1.0.0-beta.92.tgz#4aac62705680fedc1b16957886bf1006f859230a"
+  integrity sha512-FURrJTFUO5kajiHfxIt65auo6gcBNnIhIfx9DPKuTKywUC9i+8hQPB82xeTxsQ7zfA/YyFkTelw6tRIilS3viw==
   dependencies:
     "@ant-design/icons" "^4.7.0"
     "@babel/runtime" "^7.7.2"

@@ -1,5 +1,5 @@
 import { EllipsisOutlined } from 'm78/icon';
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { Row } from 'm78/layout';
 import { ContextMenu } from 'm78/context-menu';
 import { UseTriggerType } from 'm78/hooks';
@@ -17,7 +17,7 @@ export function renderFuncActions(
   const length = tasks.length;
 
   return (
-    <Row crossAlign="center">
+    <Row crossAlign="center" onClick={(e: SyntheticEvent) => e.stopPropagation()}>
       <span style={{ marginRight: 2 }}>
         <FuncStatusFlagBuilder length={length} />
       </span>

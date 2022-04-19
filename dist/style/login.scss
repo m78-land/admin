@@ -5,32 +5,40 @@
     @include full;
 
     &-title {
-      font-size: var(--m78-fs-lg);
     }
 
     &-content {
+      width: 88%;
+      max-width: 550px;
       position: absolute;
       left: 50%;
-      top: 36%;
+      top: 42%;
       transform: translate(-50%, -50%);
+      border-radius: var(--m78-border-radius-lg);
+      padding: 32px 50px 60px;
+      overflow: hidden;
 
       .m78-list {
         background-color: transparent;
+      }
+
+      &_bg {
+        position: absolute;
+        background-color: rgba(255, 255, 255, 0.6);
+        z-index: -1;
+        @include full;
       }
     }
 
     &-bg {
       position: absolute;
-      // 去除filter: blur 的毛边
       left: -50px;
       top: -50px;
       right: -50px;
       bottom: -50px;
-
       background: url('../assets/m2.jpg') center/cover;
-      //background: linear-gradient(to right, #fc354c, #0abfbc);
-      filter: blur(24px);
-      opacity: 0.2;
+      filter: blur(40px);
+      opacity: 0.6;
     }
   }
 }

@@ -59,7 +59,7 @@ const FuncCollects = () => {
               {({ innerRef, status, enables }) => (
                 <FuncItem
                   innerRef={innerRef}
-                  icon={item.icon}
+                  icon={item.icon || <span className="m78-dot __small" />}
                   title={item.name}
                   trailing={renderFuncActions(tasks, isCollectd, item, config)}
                   className={clsx({

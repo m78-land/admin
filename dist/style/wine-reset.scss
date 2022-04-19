@@ -23,7 +23,17 @@
   &.__full {
     .m78-wine_decorate {
       box-shadow: none;
+      border-radius: 0;
     }
+  }
+
+  &_header {
+    background-color: var(--m78-component-bg);
+    border-bottom: 1px solid var(--m78-color-border);
+  }
+
+  &_header-content {
+    color: var(--m78-color-primary);
   }
 
   &_decorate {
@@ -36,6 +46,11 @@
   .m78-page-header {
     border: none;
     border-bottom: 1px solid var(--m78-color-border);
+  }
+
+  .m78-page-header_main {
+    padding: var(--m78-space-2) var(--m78-space-3);
+    margin: 0;
   }
 
   &_hide-btn {

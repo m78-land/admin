@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import { TaskWindowLayoutProps } from '../../types';
+import { TaskWindowLayoutProps } from '../../types/types';
 /**
  * 为窗口提供可选的基础布局:
  * - 包含内容区域、底部操作区、侧栏、顶栏

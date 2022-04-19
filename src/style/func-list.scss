@@ -1,5 +1,4 @@
 .m78-admin_func-list {
-
   &_more-btn {
     opacity: 0;
   }
@@ -9,7 +8,8 @@
     padding: var(--m78-space-1) !important;
   }
 
-  .m78-tree_item:hover &_more-btn, .m78-admin_func-item:hover &_more-btn {
+  .m78-tree_item:hover &_more-btn,
+  .m78-admin_func-item:hover &_more-btn {
     opacity: 1;
   }
 

@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import { TaskCtx } from '../../types';
+import { TaskCtx } from '../../types/types';
 interface Props {
     instance: TaskCtx;
 }

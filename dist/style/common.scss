@@ -18,21 +18,3 @@ body {
     @include full;
   }
 }
-
-@media (max-width: 680px) {
-  .m78-admin_layout_side {
-    display: none;
-  }
-
-  .grid-column1,
-  .grid-column2,
-  .grid-column3 {
-    width: 100% !important;
-    margin: 0 !important;
-    order: -1 !important;
-  }
-
-  .grid-column2 {
-    margin: 12px 0 !important;
-  }
-}

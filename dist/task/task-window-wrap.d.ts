@@ -1,6 +1,6 @@
 /// <reference types="react" />
 import { AnyFunction } from '@lxjx/utils';
-import { TaskCtx } from '../types';
+import { TaskCtx } from '../types/types';
 interface Props {
     /** 待渲染的任务组件 */
     Component: AnyFunction;

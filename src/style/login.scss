@@ -4,7 +4,8 @@
     overflow: hidden;
     @include full;
 
-    &-title {}
+    &-title {
+    }
 
     &-content {
       width: 88%;
@@ -23,12 +24,11 @@
 
       &_bg {
         position: absolute;
-        background-color: rgba(255,255,255,0.6);
+        background-color: rgba(255, 255, 255, 0.6);
         z-index: -1;
         @include full;
       }
     }
-
 
     &-bg {
       position: absolute;
@@ -38,7 +38,7 @@
       bottom: -50px;
       background: url('../assets/m2.jpg') center/cover;
       filter: blur(40px);
-      opacity: 0.6
+      opacity: 0.6;
     }
   }
 }

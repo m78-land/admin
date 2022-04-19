@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import { TaskLoginProps } from '../../types';
+import { TaskLoginProps } from '../../types/types';
 /**
  * 内置的登录样式，非必选
  * */

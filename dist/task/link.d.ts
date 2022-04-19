@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import { TaskLinkProps } from '../types';
+import { TaskLinkProps } from '../types/types';
 /**
  * 开启任务的快捷方式，其底层是ctx.push/ctx.replace等方法
  * - 如果组件处理一个任务窗口实例内部，会在该窗口打开子任务，如果在实例外则会通过新任务窗口打开任务

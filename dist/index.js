@@ -28,28 +28,32 @@ var __rest = (source, exclude) => {
 };
 import "@m78/admin/style/index.scss";
 import React, {useState, useEffect, useMemo, createContext, useRef, useContext} from "react";
-import {Spin} from "m78/spin";
 import {createSeed} from "m78/seed";
 import Wine, {keypressAndClick} from "@m78/wine";
+import {Spin} from "m78/spin";
 import {m78Config} from "m78/config";
 import {generate} from "@ant-design/colors";
-import {Divider, MediaQueryContext, MediaQueryTypeValues, MediaQuery} from "m78/layout";
+import {isString, isFunction, isBoolean, ensureArray, isArray, isNumber, createRandString, isObject, retry} from "@lxjx/utils";
 import {Scroller} from "m78/scroller";
-import {ContextMenu, ContextMenuItem} from "m78/context-menu";
-import {DNDContext, DND} from "m78/dnd";
+import {SyncOutlined, DeleteOutlined, CloseOutlined, FullscreenExitOutlined, FullscreenOutlined, ToTopOutlined, AppstoreAddOutlined, HeartFilled, HeartOutlined, EyeInvisibleOutlined, SelectOutlined, ExportOutlined, EllipsisOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SplitCellsOutlined, ImportOutlined} from "m78/icon";
+import {MediaQueryContext, Row, Divider, MediaQueryTypeValues, Tile, Spacer, MediaQuery} from "m78/layout";
 import clsx from "clsx";
-import {createEvent, useFn, useSelf, useScroll} from "@lxjx/hooks";
-import {isNumber, createRandString, isObject, isArray, isFunction, isBoolean, retry} from "@lxjx/utils";
+import {createEvent, useFn, useDelayToggle, useSelf, useScroll} from "@lxjx/hooks";
+import {Portal} from "m78/portal";
+import {Tree} from "m78/tree";
 import _debounce from "lodash/debounce";
 import {message} from "m78/message";
+import {Dialog} from "m78/dialog";
+import {ContextMenu} from "m78/context-menu";
+import {ListView, ListViewItem} from "m78/list-view";
+import {Direction, Size, LG} from "m78/common";
 import {PageHeader} from "m78/page-header";
-import {CloseOutlined, MenuOutlined, StarFilled, StarOutlined} from "m78/icon";
-import {DirectionEnum, SizeEnum} from "m78/types";
+import {UseTriggerType} from "m78/hooks";
+import {DNDContext, DND} from "m78/dnd";
 import assetLogo from "@m78/admin/assets/logo.png";
 import {Button} from "m78/button";
-import {Popper, PopperDirectionEnum} from "m78/popper";
-import {Tree} from "m78/tree";
 import {Check} from "m78/check";
+import {Bubble} from "m78/bubble";
 const taskSeed = createSeed({
   state: {
     taskOptions: [],
@@ -58,7 +62,7 @@ const taskSeed = createSeed({
     taskList: [],
     adminProps: {
       tasks: [],
-      authPro: null
+      permission: null
     }
   }
 });
@@ -935,15 +939,15 @@ function configGetter(state) {
   return (_a = state.adminProps) == null ? void 0 : _a.config;
 }
 function emitConfig(conf) {
-  const callback = taskSeed.getState().adminProps.onConfigChange;
+  const callback = taskSeed.get().adminProps.onConfigChange;
   callback && callback(conf);
 }
-function useSubscribeAuthChange(seed) {
+function useSubscribePermissionChange(seed) {
   const [authKeyChangeFlag, setFlag] = useState(0);
   useEffect(() => {
     const subscribe = seed.subscribe;
     return subscribe((changes) => {
-      if ("auth" in changes) {
+      if ("permission" in changes) {
         setFlag((prev) => prev + 1);
       }
     });
@@ -973,22 +977,34 @@ function generateThemeColorRules(color, subColor) {
   gHelper("--m78-color", color);
   gHelper("--m78-color-sub", subColor);
   return s ? `
-      :root {
+      .m78 {
         ${s}
       }
     ` : s;
+}
+const stringIconSuffix = ["png", "jpg", "jpeg", "gif", "webp"];
+function isStringIcon(icon) {
+  if (!isString(icon))
+    return false;
+  if (icon.startsWith("data:image"))
+    return true;
+  const slice = icon.split(".");
+  const suffix = slice[slice.length - 1];
+  return !!(suffix && stringIconSuffix.includes(suffix));
 }
 const ConfigSync = () => {
   const config = taskSeed.useState(configGetter);
   const darkMode = (config == null ? void 0 : config.darkMode) || false;
   useEffect(() => {
-    m78Config.setState({
+    m78Config.set({
       darkMode
     });
   }, [darkMode]);
   const maxWindow = (config == null ? void 0 : config.maxWindow) || 12;
   useEffect(() => {
-    Wine.setMaxInstance(maxWindow);
+    Wine.setOption({
+      maxInstance: maxWindow
+    });
   }, [maxWindow]);
   const color = config == null ? void 0 : config.color;
   const subColor = config == null ? void 0 : config.subColor;
@@ -1007,178 +1023,25 @@ const ConfigSync = () => {
   }, []);
   return null;
 };
-const updateByKeyEvent = createEvent();
-const refreshEvent = createEvent();
-const Crumbs = ({ctx: ctx2}) => {
-  useListenerKeyToUpdate(ctx2);
-  function changeTaskHandle(ind) {
-    if (ctx2.currentChildIndex === ind)
-      return;
-    ctx2.currentChildIndex = ind;
-    updateByKeyEvent.emit(ctx2.taskKey);
-  }
-  const childLen = ctx2.children.length;
-  const childInd = ctx2.currentChildIndex;
-  if (!childLen)
-    return null;
-  function renderWithMenu(el, currentCtx) {
-    return /* @__PURE__ */ React.createElement(ContextMenu, {
-      content: /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(ContextMenuItem, {
-        title: "\u5237\u65B0\u4EFB\u52A1",
-        onClick: currentCtx.refresh
-      }), currentCtx !== ctx2 && /* @__PURE__ */ React.createElement(ContextMenuItem, {
-        title: "\u5173\u95ED",
-        onClick: currentCtx.dispose
-      }))
-    }, el);
-  }
-  return /* @__PURE__ */ React.createElement(Scroller, {
-    scrollFlag: true,
-    hideScrollbar: true,
-    direction: DirectionEnum.horizontal,
-    className: "m78-admin_crumbs"
-  }, renderWithMenu(/* @__PURE__ */ React.createElement("span", {
-    className: clsx("m78-admin_crumbs-item ellipsis m78-admin_effect pr-8", {
-      __active: !isNumber(childInd)
-    }),
-    onClick: () => changeTaskHandle()
-  }, ctx2.option.name), ctx2), /* @__PURE__ */ React.createElement("span", {
-    className: "color-disabled mlr-8"
-  }, "/"), ctx2.children.map((item, index) => /* @__PURE__ */ React.createElement(React.Fragment, {
-    key: item.taskKey
-  }, renderWithMenu(/* @__PURE__ */ React.createElement("span", {
-    className: clsx("m78-admin_crumbs-item ellipsis m78-admin_effect", {
-      __active: index === childInd
-    }),
-    onClick: () => changeTaskHandle(index)
-  }, item.option.name, /* @__PURE__ */ React.createElement("span", {
-    className: "m78-admin_crumbs-close m78-admin_effect ml-4",
-    title: "\u5173\u95ED",
-    onClick: (e) => {
-      e.stopPropagation();
-      item.dispose();
-    }
-  }, /* @__PURE__ */ React.createElement(CloseOutlined, {
-    className: "m78-close-icon color-disabled fs"
-  }))), item), index !== childLen - 1 && /* @__PURE__ */ React.createElement("span", {
-    className: "color-disabled mlr-8"
-  }, "/"))));
-};
-const TaskNameDynamic = ({ctx: ctx2}) => {
-  useListenerKeyToUpdate(ctx2);
-  const opt = ctx2.option;
-  return /* @__PURE__ */ React.createElement("span", null, opt.taskName ? opt.taskName(ctx2) : opt.name);
-};
-const renderBuiltInHeader = (props, instance, isFull) => {
-  var _a, _b;
-  const taskOpt = instance.state.taskOption;
-  const ctx2 = instance.state.ctx;
-  return /* @__PURE__ */ React.createElement(ContextMenu, {
-    content: /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(ContextMenuItem, {
-      title: "\u5237\u65B0\u7A97\u53E3",
-      desc: "\u8BE5\u7A97\u53E3\u4E0B\u6240\u6709\u4EFB\u52A1\u5C06\u4F1A\u88AB\u91CD\u7F6E",
-      onClick: (_a = ctx2.wine.current) == null ? void 0 : _a.refresh
-    }), /* @__PURE__ */ React.createElement(ContextMenuItem, {
-      title: "\u6700\u5C0F\u5316",
-      onClick: instance.hide
-    }), /* @__PURE__ */ React.createElement(ContextMenuItem, {
-      title: "\u6700\u5927\u5316",
-      onClick: (_b = instance.current) == null ? void 0 : _b.full
-    }), /* @__PURE__ */ React.createElement(ContextMenuItem, {
-      title: "\u5173\u95ED",
-      onClick: ctx2.dispose
-    }))
-  }, /* @__PURE__ */ React.createElement("div", __assign({}, props), /* @__PURE__ */ React.createElement(PageHeader, {
-    className: "m78-admin_window-header",
-    border: true,
-    title: /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("span", {
-      className: "vm"
-    }, /* @__PURE__ */ React.createElement("span", {
-      className: "m78-admin_window-header_icon"
-    }, taskOpt.icon), " ", /* @__PURE__ */ React.createElement(TaskNameDynamic, {
-      ctx: ctx2
-    })), /* @__PURE__ */ React.createElement(Divider, {
-      vertical: true
-    }), /* @__PURE__ */ React.createElement(Crumbs, {
-      ctx: ctx2
-    })),
-    backIcon: null,
-    actions: /* @__PURE__ */ React.createElement("div", {
-      className: "m78-wine_header-actions",
-      onMouseDown: (e) => e.stopPropagation()
-    }, /* @__PURE__ */ React.createElement("span", __assign({
-      tabIndex: 1,
-      className: "m78-wine_btn"
-    }, keypressAndClick(instance.hide)), /* @__PURE__ */ React.createElement("span", {
-      className: "m78-wine_hide-btn"
-    })), isFull && /* @__PURE__ */ React.createElement("span", __assign({
-      tabIndex: 1,
-      className: "m78-wine_btn"
-    }, keypressAndClick(instance.current.resize)), /* @__PURE__ */ React.createElement("span", {
-      className: "m78-wine_resize-btn"
-    })), !isFull && /* @__PURE__ */ React.createElement("span", __assign({
-      tabIndex: 1,
-      className: "m78-wine_btn"
-    }, keypressAndClick(instance.current.full)), /* @__PURE__ */ React.createElement("span", {
-      className: "m78-wine_max-btn"
-    })), /* @__PURE__ */ React.createElement("span", __assign({
-      tabIndex: 1,
-      className: "m78-wine_btn __warning"
-    }, keypressAndClick(ctx2.dispose)), /* @__PURE__ */ React.createElement("span", {
-      className: "m78-wine_dispose-btn"
-    })))
-  })));
-};
-const WINE_OFFSET_LEFT = 89;
+const WINDOW_Z_INDEX = 10;
+const FUNC_BAR_WIDTH = 200;
 const WINE_OFFSET = {
-  left: WINE_OFFSET_LEFT,
-  top: 49
+  left: FUNC_BAR_WIDTH,
+  top: 49,
+  right: -1
 };
 const WILL_POP_MAP = {};
-const ctx = createContext({});
-const TaskComponentHandle = ({children}) => {
-  const props = children.props;
-  const [refreshKey, setKey] = useState(0);
-  refreshEvent.useEvent((key) => {
-    if (key === props.taskKey)
-      setKey((prev) => prev + 1);
-  });
-  return React.cloneElement(children, __assign({key: refreshKey}, props));
-};
-const LinkProvider = ctx.Provider;
-const loadingNode = /* @__PURE__ */ React.createElement(Spin, {
-  text: "\u6B63\u5728\u52A0\u8F7D\u8D44\u6E90",
-  className: "m78-admin_fixed-center-text"
-});
-const TaskWindowWrap = ({ctx: ctx2, Component}) => {
-  useListenerKeyToUpdate(ctx2);
-  const hasChild = !!ctx2.children.length;
-  const hasIndex = isNumber(ctx2.currentChildIndex);
-  return /* @__PURE__ */ React.createElement(MediaQueryContext, null, /* @__PURE__ */ React.createElement(LinkProvider, {
-    value: {parent: ctx2}
-  }, /* @__PURE__ */ React.createElement("div", {
-    className: clsx({hide: hasIndex})
-  }, /* @__PURE__ */ React.createElement(React.Suspense, {
-    fallback: loadingNode
-  }, /* @__PURE__ */ React.createElement(TaskComponentHandle, null, /* @__PURE__ */ React.createElement(Component, __assign({}, ctx2))))), hasChild && ctx2.children.map((subTask, ind) => {
-    const SubComponent = subTask.option.component;
-    return /* @__PURE__ */ React.createElement("div", {
-      key: subTask.taskKey,
-      className: clsx({hide: ctx2.currentChildIndex !== ind})
-    }, /* @__PURE__ */ React.createElement(React.Suspense, {
-      fallback: loadingNode
-    }, /* @__PURE__ */ React.createElement(TaskComponentHandle, null, /* @__PURE__ */ React.createElement(SubComponent, __assign({}, subTask)))));
-  })));
-};
+const updateByKeyEvent = createEvent();
+const refreshEvent = createEvent();
 function useSyncWineTask() {
   useEffect(() => {
     const closeHandle = _debounce(() => {
       const instance = Wine.getInstances();
-      const list = taskSeed.getState().taskList;
+      const list = taskSeed.get().taskList;
       const filterList = list.filter((item) => {
         return instance.some((i) => i === item.wine);
       });
-      taskSeed.setState({
+      taskSeed.set({
         taskList: filterList
       });
     }, 10, {leading: false, trailing: true});
@@ -1194,16 +1057,196 @@ function useListenerKeyToUpdate(ctx2) {
   });
 }
 function checkBeforeTaskEach(opt) {
-  const checkFn = taskSeed.getState().adminProps.beforeTaskEach;
+  const checkFn = taskSeed.get().adminProps.beforeTaskEach;
   if (!checkFn)
     return true;
   return checkFn(opt);
 }
+function getTaskOpt(id) {
+  const map = taskSeed.get().taskOptionsIdMap;
+  return map[id];
+}
+function taskOptFormat(taskOpt) {
+  const taskOptions = [];
+  const taskOptionsFlat = [];
+  const taskOptionsIdMap = {};
+  function flatTaskOptions(_taskOptions, list, parents) {
+    _taskOptions.forEach((item) => {
+      if (isTaskOptItem(item)) {
+        const c = __assign(__assign({}, item), {__parents: parents});
+        taskOptionsFlat.push(c);
+        taskOptionsIdMap[c.id] = c;
+        if (list) {
+          list.push(c);
+        }
+      }
+      if (isTaskItemCategory(item)) {
+        const c = __assign(__assign({}, item), {
+          children: [],
+          __parents: parents
+        });
+        if (list) {
+          list.push(c);
+        }
+        flatTaskOptions(item.children, c.children, [...parents || [], c]);
+      }
+    });
+  }
+  flatTaskOptions(taskOpt, taskOptions);
+  return {
+    taskOptions,
+    taskOptionsFlat,
+    taskOptionsIdMap
+  };
+}
+function collectHandle(id, collectFunc) {
+  const index = collectFunc.indexOf(id);
+  const clone = [...collectFunc];
+  if (index === -1) {
+    clone.push(id);
+  } else {
+    clone.splice(index, 1);
+  }
+  emitConfig({
+    collectFunc: [...clone]
+  });
+}
+function closeTaskList(checker) {
+  const list = taskSeed.get().taskList;
+  const nextList = [];
+  const removeList = [];
+  list.forEach((item, index) => {
+    if (checker(item, index)) {
+      nextList.push(item);
+    } else {
+      removeList.push(item);
+    }
+  });
+  const actionClose = () => {
+    removeList.forEach((item) => {
+      item.wine.dispose();
+    });
+    taskSeed.set({
+      taskList: nextList
+    });
+  };
+  if (removeList.length) {
+    const confirmTasks = [];
+    removeList.forEach((item) => {
+      var _a;
+      if (!checkPopCloseable(item)) {
+        confirmTasks.push(item);
+      }
+      if ((_a = item.children) == null ? void 0 : _a.length) {
+        item.children.forEach((it) => {
+          if (!checkPopCloseable(it)) {
+            confirmTasks.push(it);
+          }
+        });
+      }
+    });
+    if (confirmTasks.length) {
+      closeConfirm(confirmTasks, actionClose);
+    } else {
+      actionClose();
+    }
+  }
+}
+function closeTaskByProp(propName, prop, be = false) {
+  if (!prop)
+    return;
+  closeTaskList((ctx2) => be ? ctx2[propName] === prop : ctx2[propName] !== prop);
+}
+function closeTaskById(id) {
+  closeTaskByProp("id", id);
+}
+function closeTaskByKey(key) {
+  closeTaskByProp("taskKey", key);
+}
+function closeOtherTaskByKey(key) {
+  closeTaskByProp("taskKey", key, true);
+}
+function closeSideTaskByKey(key, right = true) {
+  if (!key)
+    return;
+  const list = taskSeed.get().taskList;
+  const index = list.findIndex((item) => item.taskKey === key);
+  closeTaskList((ctx2, ind) => right ? ind <= index : ind >= index);
+}
+function closeRightTaskByKey(key) {
+  closeSideTaskByKey(key);
+}
+function closeLeftTaskByKey(key) {
+  closeSideTaskByKey(key, false);
+}
+function hideTaskById(id) {
+  if (!id)
+    return;
+  const list = taskGlobal.get({id});
+  list.forEach((item) => item.hide());
+}
+function openTaskById(id) {
+  if (!id)
+    return;
+  const list = taskGlobal.get({id});
+  list.forEach((item) => item.open());
+}
+function pushTaskOrOpenLastTask(id) {
+  if (!id)
+    return;
+  const list = taskGlobal.get({id});
+  const length = list.length;
+  if (!length) {
+    taskGlobal.push(id);
+    return;
+  }
+  list[length - 1].open();
+}
+function checkPopCloseable(ctx2) {
+  const meta = WILL_POP_MAP[ctx2.taskKey];
+  if (meta) {
+    let pass = true;
+    if (isFunction(meta.when) && meta.when())
+      pass = false;
+    if (isBoolean(meta.when) && meta.when)
+      pass = false;
+    return pass;
+  }
+  return true;
+}
+function closeConfirm(ctx2, cb) {
+  const tasks = ensureArray(ctx2);
+  if (!tasks.length)
+    return;
+  const names2 = tasks.map(getTaskName).join(", ");
+  Dialog.render({
+    content: /* @__PURE__ */ React.createElement("div", null, "\u60A8\u5728 ", /* @__PURE__ */ React.createElement("span", {
+      className: "bold"
+    }, '"', names2, '"'), " ", tasks.length > 1 && "\u7B49", "\u7A97\u53E3\u8FDB\u884C\u7684\u64CD\u4F5C\u53EF\u80FD\u4E0D\u4F1A\u4FDD\u5B58\uFF0C\u786E\u8BA4\u8981\u5173\u95ED\u5417?"),
+    close: true,
+    onClose: (isConfirm) => {
+      isConfirm && cb();
+    }
+  });
+}
+function isTaskOptItem(arg) {
+  return "id" in arg && arg.component && arg.name;
+}
+function isTaskItemCategory(arg) {
+  var _a;
+  return "children" in arg && arg.name && ((_a = arg.children) == null ? void 0 : _a.length);
+}
 function checkTaskAuth(opt) {
-  const AuthPro = taskSeed.getState().adminProps.authPro;
-  if (!AuthPro || !isArray(opt.auth) || !opt.auth.length)
+  const pro = taskSeed.get().adminProps.permission;
+  const parents = opt.__parents;
+  if (parents == null ? void 0 : parents.length) {
+    const everyPass = parents.every((item) => isArray(item.permission) ? !pro.check(item.permission) : true);
+    if (!everyPass)
+      return false;
+  }
+  if (!pro || !isArray(opt.permission) || !opt.permission.length)
     return true;
-  return !AuthPro.auth(opt.auth);
+  return !pro.check(opt.permission);
 }
 function checkTaskAuthAndTips(opt) {
   const check = checkTaskAuth(opt);
@@ -1218,6 +1261,234 @@ function checkTaskAuthAndTips(opt) {
   }
   return check;
 }
+function isPassNode(item) {
+  return isTaskOptItem(item) && !item.hide && checkTaskAuth(item);
+}
+function isPassNodeOrCategory(item) {
+  if (!item)
+    return false;
+  if (isTaskOptItem(item))
+    return isPassNode(item);
+  if (isTaskItemCategory(item))
+    return checkTaskAuth(item);
+  return false;
+}
+function getTaskName(ctx2) {
+  return ctx2.option.taskName ? ctx2.option.taskName(ctx2) : ctx2.option.name;
+}
+const ctx = createContext({});
+const TaskComponentHandle = ({children, taskKey, permissionKeys}) => {
+  const PermissionPro = taskSeed.useState((state) => state.adminProps.permission);
+  const [refreshKey, setKey] = useState(0);
+  refreshEvent.useEvent((key) => {
+    if (key === taskKey)
+      setKey((prev) => prev + 1);
+  });
+  function render() {
+    const child = children();
+    const props = child.props;
+    return React.cloneElement(child, __assign({key: refreshKey}, props));
+  }
+  if (!(permissionKeys == null ? void 0 : permissionKeys.length))
+    return render();
+  return /* @__PURE__ */ React.createElement(PermissionPro, {
+    keys: permissionKeys
+  }, render());
+};
+const LinkProvider = ctx.Provider;
+const loadingNode = /* @__PURE__ */ React.createElement(Spin, {
+  text: "\u6B63\u5728\u52A0\u8F7D\u8D44\u6E90",
+  className: "m78-admin_fixed-center-text"
+});
+const TaskWindowWrap = ({ctx: ctx2, Component}) => {
+  useListenerKeyToUpdate(ctx2);
+  const hasChild = !!ctx2.children.length;
+  const hasIndex = isNumber(ctx2.currentChildIndex);
+  function render(key, permissionKeys, childRender) {
+    return /* @__PURE__ */ React.createElement(React.Suspense, {
+      fallback: loadingNode
+    }, /* @__PURE__ */ React.createElement(TaskComponentHandle, {
+      taskKey: key,
+      permissionKeys
+    }, childRender));
+  }
+  return /* @__PURE__ */ React.createElement(MediaQueryContext, null, /* @__PURE__ */ React.createElement(LinkProvider, {
+    value: {parent: ctx2}
+  }, /* @__PURE__ */ React.createElement("div", {
+    className: clsx({hide: hasIndex})
+  }, render(ctx2.taskKey, ctx2.option.permission, () => /* @__PURE__ */ React.createElement(Component, __assign({}, ctx2)))), hasChild && ctx2.children.map((subTask, ind) => {
+    const SubComponent = subTask.option.component;
+    return /* @__PURE__ */ React.createElement("div", {
+      key: subTask.taskKey,
+      className: clsx({hide: ctx2.currentChildIndex !== ind})
+    }, render(subTask.taskKey, subTask.option.permission, () => /* @__PURE__ */ React.createElement(SubComponent, __assign({}, subTask))));
+  })));
+};
+const large = 20;
+const regular = 16;
+const IconRender = ({icon, size = regular, className, style}) => {
+  if (!icon)
+    return null;
+  function render() {
+    if (isStringIcon(icon)) {
+      return /* @__PURE__ */ React.createElement("img", {
+        src: icon,
+        alt: "\u{1F5BC}"
+      });
+    }
+    return icon;
+  }
+  return /* @__PURE__ */ React.createElement("span", {
+    style: __assign({
+      width: size,
+      height: size + 4,
+      fontSize: size
+    }, style),
+    className: clsx("m78-admin_icon-render", className)
+  }, render());
+};
+IconRender.large = large;
+IconRender.regular = regular;
+const TaskNameDynamic = ({ctx: ctx2}) => {
+  useListenerKeyToUpdate(ctx2);
+  return /* @__PURE__ */ React.createElement("span", null, getTaskName(ctx2));
+};
+const Crumbs = ({ctx: ctx2}) => {
+  useListenerKeyToUpdate(ctx2);
+  function changeTaskHandle(ind) {
+    if (ctx2.currentChildIndex === ind)
+      return;
+    ctx2.currentChildIndex = ind;
+    updateByKeyEvent.emit(ctx2.taskKey);
+  }
+  const childLen = ctx2.children.length;
+  const childInd = ctx2.currentChildIndex;
+  if (!childLen)
+    return null;
+  function renderWithMenu(el, currentCtx) {
+    return /* @__PURE__ */ React.createElement(ContextMenu, {
+      content: /* @__PURE__ */ React.createElement(ListView, {
+        size: Size.small
+      }, /* @__PURE__ */ React.createElement(ListViewItem, {
+        leading: /* @__PURE__ */ React.createElement(SyncOutlined, null),
+        title: "\u5237\u65B0\u4EFB\u52A1",
+        onClick: currentCtx.refresh
+      }), currentCtx !== ctx2 && /* @__PURE__ */ React.createElement(ListViewItem, {
+        leading: /* @__PURE__ */ React.createElement(DeleteOutlined, null),
+        title: "\u5173\u95ED",
+        onClick: currentCtx.dispose
+      }))
+    }, el);
+  }
+  return /* @__PURE__ */ React.createElement(Scroller, {
+    scrollFlag: true,
+    hideScrollbar: true,
+    direction: Direction.horizontal,
+    className: "m78-admin_crumbs"
+  }, renderWithMenu(/* @__PURE__ */ React.createElement("span", {
+    className: clsx("m78-admin_crumbs-item ellipsis m78-admin_effect pr-8", {
+      __active: !isNumber(childInd)
+    }),
+    onClick: () => changeTaskHandle(),
+    onContextMenu: (e) => e.preventDefault()
+  }, ctx2.option.name), ctx2), /* @__PURE__ */ React.createElement("span", {
+    className: "color-disabled mlr-8"
+  }, "/"), ctx2.children.map((item, index) => /* @__PURE__ */ React.createElement(React.Fragment, {
+    key: item.taskKey
+  }, renderWithMenu(/* @__PURE__ */ React.createElement("span", {
+    className: clsx("m78-admin_crumbs-item ellipsis m78-admin_effect", {
+      __active: index === childInd
+    }),
+    onClick: () => changeTaskHandle(index),
+    onContextMenu: (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }, item.option.name, /* @__PURE__ */ React.createElement("span", {
+    className: "m78-admin_crumbs-close m78-admin_effect ml-4",
+    title: "\u5173\u95ED",
+    onClick: (e) => {
+      e.stopPropagation();
+      item.dispose();
+    }
+  }, /* @__PURE__ */ React.createElement(CloseOutlined, {
+    className: "m78-close-icon color-disabled fs"
+  }))), item), index !== childLen - 1 && /* @__PURE__ */ React.createElement("span", {
+    className: "color-disabled mlr-8"
+  }, "/"))));
+};
+const taskWindowHeaderCustomer = (props, state, instance, isFull) => {
+  const taskOpt = state.taskOption;
+  const ctx2 = state.ctx;
+  return /* @__PURE__ */ React.createElement(ContextMenu, {
+    content: /* @__PURE__ */ React.createElement(ListView, {
+      size: Size.small
+    }, /* @__PURE__ */ React.createElement(ListViewItem, {
+      leading: /* @__PURE__ */ React.createElement(SyncOutlined, null),
+      crossAlign: "start",
+      title: /* @__PURE__ */ React.createElement("span", {
+        className: "color-red"
+      }, "\u5237\u65B0\u7A97\u53E3"),
+      desc: "\u8BE5\u7A97\u53E3\u4E0B\u6240\u6709\u4EFB\u52A1\u5C06\u4F1A\u88AB\u91CD\u7F6E",
+      onClick: instance.refresh
+    }), /* @__PURE__ */ React.createElement(ListViewItem, {
+      leading: /* @__PURE__ */ React.createElement(FullscreenExitOutlined, null),
+      title: "\u6700\u5C0F\u5316",
+      onClick: ctx2.hide
+    }), /* @__PURE__ */ React.createElement(ListViewItem, {
+      leading: /* @__PURE__ */ React.createElement(FullscreenOutlined, null),
+      title: "\u6700\u5927\u5316",
+      onClick: instance.full
+    }), /* @__PURE__ */ React.createElement(ListViewItem, {
+      leading: /* @__PURE__ */ React.createElement(DeleteOutlined, null),
+      title: "\u5173\u95ED",
+      onClick: ctx2.dispose
+    }))
+  }, /* @__PURE__ */ React.createElement("div", __assign({}, props), /* @__PURE__ */ React.createElement(PageHeader, {
+    className: "m78-admin_window-header",
+    border: true,
+    title: /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Row, {
+      crossAlign: "center"
+    }, /* @__PURE__ */ React.createElement("span", {
+      className: "m78-admin_window-header_icon"
+    }, /* @__PURE__ */ React.createElement(IconRender, {
+      className: "mr-4",
+      icon: taskOpt.icon,
+      size: IconRender.large
+    })), /* @__PURE__ */ React.createElement(TaskNameDynamic, {
+      ctx: ctx2
+    })), /* @__PURE__ */ React.createElement(Divider, {
+      vertical: true
+    }), /* @__PURE__ */ React.createElement(Crumbs, {
+      ctx: ctx2
+    })),
+    backIcon: null,
+    actions: /* @__PURE__ */ React.createElement("div", {
+      className: "m78-wine_header-actions",
+      onMouseDown: (e) => e.stopPropagation()
+    }, /* @__PURE__ */ React.createElement("span", __assign({
+      tabIndex: 1,
+      className: "m78-wine_btn"
+    }, keypressAndClick(ctx2.hide)), /* @__PURE__ */ React.createElement("span", {
+      className: "m78-wine_hide-btn"
+    })), isFull && /* @__PURE__ */ React.createElement("span", __assign({
+      tabIndex: 1,
+      className: "m78-wine_btn"
+    }, keypressAndClick(instance.resize)), /* @__PURE__ */ React.createElement("span", {
+      className: "m78-wine_resize-btn"
+    })), !isFull && /* @__PURE__ */ React.createElement("span", __assign({
+      tabIndex: 1,
+      className: "m78-wine_btn"
+    }, keypressAndClick(instance.full)), /* @__PURE__ */ React.createElement("span", {
+      className: "m78-wine_max-btn"
+    })), /* @__PURE__ */ React.createElement("span", __assign({
+      tabIndex: 1,
+      className: "m78-wine_btn __warning"
+    }, keypressAndClick(ctx2.dispose)), /* @__PURE__ */ React.createElement("span", {
+      className: "m78-wine_dispose-btn"
+    })))
+  })));
+};
 function createTaskInstance(taskOpt, opt) {
   const {param, parent} = opt || {};
   const ctx2 = {
@@ -1249,7 +1520,7 @@ function createMainTaskCtx(taskOpt, ctx2) {
     name,
     component,
     icon,
-    auth,
+    permission,
     taskName,
     initFull,
     singleton,
@@ -1259,32 +1530,34 @@ function createMainTaskCtx(taskOpt, ctx2) {
     "name",
     "component",
     "icon",
-    "auth",
+    "permission",
     "taskName",
     "initFull",
     "singleton",
     "hide"
   ]);
-  const config = configGetter(taskSeed.getState());
+  const config = configGetter(taskSeed.get());
   const isDefaultFull = window.innerWidth <= MediaQueryTypeValues.SM || !(wineState.width || wineState.height || wineState.sizeRatio || !(config == null ? void 0 : config.initFull));
-  ctx2.wine = Wine.render(__assign(__assign({}, wineState), {
+  ctx2.children = [];
+  ctx2.wine = Wine.render(__assign(__assign({
+    zIndex: WINDOW_Z_INDEX
+  }, wineState), {
     initFull: initFull || isDefaultFull,
     className: `J_task_${ctx2.taskKey}`,
     content: /* @__PURE__ */ React.createElement(TaskWindowWrap, {
       Component: React.memo(component),
       ctx: ctx2
     }),
-    headerCustomer: renderBuiltInHeader,
+    headerCustomer: taskWindowHeaderCustomer,
     limitBound: WINE_OFFSET,
     taskOption: taskOpt,
     ctx: ctx2,
     onActive: () => {
-      taskSeed.setState({
+      taskSeed.set({
         activeTaskKey: ctx2.taskKey
       });
     }
   }));
-  ctx2.children = [];
   ctx2.refresh = () => refreshEvent.emit(ctx2.taskKey);
   ctx2.open = () => {
     var _a;
@@ -1350,152 +1623,31 @@ function createSubTaskCtx(taskOpt, opt, ctx2) {
     updateByKeyEvent.emit(parent.taskKey);
   };
   ctx2.dispose = () => {
-    if (!checkPopCloseable(ctx2) && !closeConfirm(ctx2))
+    const closeAction = () => {
+      const ind = parent.children.indexOf(ctx2);
+      if (ind === -1)
+        return;
+      parent.children.splice(ind, 1);
+      const childInd = parent.currentChildIndex;
+      if (childInd && childInd > parent.children.length - 1) {
+        parent.currentChildIndex = childInd - 1;
+      }
+      if (!parent.children.length) {
+        parent.currentChildIndex = void 0;
+      }
+      updateByKeyEvent.emit(parent.taskKey);
+    };
+    if (checkPopCloseable(ctx2)) {
+      closeAction();
       return;
-    const ind = parent.children.indexOf(ctx2);
-    if (ind === -1)
-      return;
-    parent.children.splice(ind, 1);
-    const childInd = parent.currentChildIndex;
-    if (childInd && childInd > parent.children.length - 1) {
-      parent.currentChildIndex = childInd - 1;
     }
-    if (!parent.children.length) {
-      parent.currentChildIndex = void 0;
-    }
-    updateByKeyEvent.emit(parent.taskKey);
+    closeConfirm(ctx2, closeAction);
   };
   ctx2.push = parent.push;
   ctx2.replace = parent.replace;
 }
-function getTaskOpt(id) {
-  const map = taskSeed.getState().taskOptionsIdMap;
-  return map[id];
-}
-function taskOptFormat(taskOpt) {
-  const taskOptions = [];
-  const taskOptionsFlat = [];
-  const taskOptionsIdMap = {};
-  function flatTaskOptions(_taskOptions, list) {
-    _taskOptions.forEach((item) => {
-      if ("id" in item && item.component && item.name) {
-        const c = __assign({}, item);
-        taskOptionsFlat.push(c);
-        taskOptionsIdMap[c.id] = c;
-        if (list) {
-          list.push(c);
-        }
-      }
-      if ("children" in item && item.name && item.children.length) {
-        const c = __assign(__assign({}, item), {
-          children: []
-        });
-        if (list) {
-          list.push(c);
-        }
-        flatTaskOptions(item.children, c.children);
-      }
-    });
-  }
-  flatTaskOptions(taskOpt, taskOptions);
-  return {
-    taskOptions,
-    taskOptionsFlat,
-    taskOptionsIdMap
-  };
-}
-function collectHandle(id, collectFunc) {
-  const index = collectFunc.indexOf(id);
-  const clone = [...collectFunc];
-  if (index === -1) {
-    clone.push(id);
-  } else {
-    clone.splice(index, 1);
-  }
-  emitConfig({
-    collectFunc: [...clone]
-  });
-}
-function closeTaskList(checker) {
-  const list = taskSeed.getState().taskList;
-  const nextList = list.filter((item, index) => {
-    var _a;
-    let keep = checker(item, index);
-    if (!keep) {
-      const ctxIsSafe = checkPopCloseable(item);
-      const subCtxIsSafe = ((_a = item.children) == null ? void 0 : _a.length) ? item.children.every(checkPopCloseable) : true;
-      if (!ctxIsSafe || !subCtxIsSafe) {
-        keep = !closeConfirm(item);
-      }
-    }
-    if (!keep) {
-      item.wine.dispose();
-    }
-    return keep;
-  });
-  taskSeed.setState({
-    taskList: nextList
-  });
-}
-function closeTaskByProp(propName, prop, be = false) {
-  if (!prop)
-    return;
-  closeTaskList((ctx2) => be ? ctx2[propName] === prop : ctx2[propName] !== prop);
-}
-function closeTaskById(id) {
-  closeTaskByProp("id", id);
-}
-function closeTaskByKey(key) {
-  closeTaskByProp("taskKey", key);
-}
-function closeOtherTaskByKey(key) {
-  closeTaskByProp("taskKey", key, true);
-}
-function closeSideTaskByKey(key, right = true) {
-  if (!key)
-    return;
-  const list = taskSeed.getState().taskList;
-  const index = list.findIndex((item) => item.taskKey === key);
-  closeTaskList((ctx2, ind) => right ? ind <= index : ind >= index);
-}
-function closeRightTaskByKey(key) {
-  closeSideTaskByKey(key);
-}
-function closeLeftTaskByKey(key) {
-  closeSideTaskByKey(key, false);
-}
-function hideTaskById(id) {
-  if (!id)
-    return;
-  const list = task.get({id});
-  list.forEach((item) => item.hide());
-}
-function openTaskById(id) {
-  if (!id)
-    return;
-  const list = task.get({id});
-  list.forEach((item) => item.open());
-}
-function checkPopCloseable(ctx2) {
-  const meta = WILL_POP_MAP[ctx2.taskKey];
-  if (meta) {
-    let pass = true;
-    if (isFunction(meta.when) && meta.when())
-      pass = false;
-    if (isBoolean(meta.when) && meta.when)
-      pass = false;
-    return pass;
-  }
-  return true;
-}
-function closeConfirm(ctx2) {
-  return confirm(`\u60A8\u5728 \u201C${ctx2.option.name}\u201D \u7A97\u53E3\u8FDB\u884C\u7684\u64CD\u4F5C\u53EF\u80FD\u4E0D\u4F1A\u4FDD\u5B58\uFF0C\u786E\u8BA4\u8981\u5C06\u5176\u5173\u95ED\u5417?`);
-}
-function isPassNode(item) {
-  return item && "id" in item && !item.hide && checkTaskAuth(item);
-}
 const get = ({id, includeSubTask} = {}) => {
-  const list = [...taskSeed.getState().taskList];
+  const list = [...taskSeed.get().taskList];
   if (includeSubTask) {
     list.forEach((item) => {
       var _a;
@@ -1527,7 +1679,7 @@ const push = (id, param) => {
   const instance = createTaskInstance(currentOpt, {
     param
   });
-  taskSeed.setState({
+  taskSeed.set({
     taskList: [...get(), instance]
   });
 };
@@ -1567,7 +1719,7 @@ const replace = (id, param) => {
   sameList.forEach((item) => item.dispose());
   push(id, param);
 };
-const task = {
+const taskGlobal = {
   get,
   push,
   refresh,
@@ -1577,15 +1729,134 @@ const task = {
   useWillPop,
   replace
 };
-const FuncCollects = () => {
-  const map = taskSeed.useState((state) => state.taskOptionsIdMap);
-  const taskList = taskSeed.useState((state) => state.taskList);
-  const AuthPro = taskSeed.useState((state) => state.adminProps.authPro);
+const FuncContextMenuBuilder = ({tasks, taskOptItem, config, isCollectd}) => {
+  const delayCall = useFn((cb) => () => setTimeout(cb, 120));
+  return /* @__PURE__ */ React.createElement(ListView, {
+    size: Size.small
+  }, tasks.length > 0 && /* @__PURE__ */ React.createElement(React.Fragment, null, tasks.map((i, ind) => /* @__PURE__ */ React.createElement(ListViewItem, {
+    key: i.taskKey,
+    leading: /* @__PURE__ */ React.createElement(ToTopOutlined, null),
+    title: `\u7F6E\u9876\u4EFB\u52A1${ind + 1}`,
+    onClick: i.open
+  })), /* @__PURE__ */ React.createElement(Divider, null)), /* @__PURE__ */ React.createElement(ListViewItem, {
+    leading: taskOptItem.singleton ? /* @__PURE__ */ React.createElement(FullscreenOutlined, null) : /* @__PURE__ */ React.createElement(AppstoreAddOutlined, null),
+    title: taskOptItem.singleton ? "\u6253\u5F00\u7A97\u53E3" : "\u6253\u5F00\u65B0\u7A97\u53E3",
+    onClick: delayCall(() => taskGlobal.push(taskOptItem.id))
+  }), /* @__PURE__ */ React.createElement(ListViewItem, {
+    leading: isCollectd ? /* @__PURE__ */ React.createElement(HeartFilled, {
+      className: "color-orange"
+    }) : /* @__PURE__ */ React.createElement(HeartOutlined, null),
+    title: isCollectd ? "\u53D6\u6D88\u6536\u85CF" : "\u6536\u85CF\u529F\u80FD",
+    onClick: () => collectHandle(taskOptItem.id, (config == null ? void 0 : config.collectFunc) || [])
+  }), tasks.length > 0 && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(ListViewItem, {
+    leading: /* @__PURE__ */ React.createElement(EyeInvisibleOutlined, null),
+    title: "\u9690\u85CF\u5168\u90E8\u7A97\u53E3",
+    onClick: () => hideTaskById(taskOptItem.id)
+  }), /* @__PURE__ */ React.createElement(ListViewItem, {
+    leading: /* @__PURE__ */ React.createElement(SelectOutlined, null),
+    title: "\u6253\u5F00\u5168\u90E8\u7A97\u53E3",
+    onClick: () => openTaskById(taskOptItem.id)
+  }), /* @__PURE__ */ React.createElement(ListViewItem, {
+    leading: /* @__PURE__ */ React.createElement(ExportOutlined, null),
+    title: "\u5173\u95ED\u5168\u90E8\u7A97\u53E3",
+    onClick: delayCall(() => closeTaskById(taskOptItem.id))
+  })));
+};
+const FuncStatusFlagBuilder = ({length}) => {
+  return length > 0 ? /* @__PURE__ */ React.createElement(Badge, null, length > 1 ? length : void 0) : null;
+};
+const pinEvent = createEvent();
+function usePin(enable = true) {
+  const [pin, set] = useState(false);
+  pinEvent.useEvent((isPin) => enable && set(isPin));
+  return useDelayToggle(pin, 200, {
+    leading: false,
+    trailing: true
+  });
+}
+function renderFuncActions(tasks, isCollectd, item, config) {
+  const length = tasks.length;
+  return /* @__PURE__ */ React.createElement(Row, {
+    crossAlign: "center"
+  }, /* @__PURE__ */ React.createElement("span", {
+    style: {marginRight: 2}
+  }, /* @__PURE__ */ React.createElement(FuncStatusFlagBuilder, {
+    length
+  })), /* @__PURE__ */ React.createElement(ContextMenu, {
+    triggerType: UseTriggerType.click,
+    onChange: pinEvent.emit,
+    content: /* @__PURE__ */ React.createElement(FuncContextMenuBuilder, {
+      tasks,
+      taskOptItem: item,
+      config,
+      isCollectd
+    })
+  }, /* @__PURE__ */ React.createElement("span", {
+    className: "m78-admin_func-list_more-btn m78-admin_effect fs-md"
+  }, /* @__PURE__ */ React.createElement(EllipsisOutlined, null))));
+}
+const FuncList = () => {
+  const taskOptions = taskSeed.useState((state) => state.taskOptions);
+  taskSeed.useState((state) => state.taskList);
+  const permissionPro = taskSeed.useState((state) => state.adminProps.permission);
   const config = taskSeed.useState(configGetter);
-  const collect = (config == null ? void 0 : config.collectFunc) || [];
-  useSubscribeAuthChange(AuthPro.authInstance.seed);
+  const collectFunc = (config == null ? void 0 : config.collectFunc) || [];
+  const authKeyChangeFlag = useSubscribePermissionChange(permissionPro.permission.seed);
+  function renderAction(node) {
+    var _a;
+    if ((_a = node.children) == null ? void 0 : _a.length)
+      return null;
+    const id = node.origin.id;
+    const tasks = taskGlobal.get({id});
+    const isCollectd = collectFunc.includes(id);
+    return renderFuncActions(tasks, isCollectd, node.origin, config);
+  }
+  function chooseHandle({origin, children}) {
+    if (children == null ? void 0 : children.length)
+      return;
+    pushTaskOrOpenLastTask(origin.id);
+  }
+  function renderContent() {
+    return /* @__PURE__ */ React.createElement("div", {
+      className: "m78-admin_func-list"
+    }, /* @__PURE__ */ React.createElement(Tree, {
+      key: authKeyChangeFlag,
+      dataSource: taskOptions,
+      labelKey: "name",
+      valueKey: "id",
+      toolbar: true,
+      rainbowIndicatorLine: true,
+      defaultOpenZIndex: 1,
+      onNodeClick: chooseHandle,
+      actions: renderAction,
+      filter: (node) => isPassNodeOrCategory(node.origin),
+      customIconRender: (icon) => /* @__PURE__ */ React.createElement(IconRender, {
+        icon
+      })
+    }));
+  }
+  return renderContent();
+};
+const FuncItem = (_a) => {
+  var {title, icon, className} = _a, pp = __rest(_a, ["title", "icon", "className"]);
+  return /* @__PURE__ */ React.createElement(Tile, __assign({
+    crossAlign: "center",
+    className: clsx("m78-admin_func-item", className),
+    leading: /* @__PURE__ */ React.createElement(IconRender, {
+      icon
+    }),
+    title
+  }, pp));
+};
+const FuncCollects = () => {
+  const taskOptionsIdMap = taskSeed.useState((state) => state.taskOptionsIdMap);
+  taskSeed.useState((state) => state.taskList);
+  const permissionPro = taskSeed.useState((state) => state.adminProps.permission);
+  const config = taskSeed.useState(configGetter);
+  const collectFunc = (config == null ? void 0 : config.collectFunc) || [];
+  useSubscribePermissionChange(permissionPro.permission.seed);
   const acceptHandle = useFn((e) => {
-    const list = [...collect];
+    const list = [...collectFunc];
     const target = e.target.data;
     const source = e.source.data;
     const sInd = list.indexOf(source);
@@ -1599,72 +1870,35 @@ const FuncCollects = () => {
   });
   return /* @__PURE__ */ React.createElement(DNDContext, {
     onAccept: acceptHandle
-  }, /* @__PURE__ */ React.createElement(Scroller, {
-    className: "m78-admin_func-bar_main",
-    scrollFlag: true,
-    hideScrollbar: true
-  }, collect.map((id) => {
-    const item = map[id];
+  }, /* @__PURE__ */ React.createElement("div", {
+    className: "m78-admin_func-bar_main"
+  }, collectFunc.map((id) => {
+    const item = taskOptionsIdMap[id];
     if (!isPassNode(item))
       return null;
-    const tasks = taskList.filter((i) => i.id === id);
-    const length = tasks.length;
-    const openTask = () => {
-      if (!length) {
-        task.push(item.id);
-        return;
-      }
-      tasks[length - 1].open();
-    };
+    const tasks = taskGlobal.get({id});
+    const isCollectd = collectFunc.includes(item.id);
     return /* @__PURE__ */ React.createElement(DND, {
       key: item.id,
       data: item.id,
       enableDrop: true
-    }, ({innerRef, status, enables}) => /* @__PURE__ */ React.createElement(ContextMenu, {
-      key: item.id,
-      content: /* @__PURE__ */ React.createElement("div", null, length > 0 && /* @__PURE__ */ React.createElement(React.Fragment, null, tasks.map((i, ind) => /* @__PURE__ */ React.createElement(ContextMenuItem, {
-        key: i.taskKey,
-        title: `\u7F6E\u9876\u4EFB\u52A1${ind + 1}`,
-        onClick: i.open
-      })), /* @__PURE__ */ React.createElement(Divider, null)), /* @__PURE__ */ React.createElement(ContextMenuItem, {
-        title: item.singleton ? "\u6253\u5F00\u7A97\u53E3" : "\u6253\u5F00\u65B0\u7A97\u53E3",
-        onClick: () => task.push(item.id)
-      }), /* @__PURE__ */ React.createElement(ContextMenuItem, {
-        title: "\u4ECE\u5E38\u7528\u529F\u80FD\u4E2D\u79FB\u9664",
-        onClick: () => collectHandle(item.id, (config == null ? void 0 : config.collectFunc) || [])
-      }), length > 0 && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(ContextMenuItem, {
-        title: "\u9690\u85CF\u5168\u90E8\u7A97\u53E3",
-        onClick: () => hideTaskById(item.id)
-      }), /* @__PURE__ */ React.createElement(ContextMenuItem, {
-        title: "\u6253\u5F00\u5168\u90E8\u7A97\u53E3",
-        onClick: () => openTaskById(item.id)
-      }), /* @__PURE__ */ React.createElement(ContextMenuItem, {
-        title: "\u5173\u95ED\u5168\u90E8\u7A97\u53E3",
-        onClick: () => closeTaskById(item.id)
-      })))
-    }, /* @__PURE__ */ React.createElement("div", {
-      ref: innerRef,
-      className: "m78-dnd-box-anime"
-    }, /* @__PURE__ */ React.createElement(FuncBtn, {
-      className: clsx("m78-dnd-box-anime_main", {
-        __active: status.dragOver,
-        __disabled: !enables.enable || status.dragging,
-        __left: status.dragLeft,
-        __top: status.dragTop,
-        __right: status.dragRight,
-        __bottom: status.dragBottom
-      }),
-      text: item.name,
+    }, ({innerRef, status, enables}) => /* @__PURE__ */ React.createElement(FuncItem, {
+      innerRef,
       icon: item.icon,
-      onClick: openTask,
-      extraNode: length > 0 && /* @__PURE__ */ React.createElement(Badge, null, length > 1 ? length : void 0)
-    }))));
+      title: item.name,
+      trailing: renderFuncActions(tasks, isCollectd, item, config),
+      className: clsx({
+        __active: status.dragOver,
+        __disabled: !enables.enable || status.dragging
+      }),
+      onClick: () => pushTaskOrOpenLastTask(id)
+    }));
   })));
 };
 const FuncLogo = () => {
   const config = taskSeed.useState(configGetter);
   const logo = (config == null ? void 0 : config.logo) || assetLogo;
-  const name = (config == null ? void 0 : config.name) || "M78-Admin";
+  const name = (config == null ? void 0 : config.name) || "M78 Admin";
   return /* @__PURE__ */ React.createElement("div", {
     className: "m78-admin_func-bar_logo",
     title: name
@@ -1673,133 +1907,130 @@ const FuncLogo = () => {
     src: logo,
     alt: name
   }), /* @__PURE__ */ React.createElement("div", {
-    className: "ellipsis mt-4"
+    className: "ellipsis"
   }, name));
 };
 const FuncFoot = () => {
-  const funcBarExtraNode = taskSeed.useState((state) => state.adminProps.funcBarExtraNode);
+  const funcBarExtraNode = taskSeed.useState((state) => state.adminProps.funcBarExtra);
   if (!funcBarExtraNode)
     return null;
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Divider, null), /* @__PURE__ */ React.createElement("div", {
-    className: "m78-admin_func-bar_side"
-  }, funcBarExtraNode));
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Divider, null), /* @__PURE__ */ React.createElement("div", null, funcBarExtraNode));
 };
 const FuncBar = () => {
-  return /* @__PURE__ */ React.createElement("div", {
-    className: "m78-admin_func-bar"
-  }, /* @__PURE__ */ React.createElement(FuncLogo, null), /* @__PURE__ */ React.createElement(Divider, null), /* @__PURE__ */ React.createElement(FuncCollects, null), /* @__PURE__ */ React.createElement(FuncFoot, null));
-};
-const FuncList = () => {
-  const tasks = taskSeed.useState((state) => state.taskOptions);
-  const AuthPro = taskSeed.useState((state) => state.adminProps.authPro);
-  const config = taskSeed.useState(configGetter);
-  const [popperShow, setPopperShow] = useState(false);
-  const authKeyChangeFlag = useSubscribeAuthChange(AuthPro.authInstance.seed);
-  const filterAuthTasks = useMemo(filterNotPassNode, [tasks, authKeyChangeFlag]);
-  function filterNotPassNode() {
-    if (!AuthPro)
-      return tasks;
-    const filterNodes = (list) => {
-      const _tasks = [];
-      if (!(list == null ? void 0 : list.length))
-        return _tasks;
-      list.forEach((item) => {
-        if (isPassNode(item)) {
-          const {height} = item, i = __rest(item, ["height"]);
-          _tasks.push(i);
-          return;
-        }
-        if ("children" in item && item.children.length) {
-          const nChildren = filterNodes(item.children);
-          if (nChildren == null ? void 0 : nChildren.length) {
-            _tasks.push({
-              name: item.name,
-              children: nChildren
-            });
-          }
-        }
+  const insideFuncBarFloat = taskSeed.useState((state) => state.funcBarFloat);
+  const {
+    funcBarCollectToggle = false,
+    funcBarFuncToggle = true,
+    funcBarFloat = false,
+    collectFunc = []
+  } = taskSeed.useState(configGetter) || {};
+  const isFloat = insideFuncBarFloat || funcBarFloat;
+  const validCollectFunc = useMemo(() => collectFunc.filter((id) => isPassNode(getTaskOpt(id))), [
+    collectFunc
+  ]);
+  const enableHover = useDelayToggle(isFloat, 1e3);
+  const pin = usePin(isFloat);
+  useEffect(() => {
+    if (isFloat) {
+      WINE_OFFSET.left = 0;
+    } else {
+      WINE_OFFSET.left = FUNC_BAR_WIDTH;
+    }
+  }, [isFloat]);
+  useEffect(() => {
+    if (funcBarCollectToggle && validCollectFunc.length === 0) {
+      emitConfig({
+        funcBarCollectToggle: false
       });
-      return _tasks;
-    };
-    return filterNodes(tasks);
-  }
-  function renderAction(node) {
-    var _a;
-    if ((_a = node.children) == null ? void 0 : _a.length)
-      return null;
-    const collectFunc = (config == null ? void 0 : config.collectFunc) || [];
-    const isCollectd = collectFunc.includes(node.id);
-    return /* @__PURE__ */ React.createElement(Button, {
-      size: "small",
-      icon: true,
-      onClick: () => collectHandle(node.id, collectFunc)
-    }, isCollectd ? /* @__PURE__ */ React.createElement(StarFilled, {
-      className: "color-warn",
-      title: "\u53D6\u6D88\u6807\u8BB0"
-    }) : /* @__PURE__ */ React.createElement(StarOutlined, {
-      className: "color-second",
-      title: "\u6807\u8BB0\u4E3A\u5E38\u7528\u529F\u80FD"
-    }));
-  }
-  function chooseHandle({id, children}) {
-    if (children == null ? void 0 : children.length)
-      return;
-    task.push(id);
-    setPopperShow(false);
-  }
-  function renderContent() {
+    }
+    if (!funcBarCollectToggle && validCollectFunc.length) {
+      emitConfig({
+        funcBarCollectToggle: true
+      });
+    }
+  }, [validCollectFunc.length]);
+  function render() {
     return /* @__PURE__ */ React.createElement("div", {
-      className: "func-list"
-    }, /* @__PURE__ */ React.createElement("h3", null, "\u5168\u90E8\u529F\u80FD"), /* @__PURE__ */ React.createElement(Tree, {
-      dataSource: filterAuthTasks,
-      labelGetter: (item) => item.name,
-      valueGetter: (item) => item.id || item.name,
-      toolbar: true,
-      rainbowIndicatorLine: true,
-      height: 380,
-      size: SizeEnum.large,
-      defaultOpenZIndex: 1,
-      onNodeClick: chooseHandle,
-      actions: renderAction
-    }));
+      className: clsx("m78-admin_func-bar", {
+        __fixed: isFloat,
+        __hover: enableHover,
+        "__force-show": pin
+      }),
+      style: {zIndex: WINDOW_Z_INDEX - 1}
+    }, /* @__PURE__ */ React.createElement(Row, {
+      crossAlign: "center"
+    }, /* @__PURE__ */ React.createElement(FuncLogo, null), /* @__PURE__ */ React.createElement("span", {
+      className: "m78-admin_effect __inline ml-4 fs-18 color-second",
+      onClick: () => {
+        emitConfig({
+          funcBarFloat: !isFloat
+        });
+      }
+    }, isFloat && /* @__PURE__ */ React.createElement(MenuFoldOutlined, null), !isFloat && /* @__PURE__ */ React.createElement(MenuUnfoldOutlined, null))), /* @__PURE__ */ React.createElement(Divider, null), /* @__PURE__ */ React.createElement(Scroller, {
+      className: "m78-admin_func-bar_main",
+      hideScrollbar: true,
+      scrollFlag: true
+    }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", {
+      className: "m78-admin_effect __inline color-second mb-8",
+      onClick: () => {
+        emitConfig({
+          funcBarCollectToggle: !funcBarCollectToggle
+        });
+      }
+    }, "\u6536\u85CF (", validCollectFunc.length, ")"), funcBarCollectToggle && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(FuncCollects, null), !validCollectFunc.length && /* @__PURE__ */ React.createElement("div", {
+      className: "tc color-second fs-sm"
+    }, "\u6682\u65E0\u6536\u85CF\u5594~"), /* @__PURE__ */ React.createElement(Spacer, {
+      height: 24
+    }))), /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("div", {
+      className: "m78-admin_effect __inline color-second mb-8",
+      onClick: () => {
+        emitConfig({
+          funcBarFuncToggle: !funcBarFuncToggle
+        });
+      }
+    }, "\u529F\u80FD\u83DC\u5355"), funcBarFuncToggle && /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(FuncList, null), /* @__PURE__ */ React.createElement(Spacer, {
+      height: 24
+    })))), /* @__PURE__ */ React.createElement(FuncFoot, null));
   }
-  return /* @__PURE__ */ React.createElement(Popper, {
-    type: "popper",
-    show: popperShow,
-    onChange: setPopperShow,
-    content: renderContent(),
-    direction: PopperDirectionEnum.bottomStart
-  }, /* @__PURE__ */ React.createElement(Button, {
-    icon: true
-  }, /* @__PURE__ */ React.createElement(MenuOutlined, {
-    className: "fs-md"
-  })));
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", {
+    style: {width: isFloat ? 0 : FUNC_BAR_WIDTH, transition: "0.4s"}
+  }), /* @__PURE__ */ React.createElement(Portal, null, render()));
 };
 const TaskTab = ({instance}) => {
   var _a;
   const opt = instance.option;
   const activeTaskKey = taskSeed.useState((state) => state.activeTaskKey);
   return /* @__PURE__ */ React.createElement(ContextMenu, {
-    content: /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement(ContextMenuItem, {
+    content: /* @__PURE__ */ React.createElement(ListView, {
+      size: Size.small
+    }, /* @__PURE__ */ React.createElement(ListViewItem, {
+      leading: /* @__PURE__ */ React.createElement(SyncOutlined, null),
       title: "\u5237\u65B0\u7A97\u53E3",
       onClick: (_a = instance.wine.current) == null ? void 0 : _a.refresh
-    }), /* @__PURE__ */ React.createElement(ContextMenuItem, {
+    }), /* @__PURE__ */ React.createElement(ListViewItem, {
+      leading: /* @__PURE__ */ React.createElement(SplitCellsOutlined, null),
       title: "\u5173\u95ED\u5176\u4ED6\u7A97\u53E3",
       onClick: () => closeOtherTaskByKey(instance.taskKey)
-    }), /* @__PURE__ */ React.createElement(ContextMenuItem, {
+    }), /* @__PURE__ */ React.createElement(ListViewItem, {
+      leading: /* @__PURE__ */ React.createElement(ImportOutlined, null),
       title: "\u5173\u95ED\u5DE6\u4FA7\u7A97\u53E3",
       onClick: () => closeLeftTaskByKey(instance.taskKey)
-    }), /* @__PURE__ */ React.createElement(ContextMenuItem, {
+    }), /* @__PURE__ */ React.createElement(ListViewItem, {
+      leading: /* @__PURE__ */ React.createElement(ExportOutlined, null),
       title: "\u5173\u95ED\u53F3\u4FA7\u7A97\u53E3",
       onClick: () => closeRightTaskByKey(instance.taskKey)
-    }), /* @__PURE__ */ React.createElement(ContextMenuItem, {
+    }), /* @__PURE__ */ React.createElement(ListViewItem, {
+      leading: /* @__PURE__ */ React.createElement(DeleteOutlined, null),
       title: "\u5173\u95ED",
       onClick: instance.dispose
     }))
   }, /* @__PURE__ */ React.createElement("span", {
     className: clsx("m78-admin_task-tab", activeTaskKey === instance.taskKey && "__active"),
     onClick: instance.open
-  }, opt.icon, " ", /* @__PURE__ */ React.createElement(TaskNameDynamic, {
+  }, /* @__PURE__ */ React.createElement(IconRender, {
+    icon: opt.icon,
+    className: "mr-4"
+  }), /* @__PURE__ */ React.createElement(TaskNameDynamic, {
     ctx: instance
   }), /* @__PURE__ */ React.createElement("span", {
     className: "m78-admin_effect ml-4",
@@ -1834,7 +2065,7 @@ const TaskList = () => {
     className: "m78-admin_task-bar_main",
     scrollFlag: true,
     hideScrollbar: true,
-    direction: DirectionEnum.horizontal,
+    direction: Direction.horizontal,
     ref: scroller
   }, taskList.map((item) => /* @__PURE__ */ React.createElement(TaskTab, {
     key: item.taskKey,
@@ -1845,7 +2076,10 @@ const TaskActions = () => {
   const aProps = taskSeed.useState((state) => state.adminProps);
   const config = aProps.config;
   const darkMode = (config == null ? void 0 : config.darkMode) || false;
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Popper, {
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, aProps.taskBarExtra, /* @__PURE__ */ React.createElement(Divider, {
+    vertical: true,
+    className: "h-1d4em"
+  }), /* @__PURE__ */ React.createElement(Bubble, {
     content: "\u6536\u8D77\u6240\u6709\u7A97\u53E3",
     direction: "bottom"
   }, /* @__PURE__ */ React.createElement(Button, {
@@ -1853,7 +2087,7 @@ const TaskActions = () => {
     onClick: Wine.hideAll
   }, /* @__PURE__ */ React.createElement("span", {
     style: {fontSize: 18}
-  }, "\u{1F4D8}"))), /* @__PURE__ */ React.createElement(Popper, {
+  }, /* @__PURE__ */ React.createElement(FullscreenExitOutlined, null)))), /* @__PURE__ */ React.createElement(Bubble, {
     content: "\u5C55\u5F00\u6240\u6709\u7A97\u53E3",
     direction: "bottom"
   }, /* @__PURE__ */ React.createElement(Button, {
@@ -1861,15 +2095,15 @@ const TaskActions = () => {
     onClick: Wine.showAll
   }, /* @__PURE__ */ React.createElement("span", {
     style: {fontSize: 18}
-  }, "\u{1F4D6}"))), /* @__PURE__ */ React.createElement(Popper, {
+  }, /* @__PURE__ */ React.createElement(FullscreenOutlined, null)))), /* @__PURE__ */ React.createElement(Bubble, {
     content: "\u5173\u95ED\u6240\u6709\u7A97\u53E3",
     direction: "bottom"
   }, /* @__PURE__ */ React.createElement(Button, {
     icon: true,
-    onClick: () => task.dispose()
+    onClick: () => taskGlobal.dispose()
   }, /* @__PURE__ */ React.createElement("span", {
     style: {fontSize: 18}
-  }, "\u{1F5D1}"))), aProps.taskBarExtraNode, /* @__PURE__ */ React.createElement(Check, {
+  }, /* @__PURE__ */ React.createElement(ImportOutlined, null)))), /* @__PURE__ */ React.createElement(Check, {
     className: "ml-12",
     type: "switch",
     switchOff: /* @__PURE__ */ React.createElement("span", {
@@ -1887,14 +2121,13 @@ const TaskActions = () => {
   }));
 };
 const TaskBar = () => {
+  const taskBarLeadingExtraNode = taskSeed.useState((state) => state.adminProps.taskBarLeadingExtra);
   return /* @__PURE__ */ React.createElement("div", {
     className: "m78-admin_task-bar"
-  }, /* @__PURE__ */ React.createElement("div", {
-    className: "m78-admin_task-bar_before"
-  }, /* @__PURE__ */ React.createElement(FuncList, null)), /* @__PURE__ */ React.createElement(Divider, {
+  }, taskBarLeadingExtraNode && /* @__PURE__ */ React.createElement(React.Fragment, null, taskBarLeadingExtraNode, /* @__PURE__ */ React.createElement(Divider, {
     vertical: true,
     className: "h-1d4em"
-  }), /* @__PURE__ */ React.createElement(TaskList, null), /* @__PURE__ */ React.createElement(Divider, {
+  })), /* @__PURE__ */ React.createElement(TaskList, null), /* @__PURE__ */ React.createElement(Divider, {
     vertical: true,
     className: "h-1d4em"
   }), /* @__PURE__ */ React.createElement("div", {
@@ -1905,9 +2138,9 @@ const DesktopItems = () => {
   const aProps = taskSeed.useState((state) => state.adminProps);
   return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", {
     className: "m78-admin_desktop-node"
-  }, aProps.desktopNode), /* @__PURE__ */ React.createElement("div", {
+  }, aProps.desktop), /* @__PURE__ */ React.createElement("div", {
     className: "m78-admin_layout_desc"
-  }, aProps.footerNode || /* @__PURE__ */ React.createElement(React.Fragment, null, "POWER BY |-", /* @__PURE__ */ React.createElement("a", {
+  }, aProps.footer || /* @__PURE__ */ React.createElement(React.Fragment, null, "POWER BY |-", /* @__PURE__ */ React.createElement("a", {
     href: "https://github.com/xianjie-li/m78",
     target: "_blank",
     rel: "noreferrer"
@@ -1915,13 +2148,13 @@ const DesktopItems = () => {
     href: "https://github.com/xianjie-li",
     target: "_blank",
     rel: "noreferrer"
-  }, "Lime"), "-|")));
+  }, "Link"), "-|")));
 };
 const BaseLayout = () => {
   const width = taskSeed.useState((state) => state.adminProps.width);
   const height = taskSeed.useState((state) => state.adminProps.height);
   return /* @__PURE__ */ React.createElement("div", {
-    className: "m78-admin_layout",
+    className: "m78 m78-admin_layout",
     style: {
       height,
       width
@@ -1932,17 +2165,21 @@ const BaseLayout = () => {
     className: "m78-admin_layout_main"
   }, /* @__PURE__ */ React.createElement(TaskBar, null), /* @__PURE__ */ React.createElement("div", {
     className: "m78-admin_layout_window"
-  }, /* @__PURE__ */ React.createElement(Wine.RenderBoxTarget, null), /* @__PURE__ */ React.createElement(DesktopItems, null))));
+  }, /* @__PURE__ */ React.createElement(DesktopItems, null))));
 };
 const Handles = () => {
   useEffect(() => {
-    const resize = () => {
-      if (window.innerWidth < 680) {
-        WINE_OFFSET.left = 0;
+    const resize = _debounce(() => {
+      if (window.innerWidth < LG) {
+        taskSeed.set({
+          funcBarFloat: true
+        });
       } else {
-        WINE_OFFSET.left = WINE_OFFSET_LEFT;
+        taskSeed.set({
+          funcBarFloat: false
+        });
       }
-    };
+    }, 200);
     resize();
     window.addEventListener("resize", resize);
     return () => window.removeEventListener("resize", resize);
@@ -1953,68 +2190,66 @@ const M78AdminCore = (props) => {
   const {tasks} = props;
   const [pass, setPass] = useState(false);
   useEffect(() => {
-    taskSeed.setState(taskOptFormat(tasks));
+    taskSeed.set(taskOptFormat(tasks));
     if (!pass)
       setPass(true);
   }, []);
   useSyncWineTask();
   if (!pass)
     return null;
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(ConfigSync, null), /* @__PURE__ */ React.createElement(Handles, null), /* @__PURE__ */ React.createElement(BaseLayout, null));
+  function render() {
+    if (props.loading) {
+      return /* @__PURE__ */ React.createElement("div", {
+        className: "m78-admin_blocked-loading"
+      }, /* @__PURE__ */ React.createElement(Spin, {
+        size: "big",
+        text: "",
+        full: true
+      }));
+    }
+    if (props.body)
+      return props.body;
+    return /* @__PURE__ */ React.createElement(BaseLayout, null);
+  }
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(ConfigSync, null), /* @__PURE__ */ React.createElement(Handles, null), /* @__PURE__ */ React.createElement(Wine.RenderTarget, null), render());
 };
 function M78AdminImpl(props) {
   useEffect(() => {
-    taskSeed.setState({
+    taskSeed.set({
       adminProps: props
     });
   }, [props]);
-  if (props.loading) {
-    return /* @__PURE__ */ React.createElement("div", {
-      className: "m78-admin_blocked-loading"
-    }, /* @__PURE__ */ React.createElement(Spin, {
-      size: "big",
-      text: "",
-      full: true
-    }));
-  }
   return /* @__PURE__ */ React.createElement(M78AdminCore, __assign({}, props));
 }
-const FuncBtn = (_a) => {
-  var {icon, text, extraNode, small, circle, className, style} = _a, ppp = __rest(_a, ["icon", "text", "extraNode", "small", "circle", "className", "style"]);
-  return /* @__PURE__ */ React.createElement("div", __assign({
-    className: clsx("m78-admin_func-bar_func", className, small && "__small", circle && "__circle"),
-    style
-  }, ppp), !circle && /* @__PURE__ */ React.createElement(React.Fragment, null, icon && /* @__PURE__ */ React.createElement("div", {
-    className: "m78-admin_func-bar_icon"
-  }, icon), /* @__PURE__ */ React.createElement("div", {
-    className: "m78-admin_func-bar_text ellipsis-2"
-  }, text)), circle && /* @__PURE__ */ React.createElement("div", {
-    className: "ellipsis"
-  }, text), extraNode);
-};
 const Badge = ({children, out, color}) => {
   return /* @__PURE__ */ React.createElement("span", {
-    className: clsx("m78-admin_badge", out && "__out", color && `__${color}`)
+    className: clsx("m78-admin_badge __small", out && "__out", color && `__${color}`)
   }, children);
 };
 const Login = ({logo, title, desc, content}) => {
-  return /* @__PURE__ */ React.createElement("div", {
-    className: "m78-admin_login"
-  }, /* @__PURE__ */ React.createElement("div", {
-    className: "m78-admin_login-bg"
-  }), /* @__PURE__ */ React.createElement("div", {
-    className: "m78-admin_login-content"
-  }, /* @__PURE__ */ React.createElement("div", {
-    className: "tc mb-24"
-  }, logo && /* @__PURE__ */ React.createElement("img", {
-    style: {width: 120},
-    src: logo,
-    alt: ""
-  }), title && /* @__PURE__ */ React.createElement("div", {
-    className: "m78-admin_login-title"
-  }, title), desc && /* @__PURE__ */ React.createElement("div", {
-    className: "color-second"
-  }, desc)), content));
+  return /* @__PURE__ */ React.createElement(MediaQuery, null, (meta) => {
+    const isSmall = meta.isSmall();
+    return /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement("div", {
+      className: "m78-admin_login"
+    }, /* @__PURE__ */ React.createElement("div", {
+      className: "m78-admin_login-bg"
+    }), /* @__PURE__ */ React.createElement("div", {
+      className: "m78-admin_login-content",
+      style: {padding: isSmall ? "40px 12px 60px" : "40px 60px 60px"}
+    }, /* @__PURE__ */ React.createElement("div", {
+      className: "tc mb-24"
+    }, logo && /* @__PURE__ */ React.createElement("img", {
+      style: {width: isSmall ? 80 : 120},
+      src: logo,
+      alt: ""
+    }), title && /* @__PURE__ */ React.createElement("div", {
+      className: clsx("m78-admin_login-title", isSmall ? "fs-18" : "fs-24")
+    }, title), desc && /* @__PURE__ */ React.createElement("div", {
+      className: "color-second"
+    }, desc)), content, /* @__PURE__ */ React.createElement("div", {
+      className: "m78-admin_login-content_bg"
+    }))));
+  });
 };
 var TaskWindowTopBarTypeKeys;
 (function(TaskWindowTopBarTypeKeys2) {
@@ -2161,14 +2396,14 @@ const Link = (_c) => {
   const ctx$1 = useContext(ctx);
   const openHandle = useFn(() => {
     if (blank) {
-      replace2 ? task.replace(id, param) : task.push(id, param);
+      replace2 ? taskGlobal.replace(id, param) : taskGlobal.push(id, param);
       return;
     }
     if (replace2) {
-      ctx$1.parent ? ctx$1.parent.replace(id, param) : task.replace(id, param);
+      ctx$1.parent ? ctx$1.parent.replace(id, param) : taskGlobal.replace(id, param);
       return;
     }
-    ctx$1.parent ? ctx$1.parent.push(id, param) : task.push(id, param);
+    ctx$1.parent ? ctx$1.parent.push(id, param) : taskGlobal.push(id, param);
   });
   if (typeof children === "string") {
     return /* @__PURE__ */ React.createElement("span", __assign(__assign({}, ppp), {
@@ -2181,4 +2416,4 @@ const Link = (_c) => {
     onClick: openHandle
   });
 };
-export {Badge, FuncBtn, Link, Login, M78AdminImpl as M78Admin, TaskWindowTopBarTypeKeys, WindowLayout, task};
+export {Badge, FuncItem, Link, Login, M78AdminImpl as M78Admin, TaskWindowTopBarTypeKeys, WindowLayout, taskGlobal};

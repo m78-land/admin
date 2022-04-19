@@ -1,5 +1,4 @@
 import React from 'react';
-import Wine from '@m78/wine';
 import FuncBar from './func/func-bar';
 import TaskBar from './task/task-bar';
 import taskSeed from '../task/task-seed';

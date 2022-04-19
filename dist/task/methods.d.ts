@@ -1,10 +1,4 @@
-import { TaskCtx, TaskItemCategory, TaskOpt, TaskOptItem } from '../types';
-interface CreateTaskInstanceOpt {
-    /** 参数 */
-    param?: any;
-    /** 如果是子任务，传入父级 */
-    parent?: TaskCtx;
-}
+import { TaskCtx, TaskItemCategory, TaskOpt, TaskOptItem } from '../types/types';
 /**
  * wine关闭时同步关闭已失效的task
  * */
@@ -18,32 +12,12 @@ export declare function useListenerKeyToUpdate(ctx: TaskCtx): void;
  * */
 export declare function checkBeforeTaskEach(opt: TaskOptItem): boolean;
 /**
- * 根据taskAuth检测是是否符合条件
- * */
-export declare function checkTaskAuth(opt: TaskOptItem): boolean;
-/**
- * 根据taskAuth检测是是否符合条件
- * */
-export declare function checkTaskAuthAndTips(opt: TaskOptItem): boolean;
-/**
- * 接收TaskOptItem来创建task实例传入 opt.parent 时，在其内部创建子实例
- * */
-export declare function createTaskInstance(taskOpt: TaskOptItem, opt?: CreateTaskInstanceOpt): TaskCtx;
-/**
- * 生成TaskCtx的主实例功能
- * 💥 此函数参数中的ctx是未完成状态的ctx，部分功能并不存在
- * */
-export declare function createMainTaskCtx(taskOpt: TaskOptItem, ctx: TaskCtx): void;
-/**
- * 生成TaskCtx的子实例功能
- * */
-export declare function createSubTaskCtx(taskOpt: TaskOptItem, opt: CreateTaskInstanceOpt, ctx: TaskCtx): void;
-/**
  * 根据id获取其task配置
  * */
 export declare function getTaskOpt(id: string): TaskOptItem;
 /**
  * 处理TaskOpt并生成taskOptions/taskOptionsFlat/taskOptionsIdMap
+ * - 每个节点都会被附加私有属性__parents?，表示该节点的所有父级按顺序组成的数组
  * */
 export declare function taskOptFormat(taskOpt: TaskOpt): {
     taskOptions: TaskOpt;
@@ -94,13 +68,30 @@ export declare function closeLeftTaskByKey(key: string): void;
  * */
 export declare function hideTaskById(id: string): void;
 /**
- * 隐藏指定id的所有任务
+ * 打开指定id的所有任务
  * */
 export declare function openTaskById(id: string): void;
+/**
+ * 打开指定id的任务, 如果该任务已存在实例，则打开其最后一个实例
+ * */
+export declare function pushTaskOrOpenLastTask(id: string): void;
 /** 检测指定key的任务是否可安全的关闭 */
 export declare function checkPopCloseable(ctx: TaskCtx): boolean;
 /** 关闭提示并返回结果 */
-export declare function closeConfirm(ctx: TaskCtx): boolean;
+export declare function closeConfirm(ctx: TaskCtx | TaskCtx[], cb: Function): void;
+export declare function isTaskOptItem(arg: any): arg is TaskOptItem;
+export declare function isTaskItemCategory(arg: any): arg is TaskItemCategory;
+/**
+ * 检测选项是是否符满足权限
+ * */
+export declare function checkTaskAuth(opt: TaskOptItem | TaskItemCategory): boolean;
+/**
+ * 根据taskAuth检测是是否符合条件， 无权限是触发提示
+ * */
+export declare function checkTaskAuthAndTips(opt: TaskOptItem): boolean;
 /** 检测是否是非隐藏且有权限的task选项 */
 export declare function isPassNode(item: TaskItemCategory | TaskOptItem): item is TaskOptItem;
-export {};
+/** 检测是否是有权访问的节点或目录 */
+export declare function isPassNodeOrCategory(item: TaskItemCategory | TaskOptItem): boolean;
+/** 依次从task的taskName()和name获取窗口名 */
+export declare function getTaskName(ctx: TaskCtx): string;
