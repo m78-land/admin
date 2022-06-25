@@ -42,11 +42,11 @@ import {createEvent, useFn, useDelayToggle, useSelf, useScroll} from "@lxjx/hook
 import {Portal} from "m78/portal";
 import {Tree} from "m78/tree";
 import _debounce from "lodash/debounce";
-import {message} from "m78/message";
 import {Dialog} from "m78/dialog";
+import {notify} from "m78/notify";
+import {Status, Direction, Size, LG} from "m78/common";
 import {ContextMenu} from "m78/context-menu";
 import {ListView, ListViewItem} from "m78/list-view";
-import {Direction, Size, LG} from "m78/common";
 import {PageHeader} from "m78/page-header";
 import {UseTriggerType} from "m78/hooks";
 import {DNDContext, DND} from "m78/dnd";
@@ -1251,8 +1251,8 @@ function checkTaskAuth(opt) {
 function checkTaskAuthAndTips(opt) {
   const check = checkTaskAuth(opt);
   if (!check) {
-    message.tips({
-      type: "warning",
+    notify.render({
+      status: Status.warning,
       content: /* @__PURE__ */ React.createElement("span", null, /* @__PURE__ */ React.createElement("span", {
         className: "bold"
       }, opt.name, ": "), "\u60A8\u6CA1\u6709\u6B64\u529F\u80FD\u7684\u8BBF\u95EE\u6743\u9650"),
@@ -1777,7 +1777,8 @@ function usePin(enable = true) {
 function renderFuncActions(tasks, isCollectd, item, config) {
   const length = tasks.length;
   return /* @__PURE__ */ React.createElement(Row, {
-    crossAlign: "center"
+    crossAlign: "center",
+    onClick: (e) => e.stopPropagation()
   }, /* @__PURE__ */ React.createElement("span", {
     style: {marginRight: 2}
   }, /* @__PURE__ */ React.createElement(FuncStatusFlagBuilder, {
@@ -1884,7 +1885,9 @@ const FuncCollects = () => {
       enableDrop: true
     }, ({innerRef, status, enables}) => /* @__PURE__ */ React.createElement(FuncItem, {
       innerRef,
-      icon: item.icon,
+      icon: item.icon || /* @__PURE__ */ React.createElement("span", {
+        className: "m78-dot __small"
+      }),
       title: item.name,
       trailing: renderFuncActions(tasks, isCollectd, item, config),
       className: clsx({

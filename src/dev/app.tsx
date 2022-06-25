@@ -5,7 +5,7 @@ import { Button } from 'm78/button';
 import { Row } from 'm78/layout';
 import { PushpinOutlined, SettingOutlined, ThunderboltOutlined } from 'm78/icon';
 import { FuncItem, Link, M78Admin, taskGlobal } from '../index';
-import { M78AdminConfig } from '../types/types';
+import { M78AdminConfig } from '../types/core';
 import { Permission } from './permission/permission';
 import IconRender from '../widget/unit/icon-render';
 import { opt } from './taskConfig';

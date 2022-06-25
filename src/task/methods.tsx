@@ -6,8 +6,9 @@ import React, { useEffect, useState } from 'react';
 import Wine from '@m78/wine';
 import { ensureArray, isArray, isBoolean, isFunction } from '@lxjx/utils';
 import _debounce from 'lodash/debounce';
-import { message } from 'm78/message';
 import { Dialog } from 'm78/dialog';
+import { notify } from 'm78/notify';
+import { Status } from 'm78/common';
 import { TaskCtx, TaskItemCategory, TaskOpt, TaskOptItem, TaskState } from '../types/types';
 import { WILL_POP_MAP } from '../common/const';
 import taskSeed from './task-seed';
@@ -367,8 +368,8 @@ export function checkTaskAuthAndTips(opt: TaskOptItem) {
   const check = checkTaskAuth(opt);
 
   if (!check) {
-    message.tips({
-      type: 'warning',
+    notify.render({
+      status: Status.warning,
       content: (
         <span>
           <span className="bold">{opt.name}: </span>您没有此功能的访问权限

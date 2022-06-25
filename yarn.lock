@@ -1292,6 +1292,18 @@
     resize-observer-polyfill "^1.5.1"
     tslib "^2.3.1"
 
+"@lxjx/hooks@^1.30.1":
+  version "1.30.1"
+  resolved "https://registry.npmjs.org/@lxjx/hooks/-/hooks-1.30.1.tgz#883087fb97bfbceb2d8f15678afd2bd5b95049b7"
+  integrity sha512-C6mYQXGjoNSus7Ng8Zo60mz9pna8D3GHkZturYnKPlogcOBfC6YUyWfmAyReKMQ+ljJzXD4B+IgYAtm+QJibng==
+  dependencies:
+    "@lxjx/utils" "^1.7.7"
+    lodash "^4.17.15"
+    query-string "^7.0.1"
+    react-spring "^9.3.3"
+    resize-observer-polyfill "^1.5.1"
+    tslib "^2.3.1"
+
 "@lxjx/preset-config@^0.1.0":
   version "0.1.0"
   resolved "https://registry.npm.taobao.org/@lxjx/preset-config/download/@lxjx/preset-config-0.1.0.tgz#f61a8edb37bb7d40628fda3fc8a545e1f129976f"
@@ -5929,16 +5941,16 @@ lz-string@^1.4.4:
   resolved "https://registry.npm.taobao.org/lz-string/download/lz-string-1.4.4.tgz#c0d8eaf36059f705796e1e344811cf4c498d3a26"
   integrity sha1-wNjq82BZ9wV5bh40SBHPTEmNOiY=
 
-m78@^1.0.0-beta.92:
-  version "1.0.0-beta.92"
-  resolved "https://registry.npmjs.org/m78/-/m78-1.0.0-beta.92.tgz#4aac62705680fedc1b16957886bf1006f859230a"
-  integrity sha512-FURrJTFUO5kajiHfxIt65auo6gcBNnIhIfx9DPKuTKywUC9i+8hQPB82xeTxsQ7zfA/YyFkTelw6tRIilS3viw==
+m78@^1.0.0-beta.93:
+  version "1.0.0-beta.93"
+  resolved "https://registry.npmjs.org/m78/-/m78-1.0.0-beta.93.tgz#0c0ced9fd7e5581ae7f6633b9bca46872e43aa79"
+  integrity sha512-TOsWKuUgXrYz4VYkT+jeaHnU6IZweLPCbdi14KR+hT4E8/aLG4bNMhp0oJGTtJ3GJQHjq6o8oiqcv4eME/JzuQ==
   dependencies:
     "@ant-design/icons" "^4.7.0"
     "@babel/runtime" "^7.7.2"
     "@lxjx/async-filed-cn-template" "^1.0.1"
     "@lxjx/click-effect" "^1.0.1"
-    "@lxjx/hooks" "^1.30.0"
+    "@lxjx/hooks" "^1.30.1"
     "@lxjx/react-render-api" "^0.5.0"
     "@lxjx/utils" "^1.7.7"
     "@lxjx/validate-tools" "^1.1.0"
