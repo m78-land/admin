@@ -1,5 +1,5 @@
 import { Button } from 'm78/button';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Input } from 'm78/input';
 import { Grids, MediaQuery } from 'm78/layout';
 import { useForm } from 'm78/form';
@@ -9,16 +9,16 @@ import taskGlobal from '../task/task-global';
 import { Link } from '../index';
 
 export default function Test(props: TaskCtx<{ name: string }>) {
-  useEffect(() => {
-    console.log('render');
-    return () => console.log('un_render');
-  }, []);
+  // useEffect(() => {
+  //   console.log('render');
+  //   return () => console.log('un_render');
+  // }, []);
 
   taskGlobal.useWillPop(props, () => props.id === 'role1');
 
   const Form = useForm();
 
-  console.log('1111 render');
+  // console.log('1111 render');
 
   return (
     <WindowLayout
@@ -95,24 +95,25 @@ export default function Test(props: TaskCtx<{ name: string }>) {
       footer={<Button size="large">按钮</Button>}
     >
       <MediaQuery>
-        {() => (
+        {meta => (
           <div>
             <div id="s1">
               <h3>角色管理操作1</h3>
             </div>
 
+            <div>{JSON.stringify(meta)}</div>
+
             <MediaQuery>
-              {meta => (
+              {meta1 => (
                 <div>
                   {meta.type}
                   <br />
-                  {meta.isSmall() && 'small'}
-                  {meta.isMedium() && 'medium'}
-                  {meta.isLarge() && 'large'}
+                  {meta1.isSmall() && 'small'}
+                  {meta1.isMedium() && 'medium'}
+                  {meta1.isLarge() && 'large'}
                 </div>
               )}
             </MediaQuery>
-            <MediaQuery listenType="size">{meta => <div>{JSON.stringify(meta)}</div>}</MediaQuery>
             <div>
               <div>{JSON.stringify(props.param)}</div>
               <div>

@@ -43,7 +43,6 @@ export const taskWindowHeaderCustomer: NonNullable<WineState['headerCustomer']> 
       <div {...props}>
         <PageHeader
           className="m78-admin_window-header"
-          border
           title={
             <>
               <Row crossAlign="center">

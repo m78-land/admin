@@ -1446,7 +1446,6 @@ const taskWindowHeaderCustomer = (props, state, instance, isFull) => {
     }))
   }, /* @__PURE__ */ React.createElement("div", __assign({}, props), /* @__PURE__ */ React.createElement(PageHeader, {
     className: "m78-admin_window-header",
-    border: true,
     title: /* @__PURE__ */ React.createElement(React.Fragment, null, /* @__PURE__ */ React.createElement(Row, {
       crossAlign: "center"
     }, /* @__PURE__ */ React.createElement("span", {
