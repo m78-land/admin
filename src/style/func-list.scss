@@ -1,6 +1,6 @@
 .m78-admin_func-list {
   &_more-btn {
-    opacity: 0;
+    display: none;
   }
 
   &_context-menu {
@@ -10,7 +10,7 @@
 
   .m78-tree_item:hover &_more-btn,
   .m78-admin_func-item:hover &_more-btn {
-    opacity: 1;
+    display: block;
   }
 
   .m78-tree {

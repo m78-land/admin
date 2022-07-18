@@ -4,7 +4,7 @@
 
 import React from 'react';
 import Wine from '@m78/wine';
-import { createRandString, isArray, isObject } from '@lxjx/utils';
+import { createRandString } from '@lxjx/utils';
 import { MediaQueryTypeValues } from 'm78/layout';
 import { TaskCtx, TaskOptItem } from '../types/tasks';
 import { refreshEvent, updateByKeyEvent } from './event';
@@ -39,16 +39,16 @@ export function createTaskInstance(taskOpt: TaskOptItem, opt?: CreateTaskInstanc
   const ctx = ({
     id: taskOpt.id,
     taskKey: createRandString(2),
-    param: param || {},
+    param: param || taskOpt.param || {},
     option: taskOpt,
     setParam: (_param: any) => {
-      if (isObject(_param)) {
-        ctx.param = { ..._param };
-      }
-
-      if (isArray(param)) {
-        ctx.param = [..._param];
-      }
+      // if (isObject(_param)) {
+      //   ctx.param = { ..._param };
+      // }
+      //
+      // if (isArray(param)) {
+      //   ctx.param = [..._param];
+      // }
 
       ctx.param = _param;
 

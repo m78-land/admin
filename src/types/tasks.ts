@@ -21,6 +21,8 @@ export interface TaskOptItem {
   icon?: React.ReactNode | string;
   /** 权限，此项需要配合 M78Admin 组件的 permission 配置使用  */
   permission?: PermissionProTplList;
+  /** 未指定参数时, 以此项作为默认参数 */
+  param?: any;
 
   // ####### 窗口设置 这些配置继承至Wine ####### //
   /**

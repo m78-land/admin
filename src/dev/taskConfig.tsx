@@ -167,6 +167,9 @@ export const opt: TaskOpt = [
         name: '菜单管理1',
         icon: '🎉',
         component: TestLazy,
+        param: {
+          name: 'zl',
+        },
       },
       {
         id: 'menu2',

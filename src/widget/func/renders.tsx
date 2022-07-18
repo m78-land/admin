@@ -18,9 +18,6 @@ export function renderFuncActions(
 
   return (
     <Row crossAlign="center" onClick={(e: SyntheticEvent) => e.stopPropagation()}>
-      <span style={{ marginRight: 2 }}>
-        <FuncStatusFlagBuilder length={length} />
-      </span>
       <ContextMenu
         triggerType={UseTriggerType.click}
         onChange={pinEvent.emit}
@@ -33,10 +30,13 @@ export function renderFuncActions(
           />
         }
       >
-        <span className="m78-admin_func-list_more-btn m78-admin_effect fs-md">
+        <span className="m78-admin_func-list_more-btn m78-admin_effect fs-md bold">
           <EllipsisOutlined />
         </span>
       </ContextMenu>
+      <span className="ml-4">
+        <FuncStatusFlagBuilder length={length} />
+      </span>
     </Row>
   );
 }
