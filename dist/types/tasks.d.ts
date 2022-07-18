@@ -19,6 +19,8 @@ export interface TaskOptItem {
     icon?: React.ReactNode | string;
     /** 权限，此项需要配合 M78Admin 组件的 permission 配置使用  */
     permission?: PermissionProTplList;
+    /** 未指定参数时, 以此项作为默认参数 */
+    param?: any;
     /**
      *  0.84 | 以浏览器窗口大小的一定比例来设置一个适合的窗口尺寸, 取值为0 ~ 1
      *  - 如果屏幕宽度小于576, 会忽略尺寸设置强制全屏显示窗口

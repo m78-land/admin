@@ -33,7 +33,7 @@ import Wine, {keypressAndClick} from "@m78/wine";
 import {Spin} from "m78/spin";
 import {m78Config} from "m78/config";
 import {generate} from "@ant-design/colors";
-import {isString, isFunction, isBoolean, ensureArray, isArray, isNumber, createRandString, isObject, retry} from "@lxjx/utils";
+import {isString, isFunction, isBoolean, ensureArray, isArray, isNumber, createRandString, retry} from "@lxjx/utils";
 import {Scroller} from "m78/scroller";
 import {SyncOutlined, DeleteOutlined, CloseOutlined, FullscreenExitOutlined, FullscreenOutlined, ToTopOutlined, AppstoreAddOutlined, HeartFilled, HeartOutlined, EyeInvisibleOutlined, SelectOutlined, ExportOutlined, EllipsisOutlined, MenuFoldOutlined, MenuUnfoldOutlined, SplitCellsOutlined, ImportOutlined} from "m78/icon";
 import {MediaQueryContext, Row, Divider, MediaQueryTypeValues, Tile, Spacer, MediaQuery} from "m78/layout";
@@ -1493,15 +1493,9 @@ function createTaskInstance(taskOpt, opt) {
   const ctx2 = {
     id: taskOpt.id,
     taskKey: createRandString(2),
-    param: param || {},
+    param: param || taskOpt.param || {},
     option: taskOpt,
     setParam: (_param) => {
-      if (isObject(_param)) {
-        ctx2.param = __assign({}, _param);
-      }
-      if (isArray(param)) {
-        ctx2.param = [..._param];
-      }
       ctx2.param = _param;
       updateByKeyEvent.emit((parent || ctx2).taskKey);
     }
@@ -1778,11 +1772,7 @@ function renderFuncActions(tasks, isCollectd, item, config) {
   return /* @__PURE__ */ React.createElement(Row, {
     crossAlign: "center",
     onClick: (e) => e.stopPropagation()
-  }, /* @__PURE__ */ React.createElement("span", {
-    style: {marginRight: 2}
-  }, /* @__PURE__ */ React.createElement(FuncStatusFlagBuilder, {
-    length
-  })), /* @__PURE__ */ React.createElement(ContextMenu, {
+  }, /* @__PURE__ */ React.createElement(ContextMenu, {
     triggerType: UseTriggerType.click,
     onChange: pinEvent.emit,
     content: /* @__PURE__ */ React.createElement(FuncContextMenuBuilder, {
@@ -1792,8 +1782,12 @@ function renderFuncActions(tasks, isCollectd, item, config) {
       isCollectd
     })
   }, /* @__PURE__ */ React.createElement("span", {
-    className: "m78-admin_func-list_more-btn m78-admin_effect fs-md"
-  }, /* @__PURE__ */ React.createElement(EllipsisOutlined, null))));
+    className: "m78-admin_func-list_more-btn m78-admin_effect fs-md bold"
+  }, /* @__PURE__ */ React.createElement(EllipsisOutlined, null))), /* @__PURE__ */ React.createElement("span", {
+    className: "ml-4"
+  }, /* @__PURE__ */ React.createElement(FuncStatusFlagBuilder, {
+    length
+  })));
 }
 const FuncList = () => {
   const taskOptions = taskSeed.useState((state) => state.taskOptions);
